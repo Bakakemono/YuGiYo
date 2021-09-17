@@ -25,10 +25,14 @@ public class CardDisplyer : MonoBehaviour
     float cardMovingSpeed = 0.2f;
     Vector3 selectedCardSpotPosition = new Vector3(0, 2.0f);
 
+    float acceptableSpaceLerp = 0.01f;
+
     public float maxAngleRadiant;
     public float fanningMaxAngleRadiant;
 
     [SerializeField] bool isPlayerTurn = false;
+
+    DiscardPileManager discardPileManager;
 
     void Start() {
         cardNumber = cards.Count;
@@ -40,6 +44,8 @@ public class CardDisplyer : MonoBehaviour
 
         maxAngleRadiant = maxAngle * Mathf.Deg2Rad;
         fanningMaxAngleRadiant = fanningMaxAngle * Mathf.Deg2Rad;
+
+        discardPileManager = FindObjectOfType<DiscardPileManager>();
     }
 
     private void FixedUpdate() {
@@ -86,6 +92,11 @@ public class CardDisplyer : MonoBehaviour
             return;
         cards[selectedCard].localPosition = Vector3.Lerp(cards[selectedCard].localPosition, fanPosition + selectedCardSpotPosition, cardMovingSpeed);
         cards[selectedCard].localRotation = Quaternion.Lerp(cards[selectedCard].localRotation, Quaternion.identity, cardMovingSpeed);
+
+        if((cards[selectedCard].localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
+            PlayCard();
+        }
+        
     }
 
     void SelectACard() {
@@ -97,7 +108,7 @@ public class CardDisplyer : MonoBehaviour
             currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
         }
         else {
-            currentOverviewedCard = -1;
+            currentOverviewedCard = INVALID_CARD;
         }
 
         if (currentOverviewedCard != INVALID_CARD && currentOverviewedCard != selectedCard &&
@@ -106,6 +117,23 @@ public class CardDisplyer : MonoBehaviour
         }
         else if (currentOverviewedCard == INVALID_CARD && Input.GetMouseButtonUp(0)) {
             selectedCard = INVALID_CARD;
+        }
+    }
+
+    void PlayCard() {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit)) {
+            Transform cardSelected = hit.transform;
+
+            currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
+
+            if(currentOverviewedCard == selectedCard && Input.GetMouseButtonUp(0)) {
+                cards.RemoveAt(currentOverviewedCard);
+                selectedCard = INVALID_CARD;
+                discardPileManager.DiscardCard(cardSelected);
+            }
         }
     }
 

@@ -6,7 +6,6 @@ public class DrawPileManager : MonoBehaviour
 {
     List<Transform> cards = new List<Transform>();
     float cardThickness = 0.01f;
-    float spacebetweenCard = 0.0f;
     Vector2 cardDimension = new Vector2(1.2f, 2.2f);
 
     BoxCollider boxCollider;
@@ -20,7 +19,7 @@ public class DrawPileManager : MonoBehaviour
         }
 
         for (int i = 0; i < cards.Count; i++) {
-            cards[i].localPosition = new Vector3(0, 0, cardThickness / 2.0f + (cards.Count - i) * (cardThickness + spacebetweenCard));
+            cards[i].localPosition = new Vector3(0, 0, cardThickness / 2.0f + (cards.Count - i) * (cardThickness));
         }
 
         boxCollider = GetComponent<BoxCollider>();
@@ -28,8 +27,8 @@ public class DrawPileManager : MonoBehaviour
     }
 
     void CalculateHitBoxSize() {
-        boxCollider.size = new Vector3(cardDimension.x, cardDimension.y, (cardThickness + spacebetweenCard) * cards.Count);
-        boxCollider.center = new Vector3(0, 0, (cardThickness + spacebetweenCard) * cards.Count / 2.0f);
+        boxCollider.size = new Vector3(cardDimension.x, cardDimension.y, (cardThickness) * cards.Count);
+        boxCollider.center = new Vector3(0, 0, (cardThickness) * cards.Count / 2.0f);
     }
 
     public Transform DrawCard() {
