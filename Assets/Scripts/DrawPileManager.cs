@@ -37,4 +37,13 @@ public class DrawPileManager : MonoBehaviour
         CalculateHitBoxSize();
         return DrawedCard;
     }
+
+    public void InitializeDrawPile(List<GameObject[]> cards) {
+        bool shuffle = true;
+        while (shuffle) {
+            int raceSelected = Random.Range(0, cards.Count);
+        }
+
+
+    }
 }
