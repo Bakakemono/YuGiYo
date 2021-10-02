@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DiscardPileManager : MonoBehaviour
 {
-    List<Transform> cards = new List<Transform>();
+    List<Card> cards = new List<Card>();
     bool updateLastCard = false;
     float cardThickness = 0.01f;
     int lastCardIndex = -1;
@@ -14,9 +14,9 @@ public class DiscardPileManager : MonoBehaviour
     Vector3 lastCardPosition;
 
 
-    public void DiscardCard(Transform card) {
+    public void DiscardCard(Card card) {
         cards.Add(card);
-        card.parent = transform;
+        card.customTransform.parent = transform;
         lastCardIndex = cards.Count - 1;
         lastCardPosition = new Vector3(0, 0, -cardThickness / 2.0f + lastCardIndex * cardThickness);
         updateLastCard = true;
@@ -26,23 +26,23 @@ public class DiscardPileManager : MonoBehaviour
         if (!updateLastCard)
             return;
 
-        cards[lastCardIndex].localPosition = 
+        cards[lastCardIndex].customTransform.localPosition = 
             Vector3.Lerp(
-                cards[lastCardIndex].localPosition,
+                cards[lastCardIndex].customTransform.localPosition,
                 lastCardPosition,
                 cardLerpSpeed
                 );
 
-        cards[lastCardIndex].localRotation =
+        cards[lastCardIndex].customTransform.localRotation =
             Quaternion.Lerp(
-                cards[lastCardIndex].localRotation,
+                cards[lastCardIndex].customTransform.localRotation,
                 Quaternion.identity,
                 cardLerpSpeed
                 );
 
-        if ((cards[lastCardIndex].localPosition - lastCardPosition).sqrMagnitude < acceptableSpace * acceptableSpace) {
-            cards[lastCardIndex].localPosition = lastCardPosition;
-            cards[lastCardIndex].localRotation = Quaternion.identity;
+        if ((cards[lastCardIndex].customTransform.localPosition - lastCardPosition).sqrMagnitude < acceptableSpace * acceptableSpace) {
+            cards[lastCardIndex].customTransform.localPosition = lastCardPosition;
+            cards[lastCardIndex].customTransform.localRotation = Quaternion.identity;
             updateLastCard = false;
         }
     }
