@@ -26,7 +26,9 @@ public class CardManager : MonoBehaviour
         LEPRECHAUN_SECRET,
         FARFADET_SECRET,
         ELF_SECRET,
-        BEER
+        BEER,
+        Length,
+        NONE
     }
 
     [SerializeField]
