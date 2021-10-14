@@ -9,12 +9,12 @@ public class CardDisplyer : MonoBehaviour
 {
     float cardNumber;
     Player player;
-    [SerializeField] List<Card> cards = new List<Card>();
     List<List<Vector3>> positions;
     List<CardManager.CardType> positionsType;
     Vector2Int latestCardAdded = new Vector2Int(-1, -1);
     CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
     CardManager.CardType selectedCardType = CardManager.CardType.NONE;
+    [SerializeField] List<Card> cards = new List<Card>();
     const int TYPE_NOT_AVAILABLE = -1;
 
 
@@ -48,6 +48,8 @@ public class CardDisplyer : MonoBehaviour
 
     void Start() {
         player = GetComponent<Player>();
+        positions = new List<List<Vector3>>();
+        positionsType = new List<CardManager.CardType>();
         cardNumber = cards.Count;
         foreach (Card card in cards) {
             cardPositions.Add(Vector3.zero);
@@ -82,6 +84,9 @@ public class CardDisplyer : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        if (!isPlayerTurn)
+            return;
+
         if(Input.GetMouseButtonUp(0) && isPlayerTurn)
             DrawCard();
 
@@ -92,40 +97,46 @@ public class CardDisplyer : MonoBehaviour
         float anglePerCard = fanningMaxAngleRadiant / (cardNumber - 1) < maxAngleRadiant ?
                             fanningMaxAngleRadiant / (cardNumber - 1) : maxAngleRadiant;
 
-        //// OLD START
-        for (int i = 0; i < cardNumber; i++) {
+        ////// OLD START
+        //for (int i = 0; i < cardNumber; i++) {
 
-            cardPositions[i] = new Vector3(
-                circlePosition.x +
-                    (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
-                        Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f),
-                circlePosition.y +
-                    (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
-                        Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f));
+        //    cardPositions[i] = new Vector3(
+        //        circlePosition.x +
+        //            (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
+        //                Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f),
+        //        circlePosition.y +
+        //            (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
+        //                Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f));
 
-        }
+        //}
 
-        if (selectedCard != INVALID_CARD)
-            cardPositions[selectedCard] = fanPosition + selectedCardSpotPosition;
+        //if (selectedCard != INVALID_CARD)
+        //    cardPositions[selectedCard] = fanPosition + selectedCardSpotPosition;
 
 
-        for (int i = 0; i < cardNumber; i++) {
-            cards[i].customTransform.localPosition = Vector3.Lerp(cards[i].customTransform.localPosition, cardPositions[i], cardMovingSpeed);
-            cards[i].customTransform.localRotation = i == selectedCard ? Quaternion.identity :
-                Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) * Mathf.Rad2Deg));
-        }
+        //for (int i = 0; i < cardNumber; i++) {
+        //    cards[i].customTransform.localPosition = Vector3.Lerp(cards[i].customTransform.localPosition, cardPositions[i], cardMovingSpeed);
+        //    cards[i].customTransform.localRotation = i == selectedCard ? Quaternion.identity :
+        //        Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) * Mathf.Rad2Deg));
+        //}
 
-        if (selectedCard != INVALID_CARD && (cards[selectedCard].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
-            PlayCard();
-        }
+        //if (selectedCard != INVALID_CARD && (cards[selectedCard].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
+        //    PlayCard();
+        //}
 
-        //// OLD END
-        return;
+        ////// OLD END
+        //return;
         // NEW START
+
+        List<CardManager.CardType> typeChecked = new List<CardManager.CardType>();
         for (int i = 0; i < player.hand.cards.Count; i++) {
-            List<Card> cards;
+
             for (CardManager.CardType j = 0; j < CardManager.CardType.Length; j++) {
                 if (player.hand.cards.ContainsKey(j)) {
+                    if (!typeChecked.Contains(j))
+                        continue;
+
+                    typeChecked.Add(j);
                     int totalCard = player.hand.cards[j].Count;
                     for (int z = 0; z < totalCard; z++) {
                         positions[i][z] = new Vector3(
@@ -143,28 +154,35 @@ public class CardDisplyer : MonoBehaviour
                 }
             }
         }
+
+        typeChecked = new List<CardManager.CardType>();
+        for (int i = 0; i < positionsType.Count; i++) {
+            for (int j = 0; j < positions[i].Count; j++) {
+                player.hand.cards[positionsType[i]][j].customTransform.position = positions[i][j];
+            }
+        }
     }
 
     void SelectACard() {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit)) {
-            Card cardSelected = hit.transform.GetComponent<Card>();
+        //RaycastHit hit;
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //if (Physics.Raycast(ray, out hit)) {
+        //    Card cardSelected = hit.transform.GetComponent<Card>();
 
-            currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
-        }
-        else {
-            currentOverviewedCard = INVALID_CARD;
-        }
+        //    currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
+        //}
+        //else {
+        //    currentOverviewedCard = INVALID_CARD;
+        //}
 
-        if (currentOverviewedCard != INVALID_CARD && currentOverviewedCard != selectedCard &&
-            Input.GetMouseButtonUp(0)) {
-            selectedCard = currentOverviewedCard;
-        }
-        else if (currentOverviewedCard == INVALID_CARD && Input.GetMouseButtonUp(0)) {
-            selectedCard = INVALID_CARD;
-        }
-        return;
+        //if (currentOverviewedCard != INVALID_CARD && currentOverviewedCard != selectedCard &&
+        //    Input.GetMouseButtonUp(0)) {
+        //    selectedCard = currentOverviewedCard;
+        //}
+        //else if (currentOverviewedCard == INVALID_CARD && Input.GetMouseButtonUp(0)) {
+        //    selectedCard = INVALID_CARD;
+        //}
+        //return;
 
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -191,33 +209,31 @@ public class CardDisplyer : MonoBehaviour
     }
 
     void PlayCard() {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit hit;
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit)) {
-            Card cardSelected = hit.transform.GetComponent<Card>();
+        //if (Physics.Raycast(ray, out hit)) {
+        //    Card cardSelected = hit.transform.GetComponent<Card>();
             
-            currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
+        //    currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
 
-            if(currentOverviewedCard == selectedCard && Input.GetMouseButtonUp(0)) {
-                cardPositions.RemoveAt(selectedCard);
-                cards.RemoveAt(currentOverviewedCard);
-                selectedCard = INVALID_CARD;
-                discardPileManager.DiscardCard(cardSelected);
-                SortCards();
+        //    if(currentOverviewedCard == selectedCard && Input.GetMouseButtonUp(0)) {
+        //        cardPositions.RemoveAt(selectedCard);
+        //        cards.RemoveAt(currentOverviewedCard);
+        //        selectedCard = INVALID_CARD;
+        //        discardPileManager.DiscardCard(cardSelected);
+        //        SortCards();
                 
-            }
-        }
-        return;
+        //    }
+        //}
+        //return;
 
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(rayBis, out hitBis)) {
-            Card cardSelected = hit.transform.GetComponent<Card>();
-            if(!(cardSelected != null &&
-                 player.hand.IsCardInHand(cardSelected))
-                 ) {
+            Card cardSelected = hitBis.transform.GetComponent<Card>();
+            if(!(cardSelected != null && player.hand.IsCardInHand(cardSelected))) {
                     return;
             }
 
@@ -231,20 +247,20 @@ public class CardDisplyer : MonoBehaviour
     }
 
     void DrawCard() {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit)) {
-            DrawPileManager drawPileManager = hit.transform.GetComponent<DrawPileManager>();
-            if (drawPileManager) {
-                Card newCard = drawPileManager.DrawCard();
-                newCard.customTransform.parent = transform;
-                cards.Add(newCard);
-                cardPositions.Add(new Vector3());
-                SortCards();
-                drawedCard = cards.FindIndex(x => x == newCard);
-            }
-        }
-        return;
+        //RaycastHit hit;
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //if (Physics.Raycast(ray, out hit)) {
+        //    DrawPileManager drawPileManager = hit.transform.GetComponent<DrawPileManager>();
+        //    if (drawPileManager) {
+        //        Card newCard = drawPileManager.DrawCard();
+        //        newCard.customTransform.parent = transform;
+        //        cards.Add(newCard);
+        //        cardPositions.Add(new Vector3());
+        //        SortCards();
+        //        drawedCard = cards.FindIndex(x => x == newCard);
+        //    }
+        //}
+        //return;
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(rayBis, out hitBis)) {
