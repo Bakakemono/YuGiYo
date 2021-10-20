@@ -36,6 +36,9 @@ public class DrawPileManager : MonoBehaviour
     }
 
     public Card DrawCard() {
+        if(cards.Count == 0) {
+            return new Card();
+        }
         Card DrawedCard = cards[0];
         cards.RemoveAt(0);
         CalculateHitBoxSize();

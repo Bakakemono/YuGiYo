@@ -542,6 +542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 79069848}
   - component: {fileID: 79069847}
+  - component: {fileID: 79069849}
   m_Layer: 0
   m_Name: CardHolder (2)
   m_TagString: Untagged
@@ -594,6 +595,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
+--- !u!114 &79069849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 79069846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5fea2a40f370a4baafed6b1076a9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unorderedCard: []
 --- !u!1001 &81815201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1148,6 +1162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 247817717}
   - component: {fileID: 247817716}
+  - component: {fileID: 247817718}
   m_Layer: 0
   m_Name: CardHolder
   m_TagString: Untagged
@@ -1200,6 +1215,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 26.173, y: 0, z: 0}
+--- !u!114 &247817718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247817715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5fea2a40f370a4baafed6b1076a9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unorderedCard: []
 --- !u!1001 &250281491
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2874,7 +2902,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -23.75
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4627,7 +4655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -23.75
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7198,6 +7226,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1219003741}
   - component: {fileID: 1219003740}
+  - component: {fileID: 1219003742}
   m_Layer: 0
   m_Name: CardHolder (1)
   m_TagString: Untagged
@@ -7250,6 +7279,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &1219003742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219003739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5fea2a40f370a4baafed6b1076a9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unorderedCard: []
 --- !u!1001 &1219059812
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9012,7 +9054,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -23.75
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9425,7 +9467,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -23.75
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10294,6 +10336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1857098930}
   - component: {fileID: 1857098929}
+  - component: {fileID: 1857098931}
   m_Layer: 0
   m_Name: CardHolder (3)
   m_TagString: Untagged
@@ -10346,6 +10389,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -120, z: 0}
+--- !u!114 &1857098931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857098928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc5fea2a40f370a4baafed6b1076a9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unorderedCard: []
 --- !u!1001 &1876525524
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11758,7 +11814,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -23.75
       objectReference: {fileID: 0}
     - target: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
       propertyPath: m_LocalPosition.y

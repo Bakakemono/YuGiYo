@@ -7,7 +7,7 @@ using Vector3 = UnityEngine.Vector3;
 
 public class CardDisplyer : MonoBehaviour
 {
-    float cardNumber;
+    float cardNumber = 0;
     Player player;
     List<List<Vector3>> positions;
     List<CardManager.CardType> positionsType;
@@ -35,8 +35,6 @@ public class CardDisplyer : MonoBehaviour
     float cardMovingSpeed = 0.2f;
     Vector3 selectedCardSpotPosition = new Vector3(-3.0f, 2.0f);
 
-    float anglePerCard;
-
     float acceptableSpaceLerp = 0.01f;
 
     public float maxAngleRadiant;
@@ -46,11 +44,13 @@ public class CardDisplyer : MonoBehaviour
 
     DiscardPileManager discardPileManager;
 
+    bool caseA = true;
+
     void Start() {
         player = GetComponent<Player>();
         positions = new List<List<Vector3>>();
         positionsType = new List<CardManager.CardType>();
-        cardNumber = cards.Count;
+        //cardNumber = cards.Count;
         foreach (Card card in cards) {
             cardPositions.Add(Vector3.zero);
         }
@@ -62,8 +62,8 @@ public class CardDisplyer : MonoBehaviour
 
         discardPileManager = FindObjectOfType<DiscardPileManager>();
 
-        anglePerCard = fanningMaxAngleRadiant / (cardNumber - 1) < maxAngleRadiant ?
-                            fanningMaxAngleRadiant / (cardNumber - 1) : maxAngleRadiant;
+        //anglePerCard = fanningMaxAngleRadiant / (cardNumber - 1) < maxAngleRadiant ?
+        //                    fanningMaxAngleRadiant / (cardNumber - 1) : maxAngleRadiant;
 
         //positions = new List<List<Vector3>>();
         //positionsType = new List<CardManager.CardType>();
@@ -86,16 +86,15 @@ public class CardDisplyer : MonoBehaviour
     private void FixedUpdate() {
         if (!isPlayerTurn)
             return;
-
-        if(Input.GetMouseButtonUp(0) && isPlayerTurn)
-            DrawCard();
+        
+        DrawCard();
 
         SelectACard();
 
-        cardNumber = cards.Count;
+        //cardNumber = cards.Count;
 
-        float anglePerCard = fanningMaxAngleRadiant / (cardNumber - 1) < maxAngleRadiant ?
-                            fanningMaxAngleRadiant / (cardNumber - 1) : maxAngleRadiant;
+        //float anglePerCard = fanningMaxAngleRadiant / (cardNumber - 1) < maxAngleRadiant ?
+        //                    fanningMaxAngleRadiant / (cardNumber - 1) : maxAngleRadiant;
 
         ////// OLD START
         //for (int i = 0; i < cardNumber; i++) {
@@ -128,37 +127,29 @@ public class CardDisplyer : MonoBehaviour
         //return;
         // NEW START
 
-        List<CardManager.CardType> typeChecked = new List<CardManager.CardType>();
-        for (int i = 0; i < player.hand.cards.Count; i++) {
+        float anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
+                                fanningMaxAngleRadiant / (positionsType.Count - 1) : maxAngleRadiant;
 
-            for (CardManager.CardType j = 0; j < CardManager.CardType.Length; j++) {
-                if (player.hand.cards.ContainsKey(j)) {
-                    if (!typeChecked.Contains(j))
-                        continue;
-
-                    typeChecked.Add(j);
-                    int totalCard = player.hand.cards[j].Count;
-                    for (int z = 0; z < totalCard; z++) {
-                        positions[i][z] = new Vector3(
-                                circlePosition.x +
-                                    (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
-                                        (Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) - Mathf.Sin(anglePerCard / 20.0f * z)),
-                                circlePosition.y +
-                                    (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
-                                        (Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) - Mathf.Cos(anglePerCard / 20.0f * z)),
-                                circlePosition.z +
-                                    z * 0.01f
-                                        );
-                    }
-                    break;
-                }
+        for (int i = 0; i < positions.Count; i++) {
+            for (int j = 0; j < positions[i].Count; j++) {
+                positions[i][j] = new Vector3(
+                        circlePosition.x +
+                            circleRadius *
+                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                        circlePosition.y +
+                            circleRadius *
+                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                        circlePosition.z +
+                            j * 0.005f
+                                );
             }
         }
 
-        typeChecked = new List<CardManager.CardType>();
         for (int i = 0; i < positionsType.Count; i++) {
             for (int j = 0; j < positions[i].Count; j++) {
-                player.hand.cards[positionsType[i]][j].customTransform.position = positions[i][j];
+                player.hand.cards[positionsType[i]][j].customTransform.localPosition = positions[i][j];
+                player.hand.cards[positionsType[i]][j].customTransform.localRotation = i == selectedCard ? Quaternion.identity :
+                    Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) * Mathf.Rad2Deg));
             }
         }
     }
@@ -247,26 +238,19 @@ public class CardDisplyer : MonoBehaviour
     }
 
     void DrawCard() {
-        //RaycastHit hit;
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //if (Physics.Raycast(ray, out hit)) {
-        //    DrawPileManager drawPileManager = hit.transform.GetComponent<DrawPileManager>();
-        //    if (drawPileManager) {
-        //        Card newCard = drawPileManager.DrawCard();
-        //        newCard.customTransform.parent = transform;
-        //        cards.Add(newCard);
-        //        cardPositions.Add(new Vector3());
-        //        SortCards();
-        //        drawedCard = cards.FindIndex(x => x == newCard);
-        //    }
-        //}
-        //return;
-        RaycastHit hitBis;
-        Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(rayBis, out hitBis)) {
-            DrawPileManager drawPileManager = hitBis.transform.GetComponent<DrawPileManager>();
+        if (caseA ? Input.GetKeyDown(KeyCode.D) : Input.GetKeyDown(KeyCode.F)) {
+            if (caseA)
+                caseA = false;
+            else
+                caseA = true;
+
+            DrawPileManager drawPileManager = FindObjectOfType<DrawPileManager>();
             if (drawPileManager) {
                 Card newCard = drawPileManager.DrawCard();
+                if (newCard.cardType == CardManager.CardType.NONE)
+                    return;
+
+                cardNumber++;
                 AddCardToDisplay(newCard, player.hand.AddCard(newCard));
             }
         }
@@ -277,13 +261,29 @@ public class CardDisplyer : MonoBehaviour
         latestCardAdded = newCardIndex;
 
         if (positionsType.Contains((CardManager.CardType)latestCardAdded.x)) {
+            Debug.Log("OldType");
             int index = FindIndex((CardManager.CardType)latestCardAdded.x);
+            Debug.Log("Old type finded : " + index);
             positions[index].Add(new Vector3());
         }
         else {
+            Debug.Log("New Type");
+            if(positionsType.Count == 0) {
+                positionsType.Add((CardManager.CardType)latestCardAdded.x);
+                positions.Add(new List<Vector3>());
+                positions[0].Add(new Vector3());
+            }
+
             for (int i = 0; i < positionsType.Count; i++) {
-                if ((int)positionsType[i] < latestCardAdded.x)
+                if ((int)positionsType[i] < latestCardAdded.x) {
+                    if(i == positionsType.Count - 1) {
+                        positionsType.Add((CardManager.CardType)latestCardAdded.x);
+                        positions.Add(new List<Vector3>());
+                        positions[positions.Count - 1].Add(new Vector3());
+                        return;
+                    }
                     continue;
+                }
 
                 positionsType.Insert(i, (CardManager.CardType)latestCardAdded.x);
                 positions.Insert(i, new List<Vector3>());

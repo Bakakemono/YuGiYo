@@ -33,7 +33,7 @@ public class Card : MonoBehaviour
     public static float cardColumnDecal = 1.555f;
     public static float cardRawDecal = -0.223f;
 
-    [SerializeField] public CardManager.CardType cardType = CardManager.CardType.HUMAN;
+    [SerializeField] public CardManager.CardType cardType = CardManager.CardType.NONE;
 
     [SerializeField] private MeshRenderer faceRenderer;
 
