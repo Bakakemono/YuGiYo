@@ -130,15 +130,17 @@ public class CardDisplyer : MonoBehaviour
         float anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
                                 fanningMaxAngleRadiant / (positionsType.Count - 1) : maxAngleRadiant;
 
+        Debug.Log("Angle per card : " + anglePerCard);
+
         for (int i = 0; i < positions.Count; i++) {
             for (int j = 0; j < positions[i].Count; j++) {
                 positions[i][j] = new Vector3(
                         circlePosition.x +
                             circleRadius *
-                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f /*- anglePerCard / 20.0f * j*/)),
                         circlePosition.y +
                             circleRadius *
-                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f /*- anglePerCard / 20.0f * j*/)),
                         circlePosition.z +
                             j * 0.005f
                                 );
@@ -148,7 +150,7 @@ public class CardDisplyer : MonoBehaviour
         for (int i = 0; i < positionsType.Count; i++) {
             for (int j = 0; j < positions[i].Count; j++) {
                 player.hand.cards[positionsType[i]][j].customTransform.localPosition = positions[i][j];
-                player.hand.cards[positionsType[i]][j].customTransform.localRotation = i == selectedCard ? Quaternion.identity :
+                player.hand.cards[positionsType[i]][j].customTransform.localRotation = 
                     Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) * Mathf.Rad2Deg));
             }
         }
