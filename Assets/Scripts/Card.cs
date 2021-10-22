@@ -30,8 +30,9 @@ public class Card : MonoBehaviour
 
     public static int cardColumnNmb = 6;
     public static int cardRawNmb = 4;
-    public static float cardColumnDecal = 1.555f;
-    public static float cardRawDecal = -0.223f;
+    public static float cardLength = 2.54f;
+    public static float cardWidth = 1.778f;
+    public static int raceNmb = 10;
 
     [SerializeField] public CardManager.CardType cardType = CardManager.CardType.NONE;
 

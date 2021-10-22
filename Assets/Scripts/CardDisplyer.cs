@@ -17,6 +17,7 @@ public class CardDisplyer : MonoBehaviour
     [SerializeField] List<Card> cards = new List<Card>();
     const int TYPE_NOT_AVAILABLE = -1;
 
+    float anglePerCard = 0;
 
     [SerializeField] float maxAngle;
     [SerializeField] float fanningMaxAngle;
@@ -127,31 +128,43 @@ public class CardDisplyer : MonoBehaviour
         //return;
         // NEW START
 
-        float anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
+        anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
                                 fanningMaxAngleRadiant / (positionsType.Count - 1) : maxAngleRadiant;
-
-        Debug.Log("Angle per card : " + anglePerCard);
 
         for (int i = 0; i < positions.Count; i++) {
             for (int j = 0; j < positions[i].Count; j++) {
                 positions[i][j] = new Vector3(
                         circlePosition.x +
                             circleRadius *
-                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f /*- anglePerCard / 20.0f * j*/)),
+                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
                         circlePosition.y +
                             circleRadius *
-                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f /*- anglePerCard / 20.0f * j*/)),
+                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
                         circlePosition.z +
                             j * 0.005f
                                 );
             }
         }
 
+        if(overviewedCardType != CardManager.CardType.NONE) {
+            int index = FindIndex(overviewedCardType);
+
+            positions[index][0] = new Vector3(
+                circlePosition.x +
+                    (circleRadius + overviewDistanceCard) *
+                        (Mathf.Sin((anglePerCard * index) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                circlePosition.y +
+                    (circleRadius + overviewDistanceCard) *
+                        (Mathf.Cos((anglePerCard * index) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                circlePosition.z
+                        );
+        }
+
         for (int i = 0; i < positionsType.Count; i++) {
             for (int j = 0; j < positions[i].Count; j++) {
                 player.hand.cards[positionsType[i]][j].customTransform.localPosition = positions[i][j];
                 player.hand.cards[positionsType[i]][j].customTransform.localRotation = 
-                    Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) * Mathf.Rad2Deg));
+                    Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg));
             }
         }
     }
@@ -251,8 +264,6 @@ public class CardDisplyer : MonoBehaviour
                 Card newCard = drawPileManager.DrawCard();
                 if (newCard.cardType == CardManager.CardType.NONE)
                     return;
-
-                cardNumber++;
                 AddCardToDisplay(newCard, player.hand.AddCard(newCard));
             }
         }
@@ -274,6 +285,7 @@ public class CardDisplyer : MonoBehaviour
                 positionsType.Add((CardManager.CardType)latestCardAdded.x);
                 positions.Add(new List<Vector3>());
                 positions[0].Add(new Vector3());
+                return;
             }
 
             for (int i = 0; i < positionsType.Count; i++) {
@@ -290,7 +302,7 @@ public class CardDisplyer : MonoBehaviour
                 positionsType.Insert(i, (CardManager.CardType)latestCardAdded.x);
                 positions.Insert(i, new List<Vector3>());
                 positions[i].Add(new Vector3());
-                break;
+                return;
             }
         }
     }
@@ -314,28 +326,43 @@ public class CardDisplyer : MonoBehaviour
         cards.Sort((c1, c2) => c1.cardType.CompareTo(c2.cardType));
     }
 
-    //private void OnDrawGizmosSelected() {
-    //    Gizmos.color = Color.red;
+    private void OnDrawGizmos() {
+        //Gizmos.color = Color.red;
 
-    //    maxAngleRadiant = maxAngle / 360.0f * 2 * Mathf.PI;
-    //    circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
+        //maxAngleRadiant = maxAngle / 360.0f * 2 * Mathf.PI;
+        //circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
 
 
-    //    Gizmos.DrawSphere(transform.position + circlePosition, 0.3f);
+        //Gizmos.DrawSphere(transform.position + circlePosition, 0.3f);
 
-    //    Gizmos.DrawLine(
-    //        transform.position + circlePosition,
-    //            transform.position + new Vector3(
-    //                circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
-    //                circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
-    //        );
+        //Gizmos.DrawLine(
+        //    transform.position + circlePosition,
+        //        transform.position + new Vector3(
+        //            circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+        //            circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
+        //    );
 
-    //    Gizmos.DrawLine(
-    //        transform.position + circlePosition,
-    //            transform.position + new Vector3(
-    //                circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
-    //                circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
-    //       );
-    //}
+        //Gizmos.DrawLine(
+        //    transform.position + circlePosition,
+        //        transform.position + new Vector3(
+        //            circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+        //            circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
+        //   );
+
+        //Gizmos.color = Color.red;
+        //Debug.Log("Number of type registered : " + positions.Count);
+        //for (int i = 0; i < positions.Count; i++) {
+        //    Gizmos.DrawCube(transform.TransformPoint(new Vector3(
+        //                circlePosition.x +
+        //                    circleRadius *
+        //                        (Mathf.Sin((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+        //                circlePosition.y +
+        //                    circleRadius *
+        //                        (Mathf.Cos((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f))
+        //                        )),
+        //                        Vector3.one * 0.5f
+        //                        );
+        //}
+    }
 }
