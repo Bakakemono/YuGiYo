@@ -141,7 +141,7 @@ public class CardDisplyer : MonoBehaviour
                             circleRadius *
                                 (Mathf.Cos((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
                         circlePosition.z +
-                            j * 0.005f
+                            j * 0.01f
                                 );
             }
         }

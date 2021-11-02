@@ -63,6 +63,8 @@ public class CardManager : MonoBehaviour
 
     DrawPileManager drawPileManager;
 
+    [SerializeField] List<Player> players;
+
     void Start() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
     }
@@ -84,4 +86,6 @@ public class CardManager : MonoBehaviour
     void InitialHand() {
 
     }
+
+
 }
