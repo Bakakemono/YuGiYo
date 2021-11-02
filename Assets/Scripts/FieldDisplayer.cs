@@ -42,52 +42,6 @@ public class FieldDisplayer : MonoBehaviour
             AddCardToField(drawPileManager.DrawCard());
         }
 
-        //if(addCarts)
-        //    for (int i = 0; i < 10; i++) {
-        //        AddCardToField(drawPileManager.DrawCard());
-        //        Debug.Log("Lap : " + i);
-        //    }
-        //addCarts = false;
-
-        //for (int i = 0; i < cardPositions.Count; i++) {
-        //    for (int j = 0; j < cardPositions[i].Count; j++) {
-        //        cardPositions[i][j] = 
-        //            new Vector3(
-        //                (Card.cardWidth + spaceBetweenColumn) * i  - (typeCurrentlyOnBoard - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
-        //                0.1f,
-        //                cardInitialPos - Card.cardLength * j * decalBetweenCard
-        //                );
-        //    }
-        //}
-
-
-        for (int i = 0; i < cardPositions.Count; i++) {
-            int index = raceTypePossessed.FindIndex(x => x == (CardManager.CardType)(cardTypesPossessed[i] - Card.raceNmb < 0 ? cardTypesPossessed[i] : cardTypesPossessed[i] - 10));
-            for (int j = 0; j < cardPositions[i].Count; j++) {
-                cardPositions[i][j] =
-                    new Vector3(
-                        (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
-                        0.1f,
-                        cardInitialPos - Card.cardLength * j * decalBetweenCard
-                        );
-            }
-        }
-
-        for (CardManager.CardType i = CardManager.CardType.HUMAN_SECRET; i < CardManager.CardType.Length; i++) {
-            if (!cardTypesPossessed.Contains(i))
-                continue;
-
-            int index = raceTypePossessed.FindIndex(x => x == i - Card.raceNmb);
-            cardPositions[cardTypesPossessed.FindIndex(x => x == i)][0] =
-                new Vector3(
-                    (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
-                    0.0f,
-                    cardInitialPos + Card.cardLength * secretCardAdvance
-
-                    );
-        }
-
-
         for (int i = 0; i < cardPositions.Count; i++) {
             for (int j = 0; j < cardPositions[i].Count; j++) {
                 cards[i][j].customTransform.localPosition = cardPositions[i][j];
@@ -166,6 +120,32 @@ public class FieldDisplayer : MonoBehaviour
                 cards[i].Add(card);
                 break;
             }
+        }
+
+        for (int i = 0; i < cardPositions.Count; i++) {
+            int index = raceTypePossessed.FindIndex(x => x == (CardManager.CardType)(cardTypesPossessed[i] - Card.raceNmb < 0 ? cardTypesPossessed[i] : cardTypesPossessed[i] - 10));
+            for (int j = 0; j < cardPositions[i].Count; j++) {
+                cardPositions[i][j] =
+                    new Vector3(
+                        (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
+                        0.1f,
+                        cardInitialPos - Card.cardLength * j * decalBetweenCard
+                        );
+            }
+        }
+
+        for (CardManager.CardType i = CardManager.CardType.HUMAN_SECRET; i < CardManager.CardType.Length; i++) {
+            if (!cardTypesPossessed.Contains(i))
+                continue;
+
+            int index = raceTypePossessed.FindIndex(x => x == i - Card.raceNmb);
+            cardPositions[cardTypesPossessed.FindIndex(x => x == i)][0] =
+                new Vector3(
+                    (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
+                    0.0f,
+                    cardInitialPos + Card.cardLength * secretCardAdvance
+
+                    );
         }
     }
 
