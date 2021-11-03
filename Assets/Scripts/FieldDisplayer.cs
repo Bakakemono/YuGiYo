@@ -92,7 +92,7 @@ public class FieldDisplayer : MonoBehaviour
         }
         else {
             if (cardTypesPossessed.Count == 0) {
-                cardTypesPossessed.Add(card.cardType);s
+                cardTypesPossessed.Add(card.cardType);
                 cardPositions.Add(new List<Vector3>());
                 cardPositions[0].Add(new Vector3());
                 cards.Add(new List<Card>());
