@@ -69,7 +69,7 @@ public class CardManager : MonoBehaviour
         drawPileManager = FindObjectOfType<DrawPileManager>();
     }
 
-    void InstantiateCards() {
+    public void InstantiateCards() {
         List<GameObject> allCards = new List<GameObject>();
 
         for (int i = 0; i < cardsNumber.Count; i++) {

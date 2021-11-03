@@ -33,7 +33,7 @@ public class CardDisplyer : MonoBehaviour
     int selectedCard = INVALID_CARD;
     int drawedCard = INVALID_CARD;
     float overviewDistanceCard = 0.5f;
-    float cardMovingSpeed = 0.2f;
+    float lerpSpeed = 0.2f;
     Vector3 selectedCardSpotPosition = new Vector3(-3.0f, 2.0f);
 
     float acceptableSpaceLerp = 0.01f;
@@ -145,9 +145,9 @@ public class CardDisplyer : MonoBehaviour
                                 );
             }
         }
-
+        int index = INVALID_CARD;
         if(overviewedCardType != CardManager.CardType.NONE) {
-            int index = FindIndex(overviewedCardType);
+            index = FindIndex(overviewedCardType);
 
             positions[index][0] = new Vector3(
                 circlePosition.x +
@@ -160,11 +160,30 @@ public class CardDisplyer : MonoBehaviour
                         );
         }
 
+        
+
+        if (selectedCardType != CardManager.CardType.NONE) {
+            index = FindIndex(selectedCardType);
+
+            positions[index][0] = fanPosition + selectedCardSpotPosition;
+        }
+        else {
+            index = INVALID_CARD;
+        }
+        
         for (int i = 0; i < positionsType.Count; i++) {
+            float angle = -((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg;
             for (int j = 0; j < positions[i].Count; j++) {
-                player.hand.cards[positionsType[i]][j].customTransform.localPosition = positions[i][j];
+                player.hand.cards[positionsType[i]][j].customTransform.localPosition = 
+                    Vector3.Lerp(player.hand.cards[positionsType[i]][j].customTransform.localPosition,
+                    positions[i][j],
+                    lerpSpeed);
                 player.hand.cards[positionsType[i]][j].customTransform.localRotation = 
-                    Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg));
+                    Quaternion.Lerp(
+                        player.hand.cards[positionsType[i]][j].customTransform.localRotation,
+                        (index == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
+                        lerpSpeed
+                        );
             }
         }
     }
@@ -194,7 +213,7 @@ public class CardDisplyer : MonoBehaviour
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
-            if (cardSelected != null && player.hand.IsCardInHand(cardSelected)) {
+            if (cardSelected != null && player.hand.IsCardInHand(cardSelected) && cardSelected.cardType != selectedCardType) {
                 overviewedCardType = cardSelected.cardType;
             }
             else {
@@ -274,13 +293,10 @@ public class CardDisplyer : MonoBehaviour
         latestCardAdded = newCardIndex;
 
         if (positionsType.Contains((CardManager.CardType)latestCardAdded.x)) {
-            Debug.Log("OldType");
             int index = FindIndex((CardManager.CardType)latestCardAdded.x);
-            Debug.Log("Old type finded : " + index);
             positions[index].Add(new Vector3());
         }
         else {
-            Debug.Log("New Type");
             if(positionsType.Count == 0) {
                 positionsType.Add((CardManager.CardType)latestCardAdded.x);
                 positions.Add(new List<Vector3>());
