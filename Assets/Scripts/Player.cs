@@ -4,11 +4,26 @@ using UnityEngine;
 
 [System.Serializable]
 public class Player : MonoBehaviour {
-    public Hand hand;
+    public Hand hand = new Hand();
+    public Field field = new Field();
+
+    [SerializeField] public HandDisplayer handDisplayer;
+    [SerializeField] public FieldDisplayer fieldDisplayer;
+
+    CardManager cardManager;
+
+    public bool canPlay = false;
 
     private void Start() {
-        hand = new Hand(0);
+        cardManager = FindObjectOfType<CardManager>();
+        handDisplayer.SetPlayer(this);
     }
 
+    public void SetPlayerTurn(bool isPlayerTurn) {
+        canPlay = isPlayerTurn;
+    }
 
+    public void PlayCard(Card card) {
+
+    }
 }

@@ -2,20 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
-{
-    [SerializeField]
-    List<Material> cardMaterials = new List<Material>();
-
-    [SerializeField] GameObject card;
-
-    DrawPileManager drawPileManager;
+public class GameManager : MonoBehaviour {
+    [SerializeField] List<Player> players;
+    [SerializeField] List<int> playerTurns = new List<int>();
     CardManager cardManager;
 
     bool startPile = true;
 
     void Start() {
-        drawPileManager = FindObjectOfType<DrawPileManager>();
         cardManager = GetComponent<CardManager>();
     }
 
@@ -25,4 +19,6 @@ public class GameManager : MonoBehaviour
             startPile = false;
         }
     }
+
+
 }

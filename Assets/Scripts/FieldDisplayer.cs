@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FieldDisplayer : MonoBehaviour
 {
-    List<List<Card>> cards;
+    [SerializeField] Player player;
     List<List<Vector3>> cardPositions;
     List<CardManager.CardType> cardTypesPossessed;
     [SerializeField] List<CardManager.CardType> raceTypePossessed;
@@ -12,8 +12,6 @@ public class FieldDisplayer : MonoBehaviour
     float cardInitialPos = 5.0f;
 
     int cardMaxNumberPerColumn = 10;
-
-    int typeCurrentlyOnBoard = 0;
 
     [SerializeField]
     [Range(0.0f, 1.0f)]
@@ -35,18 +33,35 @@ public class FieldDisplayer : MonoBehaviour
 
     bool addCarts = true;
     void Start() {
-        cards = new List<List<Card>>();
         cardPositions = new List<List<Vector3>>();
         cardTypesPossessed = new List<CardManager.CardType>();
         raceTypePossessed = new List<CardManager.CardType>();
     }
 
     private void Update() {
+        CardManager.CardType currentType = CardManager.CardType.HUMAN;
         for (int i = 0; i < cardPositions.Count; i++) {
-            for (int j = 0; j < cardPositions[i].Count; j++) {
-                cards[i][j].customTransform.localPosition = Vector3.Lerp(cards[i][j].customTransform.localPosition, cardPositions[i][j], lerpSpeed);
-                cards[i][j].customTransform.localRotation = Quaternion.Lerp(cards[i][j].customTransform.localRotation, Quaternion.Euler(89.0f, 0.0f, 0.0f), lerpSpeed);
+            if (!player.field.cards.ContainsKey(currentType)) {
+                while (true) {
+                    currentType++;
+                    if (player.field.cards.ContainsKey(currentType))
+                        break;
+                }
             }
+            for (int j = 0; j < cardPositions[i].Count; j++) {
+                player.field.cards[currentType][j].customTransform.localPosition =
+                    Vector3.Lerp(
+                        player.field.cards[currentType][j].customTransform.localPosition,
+                        cardPositions[i][j],
+                        lerpSpeed);
+
+                player.field.cards[currentType][j].customTransform.localRotation =
+                    Quaternion.Lerp(
+                        player.field.cards[currentType][j].customTransform.localRotation,
+                        Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                        lerpSpeed);
+            }
+            currentType++;
         }
     }
 
@@ -80,15 +95,12 @@ public class FieldDisplayer : MonoBehaviour
         if (cardTypesPossessed.Contains(card.cardType)) {
             int index = cardTypesPossessed.FindIndex(x => x == card.cardType);
             cardPositions[index].Add(new Vector3());
-            cards[index].Add(card);
         }
         else {
             if (cardTypesPossessed.Count == 0) {
                 cardTypesPossessed.Add(card.cardType);
                 cardPositions.Add(new List<Vector3>());
                 cardPositions[0].Add(new Vector3());
-                cards.Add(new List<Card>());
-                cards[0].Add(card);
             }
             else {
                 for (int i = 0; i < cardTypesPossessed.Count; i++) {
@@ -97,8 +109,6 @@ public class FieldDisplayer : MonoBehaviour
                             cardTypesPossessed.Add(card.cardType);
                             cardPositions.Add(new List<Vector3>());
                             cardPositions[cardPositions.Count - 1].Add(new Vector3());
-                            cards.Add(new List<Card>());
-                            cards[cards.Count - 1].Add(card);
                             break;
                         }
                         continue;
@@ -107,8 +117,6 @@ public class FieldDisplayer : MonoBehaviour
                     cardTypesPossessed.Insert(i, card.cardType);
                     cardPositions.Insert(i, new List<Vector3>());
                     cardPositions[i].Add(new Vector3());
-                    cards.Insert(i, new List<Card>());
-                    cards[i].Add(card);
                     break;
                 }
             }
@@ -139,38 +147,18 @@ public class FieldDisplayer : MonoBehaviour
                     (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
                     0.0f,
                     cardInitialPos + Card.cardLength * secretCardAdvance
-
                     );
         }
     }
 
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.red;
-
-        Gizmos.DrawWireCube(
-            transform.position,
-            new Vector3(
-                Card.raceNmb * Card.cardWidth + (Card.raceNmb - 1) * spaceBetweenColumn + Card.cardWidth,
-                0.0f,
-                cardInitialPos * 2 + Card.cardLength)
-            );
-
-        for (int i = 0; i < raceTypePossessed.Count; i++) {
-            Gizmos.color = new Color(
-                1 - (float)raceTypePossessed[i] / Card.raceNmb,
-                0,
-                (float)raceTypePossessed[i] / Card.raceNmb,
-                1
-                );
-
-            Gizmos.DrawCube(
-                    new Vector3(
-                        (Card.cardWidth + spaceBetweenColumn) * i - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
-                        0.1f,
-                        cardInitialPos + Card.cardLength * secretCardAdvance
-                        ),
-                    Vector3.one * 0.5f
-                );
+    void RemoveCardFormDisplay(Card card) {
+        int index = cardTypesPossessed.FindIndex(x => x == card.cardType);
+        cardPositions[index].RemoveAt(0);
+        if (cardPositions[index].Count == 0) {
+            cardPositions.RemoveAt(index);
+            cardTypesPossessed.RemoveAt(index);
+            if (!cardTypesPossessed.Contains(card.cardType + Card.raceNmb) && !cardTypesPossessed.Contains(card.cardType - Card.raceNmb))
+                raceTypePossessed.Remove(card.cardType - Card.raceNmb < 0 ? card.cardType : card.cardType - Card.raceNmb);
         }
     }
 }

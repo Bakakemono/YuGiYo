@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
-    public enum CardType
-    {
+    public enum CardType {
         HUMAN,
         WEREWOLF,
         OGRE,
@@ -56,6 +55,11 @@ public class CardManager : MonoBehaviour
         12
     };
 
+    public enum CardEndLocaion
+    {
+
+    }
+
     [SerializeField] GameObject card;
 
     [SerializeField]
@@ -65,8 +69,19 @@ public class CardManager : MonoBehaviour
 
     [SerializeField] List<Player> players;
 
+    int startingCardNumber = 6;
+
+    bool startDistributingFirstHand = false;
+
     void Start() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
+    }
+
+    private void Update() {
+        if(drawPileManager.drawPileInstantiated && !startDistributingFirstHand) {
+            startDistributingFirstHand = true;
+            StartCoroutine(DrawInitialHand());
+        }
     }
 
     public void InstantiateCards() {
@@ -75,16 +90,30 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < cardsNumber.Count; i++) {
             for (int j = 0; j < cardsNumber[i]; j++) {
                 allCards.Add(Instantiate(card, Vector3.one * 1000.0f, Quaternion.identity));
-                allCards[allCards.Count - 1].GetComponent<Card>().cardType = (CardType)i;
-                allCards[allCards.Count - 1].GetComponent<Card>().UpdateCard(cardMaterials[i]);
+                Card newCard = allCards[allCards.Count - 1].GetComponent<Card>();
+                newCard.cardType = (CardType)i;
+                newCard.ID = j;
+                newCard.UpdateCard(cardMaterials[i]);
             }
         }
 
         drawPileManager.InitializeDrawPile(allCards);
     }
 
-    void InitialHand() {
+    void DrawCardToPlayer(Player player) {
+        Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
+        player.handDisplayer.AddCardToDisplay(player.hand.cards[(CardType)index.x][index.y]);
+    }
 
+    IEnumerator DrawInitialHand() {
+        yield return new WaitForSeconds(0.5f);
+
+        for (int i = 0; i < startingCardNumber; i++) {
+            foreach (Player player in players) {
+                DrawCardToPlayer(player);
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
     }
 
 

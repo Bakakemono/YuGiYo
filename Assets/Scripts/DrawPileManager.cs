@@ -14,7 +14,7 @@ public class DrawPileManager : MonoBehaviour
 
     float lerpSpeed = 0.2f;
     bool organising = false;
-    bool drawPileInstantiated = false;
+    public bool drawPileInstantiated = false;
 
     float cardSpeed = 2.0f;
     float timeBetweenCard = 0.02f;
