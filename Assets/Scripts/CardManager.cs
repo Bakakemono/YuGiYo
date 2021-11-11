@@ -57,7 +57,8 @@ public class CardManager : MonoBehaviour
 
     public enum CardEndLocaion
     {
-
+        FIELD,
+        DISCARD_PILE
     }
 
     [SerializeField] GameObject card;
@@ -100,7 +101,7 @@ public class CardManager : MonoBehaviour
         drawPileManager.InitializeDrawPile(allCards);
     }
 
-    void DrawCardToPlayer(Player player) {
+    public void DrawCardToPlayer(Player player) {
         Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
         player.handDisplayer.AddCardToDisplay(player.hand.cards[(CardType)index.x][index.y]);
     }
@@ -116,5 +117,13 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public CardEndLocaion WhereCardGoing(CardType cardType) {
+        switch (cardType) {
+            case CardType.BEER:
+                return CardEndLocaion.DISCARD_PILE;
 
+            default:
+                return CardEndLocaion.FIELD;
+        }
+    }
 }

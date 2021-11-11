@@ -14,6 +14,9 @@ public class Player : MonoBehaviour {
 
     public bool canPlay = false;
 
+    public bool cardIsPlayed = false;
+    public Card cardPlayed;
+
     private void Start() {
         cardManager = FindObjectOfType<CardManager>();
         handDisplayer.SetPlayer(this);

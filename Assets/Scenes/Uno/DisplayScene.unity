@@ -550,7 +550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cards: []
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -558,7 +557,6 @@ MonoBehaviour:
   circlePosition: {x: 0, y: -10, z: 0}
   maxAngleRadiant: 0
   fanningMaxAngleRadiant: 0
-  isPlayerTurn: 0
 --- !u!4 &79069848
 Transform:
   m_ObjectHideFlags: 0
@@ -1062,8 +1060,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1219003741}
+  - {fileID: 565491596}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &217956435
 MonoBehaviour:
@@ -1078,8 +1077,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handDisplayer: {fileID: 1219003740}
-  fieldDisplayer: {fileID: 0}
-  cards: []
+  fieldDisplayer: {fileID: 565491597}
+  canPlay: 0
+  cardIsPlayed: 0
+  cardPlayed: {fileID: 0}
+--- !u!1 &234476348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 234476349}
+  - component: {fileID: 234476350}
+  m_Layer: 0
+  m_Name: People_Four
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &234476349
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234476348}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.18, y: 0.19, z: 17.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 467796208}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &234476350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234476348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  raceTypePossessed: 
+  spaceBetweenColumn: 0.1
+  decalBetweenCard: 0.2
+  secretCardAdvance: 0.5
+  CardDisplayArea: {x: 1, y: 1}
 --- !u!1 &247779790
 GameObject:
   m_ObjectHideFlags: 0
@@ -1109,8 +1159,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 247817717}
+  - {fileID: 803749625}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &247779792
 MonoBehaviour:
@@ -1125,8 +1176,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handDisplayer: {fileID: 247817716}
-  fieldDisplayer: {fileID: 0}
-  cards: []
+  fieldDisplayer: {fileID: 803749624}
+  canPlay: 0
+  cardIsPlayed: 0
+  cardPlayed: {fileID: 0}
 --- !u!1 &247817715
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,7 +1209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cards: []
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -1164,7 +1216,6 @@ MonoBehaviour:
   circlePosition: {x: 0, y: -10, z: 0}
   maxAngleRadiant: 0
   fanningMaxAngleRadiant: 0
-  isPlayerTurn: 1
 --- !u!4 &247817717
 Transform:
   m_ObjectHideFlags: 0
@@ -1951,6 +2002,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d43111606679147b3affb429e2db8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnStep: 0
+  players: []
+  playerTurns: 
 --- !u!4 &394499567
 Transform:
   m_ObjectHideFlags: 0
@@ -2130,8 +2184,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1857098930}
+  - {fileID: 234476349}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &467796209
 MonoBehaviour:
@@ -2146,8 +2201,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handDisplayer: {fileID: 1857098929}
-  fieldDisplayer: {fileID: 0}
-  cards: []
+  fieldDisplayer: {fileID: 234476350}
+  canPlay: 0
+  cardIsPlayed: 0
+  cardPlayed: {fileID: 0}
 --- !u!1001 &468499420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2513,6 +2570,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
   m_PrefabInstance: {fileID: 459384520}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &565491595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 565491596}
+  - component: {fileID: 565491597}
+  m_Layer: 0
+  m_Name: People_Two
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &565491596
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565491595}
+  m_LocalRotation: {x: 0, y: 0.86602545, z: 0, w: 0.49999994}
+  m_LocalPosition: {x: -7.01, y: 0.19, z: 12.93}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 217956434}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
+--- !u!114 &565491597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565491595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  raceTypePossessed: 
+  spaceBetweenColumn: 0.1
+  decalBetweenCard: 0.2
+  secretCardAdvance: 0.5
+  CardDisplayArea: {x: 1, y: 1}
 --- !u!4 &577993406 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
@@ -3934,7 +4040,7 @@ GameObject:
   - component: {fileID: 803749625}
   - component: {fileID: 803749624}
   m_Layer: 0
-  m_Name: People
+  m_Name: People_One
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3969,8 +4075,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.19, z: 0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 247779791}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &824050895
 PrefabInstance:
@@ -5445,6 +5551,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a117ca6868aefdf4db01c1d051b99d05, type: 3}
+--- !u!1 &1035609968
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1035609969}
+  - component: {fileID: 1035609970}
+  m_Layer: 0
+  m_Name: People_Three
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1035609969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035609968}
+  m_LocalRotation: {x: 0, y: -0.86602545, z: 0, w: 0.49999994}
+  m_LocalPosition: {x: 7.15, y: 0.19, z: 12.64}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1179894520}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: -120, z: 0}
+--- !u!114 &1035609970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035609968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  raceTypePossessed: 
+  spaceBetweenColumn: 0.1
+  decalBetweenCard: 0.2
+  secretCardAdvance: 0.5
+  CardDisplayArea: {x: 1, y: 1}
 --- !u!1001 &1035805744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6137,7 +6292,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1136600115
 MonoBehaviour:
@@ -6247,7 +6402,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &1165622195
 MonoBehaviour:
@@ -6365,8 +6520,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 79069848}
+  - {fileID: 1035609969}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1179894521
 MonoBehaviour:
@@ -6381,8 +6537,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handDisplayer: {fileID: 79069847}
-  fieldDisplayer: {fileID: 0}
-  cards: []
+  fieldDisplayer: {fileID: 1035609970}
+  canPlay: 0
+  cardIsPlayed: 0
+  cardPlayed: {fileID: 0}
 --- !u!1 &1211165350 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a117ca6868aefdf4db01c1d051b99d05, type: 3}
@@ -6441,7 +6599,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cards: []
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -6449,7 +6606,6 @@ MonoBehaviour:
   circlePosition: {x: 0, y: -10, z: 0}
   maxAngleRadiant: 0
   fanningMaxAngleRadiant: 0
-  isPlayerTurn: 0
 --- !u!4 &1219003741
 Transform:
   m_ObjectHideFlags: 0
@@ -8517,7 +8673,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1770678915
 Transform:
   m_ObjectHideFlags: 0
@@ -8590,7 +8746,7 @@ Transform:
   - {fileID: 1963438281}
   - {fileID: 2030694053}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 180}
 --- !u!4 &1776738706 stripped
 Transform:
@@ -9153,7 +9309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cards: []
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -9161,7 +9316,6 @@ MonoBehaviour:
   circlePosition: {x: 0, y: -10, z: 0}
   maxAngleRadiant: 0
   fanningMaxAngleRadiant: 0
-  isPlayerTurn: 0
 --- !u!4 &1857098930
 Transform:
   m_ObjectHideFlags: 0
@@ -9772,7 +9926,7 @@ Transform:
   - {fileID: 652160618}
   - {fileID: 902183570}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &1960871348 stripped
 Transform:
