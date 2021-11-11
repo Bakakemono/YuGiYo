@@ -16,6 +16,16 @@ public class HandPlacement : MonoBehaviour
         if (!update)
             return;
 
+        UpdateHand();
+    }
+
+    private void OnGUI() {
+        if(GUI.Button(new Rect(10, 10, 150, 100), "Update")) {
+            UpdateHand();
+        }
+    }
+
+    void UpdateHand() {
         mainPlayerHand.position = handPos.position;
         mainPlayerHand.rotation = handPos.rotation;
     }
