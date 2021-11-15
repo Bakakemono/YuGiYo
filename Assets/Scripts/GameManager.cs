@@ -7,17 +7,15 @@ public class GameManager : MonoBehaviour {
     {
         PAUSE,
         START_OF_TURN,
-        ONE_MORE_CARD,
-        WAITING_FOR_CARD,
-        CARD_PLAY,
-        EFFECT,
-        END_OF_TURN
+        PLAYER_TURN,
+        NEXT_TURN
     }
 
     public TurnStep turnStep = TurnStep.PAUSE;
 
+    public int playerTurn = 0;
+
     [SerializeField] List<Player> players;
-    [SerializeField] List<int> playerTurns = new List<int>();
     CardManager cardManager;
 
     bool startPile = true;
@@ -39,40 +37,24 @@ public class GameManager : MonoBehaviour {
             case TurnStep.PAUSE:
                 break;
             case TurnStep.START_OF_TURN:
-                players[playerTurns[0]].canPlay = true;
-                cardManager.DrawCardToPlayer(players[playerTurns[0]]);
-                turnStep = TurnStep.WAITING_FOR_CARD;
+                players[playerTurn].canPlay = true;
+                cardManager.DrawCardToPlayer(players[playerTurn]);
+                turnStep = TurnStep.PLAYER_TURN;
                 break;
 
-            case TurnStep.ONE_MORE_CARD:
-                turnStep = TurnStep.WAITING_FOR_CARD;
-                players[playerTurns[0]].cardPlayed = null;
+            case TurnStep.PLAYER_TURN:
                 break;
-
-            case TurnStep.WAITING_FOR_CARD:
-                if (players[playerTurns[0]].cardIsPlayed) {
-                    players[playerTurns[0]].canPlay = false;
-                    turnStep = TurnStep.CARD_PLAY;
-                }
-                break;
-
-            case TurnStep.CARD_PLAY:
-                if (cardManager.WhereCardGoing(players[playerTurns[0]].cardPlayed.cardType) == CardManager.CardEndLocaion.DISCARD_PILE) {
-                    turnStep = TurnStep.ONE_MORE_CARD;
-                }
-                break;
-
-            case TurnStep.EFFECT:
-                turnStep = TurnStep.END_OF_TURN;
-                break;
-
-            case TurnStep.END_OF_TURN:
-                players[playerTurns[0]].cardPlayed = null;
-                playerTurns.Add(playerTurns[0]);
-                playerTurns.RemoveAt(0);
+            case TurnStep.NEXT_TURN:
+                players[playerTurn].canPlay = false;
+                playerTurn++;
+                playerTurn = playerTurn % players.Count;
                 turnStep = TurnStep.START_OF_TURN;
                 break;
         }
+    }
+
+    public void NextPlayer() {
+        turnStep = TurnStep.NEXT_TURN;
     }
 
 }

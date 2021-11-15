@@ -27,6 +27,6 @@ public class Player : MonoBehaviour {
     }
 
     public void PlayCard(Card card) {
-
+        cardManager.PlayCard(this, card);
     }
 }

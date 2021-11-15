@@ -167,12 +167,12 @@ public class HandDisplayer : MonoBehaviour
             }
         }
 
-        if (!player.canPlay)
-            return;
-
         DrawCard();
 
         SelectACard();
+
+        if (!player.canPlay)
+            return;
 
         if (selectedCardType == CardManager.CardType.NONE &&
             index != INVALID_CARD &&
@@ -259,7 +259,7 @@ public class HandDisplayer : MonoBehaviour
                 player.hand.RemoveCard(cardSelected);
                 RemoveCardFromDisplay(cardSelected);
                 selectedCardType = CardManager.CardType.NONE;
-                discardPileManager.DiscardCard(cardSelected);
+                player.PlayCard(cardSelected);
             }
         }
     }

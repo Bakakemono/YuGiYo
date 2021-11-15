@@ -61,12 +61,23 @@ public class CardManager : MonoBehaviour
         DISCARD_PILE
     }
 
+    public enum ProgressCardPlayed
+    {
+        WAITING_FOR_CARD,
+        CARD_PLAYED,
+        RESET
+    }
+
+    ProgressCardPlayed progressCardPlayed = ProgressCardPlayed.WAITING_FOR_CARD;
+
     [SerializeField] GameObject card;
 
     [SerializeField]
     List<Material> cardMaterials = new List<Material>();
 
+    GameManager gameManager;
     DrawPileManager drawPileManager;
+    DiscardPileManager discardPileManager;
 
     [SerializeField] List<Player> players;
 
@@ -74,8 +85,18 @@ public class CardManager : MonoBehaviour
 
     bool startDistributingFirstHand = false;
 
+    [SerializeField] Transform cardShowcasePosition;
+
+    Card cardPlayed = null;
+    Player player = null;
+
+    float lerpSpeed = 0.2f;
+    float distanceTolerance = 0.1f;
+
     void Start() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
+        discardPileManager = FindObjectOfType<DiscardPileManager>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     private void Update() {
@@ -117,13 +138,49 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public CardEndLocaion WhereCardGoing(CardType cardType) {
+    public CardEndLocaion CardLocaionGoal(CardType cardType) {
         switch (cardType) {
             case CardType.BEER:
                 return CardEndLocaion.DISCARD_PILE;
 
             default:
                 return CardEndLocaion.FIELD;
+        }
+    }
+
+    public void PlayCard(Player pl, Card cd) {
+        player = pl;
+        cardPlayed = cd;
+    }
+
+    public void CardPlayedProgress() {
+        switch (progressCardPlayed) {
+            case ProgressCardPlayed.WAITING_FOR_CARD:
+                if(player != null && card != null) {
+                    progressCardPlayed = ProgressCardPlayed.CARD_PLAYED;
+                }
+                break;
+            case ProgressCardPlayed.CARD_PLAYED:
+                cardPlayed.customTransform.localPosition = Vector3.Lerp(cardPlayed.customTransform.localPosition, Vector3.zero, lerpSpeed);
+                if(Vector3.SqrMagnitude(cardPlayed.customTransform.localPosition) < distanceTolerance * distanceTolerance) {
+                    if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE) {
+                        player.hand.RemoveCard(cardPlayed);
+                        discardPileManager.DiscardCard(cardPlayed);
+                    }
+                    else {
+                        player.hand.RemoveCard(cardPlayed);
+                        player.field.AddCard(cardPlayed);
+                        player.fieldDisplayer.AddCardToField(cardPlayed);
+                        gameManager.NextPlayer();
+                    }
+                    progressCardPlayed = ProgressCardPlayed.RESET;
+                }
+                break;
+            case ProgressCardPlayed.RESET:
+                player = null;
+                cardPlayed = null;
+                progressCardPlayed = ProgressCardPlayed.WAITING_FOR_CARD;
+                break;
         }
     }
 }
