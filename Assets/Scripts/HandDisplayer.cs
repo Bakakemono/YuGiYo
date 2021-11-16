@@ -12,9 +12,11 @@ public class HandDisplayer : MonoBehaviour
     List<List<Vector3>> positions;
     List<CardManager.CardType> positionsType;
     Vector2Int latestCardAdded = new Vector2Int(-1, -1);
-    CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
-    CardManager.CardType selectedCardType = CardManager.CardType.NONE;
+    [SerializeField] CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
+    [SerializeField] CardManager.CardType selectedCardType = CardManager.CardType.NONE;
     const int TYPE_NOT_AVAILABLE = -1;
+
+    int selectedCardIndex;
 
     float anglePerCard = 0;
 
@@ -57,49 +59,27 @@ public class HandDisplayer : MonoBehaviour
         discardPileManager = FindObjectOfType<DiscardPileManager>();
     }
 
-    private void FixedUpdate() {
+    private void Update() {
+        DrawCard();
 
+        SelectACard();
+
+        if (!player.canPlay)
+            return;
+
+        if (selectedCardType != CardManager.CardType.NONE &&
+            selectedCardIndex != INVALID_CARD && 
+            (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
+
+            PlayCard();
+        }
+    }
+
+    private void FixedUpdate() {
         circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
         maxAngleRadiant = maxAngle * Mathf.Deg2Rad;
         fanningMaxAngleRadiant = fanningMaxAngle * Mathf.Deg2Rad;
-
-        //cardNumber = cards.Count;
-
-        //float anglePerCard = fanningMaxAngleRadiant / (cardNumber - 1) < maxAngleRadiant ?
-        //                    fanningMaxAngleRadiant / (cardNumber - 1) : maxAngleRadiant;
-
-        ////// OLD START
-        //for (int i = 0; i < cardNumber; i++) {
-
-        //    cardPositions[i] = new Vector3(
-        //        circlePosition.x +
-        //            (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
-        //                Mathf.Sin((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f),
-        //        circlePosition.y +
-        //            (i == currentOverviewedCard ? circleRadius + overviewDistanceCard : circleRadius) *
-        //                Mathf.Cos((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f));
-
-        //}
-
-        //if (selectedCard != INVALID_CARD)
-        //    cardPositions[selectedCard] = fanPosition + selectedCardSpotPosition;
-
-
-        //for (int i = 0; i < cardNumber; i++) {
-        //    cards[i].customTransform.localPosition = Vector3.Lerp(cards[i].customTransform.localPosition, cardPositions[i], cardMovingSpeed);
-        //    cards[i].customTransform.localRotation = i == selectedCard ? Quaternion.identity :
-        //        Quaternion.Euler(new Vector3(0.0f, -10.0f, -((anglePerCard * i) - anglePerCard * (cardNumber - 1.0f) / 2.0f) * Mathf.Rad2Deg));
-        //}
-
-        //if (selectedCard != INVALID_CARD && (cards[selectedCard].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
-        //    PlayCard();
-        //}
-
-        ////// OLD END
-        //return;
-        // NEW START
-
 
         // Calculate the angle depending on how much card there are left and the space allocated.
         anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
@@ -122,19 +102,19 @@ public class HandDisplayer : MonoBehaviour
         }
 
         // Create an index variable for the selected card
-        int index = INVALID_CARD;
+        int overviewedCardIndex = INVALID_CARD;
 
         // If there is an overviewed card, Modifie the pos of the said card to expose it
         if (overviewedCardType != CardManager.CardType.NONE) {
-            index = FindIndex(overviewedCardType);
+            overviewedCardIndex = FindIndex(overviewedCardType);
 
-            positions[index][0] = new Vector3(
+            positions[overviewedCardIndex][0] = new Vector3(
                 circlePosition.x +
                     (circleRadius + overviewElevationHeight) *
-                        (Mathf.Sin((anglePerCard * index) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                        (Mathf.Sin((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
                 circlePosition.y +
                     (circleRadius + overviewElevationHeight) *
-                        (Mathf.Cos((anglePerCard * index) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                        (Mathf.Cos((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
                 circlePosition.z +
                     -overviewClosingDistance
                         );
@@ -142,12 +122,12 @@ public class HandDisplayer : MonoBehaviour
 
         // Set the selected on the side to be viewed more in detail
         if (selectedCardType != CardManager.CardType.NONE) {
-            index = FindIndex(selectedCardType);
+            selectedCardIndex = FindIndex(selectedCardType);
 
-            positions[index][0] = fanPosition + selectedCardSpotPosition;
+            positions[selectedCardIndex][0] = fanPosition + selectedCardSpotPosition;
         }
         else {
-            index = INVALID_CARD;
+            selectedCardIndex = INVALID_CARD;
         }
 
         //Apply the previously calcuclate position to each card
@@ -161,52 +141,19 @@ public class HandDisplayer : MonoBehaviour
                 player.hand.cards[positionsType[i]][j].customTransform.localRotation =
                     Quaternion.Lerp(
                         player.hand.cards[positionsType[i]][j].customTransform.localRotation,
-                        (index == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
+                        (selectedCardIndex == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
                         lerpSpeed
                         );
             }
         }
-
-        DrawCard();
-
-        SelectACard();
-
-        if (!player.canPlay)
-            return;
-
-        if (selectedCardType == CardManager.CardType.NONE &&
-            index != INVALID_CARD &&
-            (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
-            PlayCard();
-        }
     }
 
     void SelectACard() {
-        //RaycastHit hit;
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //if (Physics.Raycast(ray, out hit)) {
-        //    Card cardSelected = hit.transform.GetComponent<Card>();
-
-        //    currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
-        //}
-        //else {
-        //    currentOverviewedCard = INVALID_CARD;
-        //}
-
-        //if (currentOverviewedCard != INVALID_CARD && currentOverviewedCard != selectedCard &&
-        //    Input.GetMouseButtonUp(0)) {
-        //    selectedCard = currentOverviewedCard;
-        //}
-        //else if (currentOverviewedCard == INVALID_CARD && Input.GetMouseButtonUp(0)) {
-        //    selectedCard = INVALID_CARD;
-        //}
-        //return;
-
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
-            if (cardSelected != null && player.hand.IsCardInHand(cardSelected) && cardSelected.cardType != selectedCardType) {
+            if (cardSelected != null && player.hand.IsCardInHand(cardSelected)) {
                 overviewedCardType = cardSelected.cardType;
             }
             else {
@@ -227,25 +174,6 @@ public class HandDisplayer : MonoBehaviour
     }
 
     void PlayCard() {
-        //RaycastHit hit;
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        //if (Physics.Raycast(ray, out hit)) {
-        //    Card cardSelected = hit.transform.GetComponent<Card>();
-
-        //    currentOverviewedCard = cards.FindIndex(x => x == cardSelected);
-
-        //    if(currentOverviewedCard == selectedCard && Input.GetMouseButtonUp(0)) {
-        //        cardPositions.RemoveAt(selectedCard);
-        //        cards.RemoveAt(currentOverviewedCard);
-        //        selectedCard = INVALID_CARD;
-        //        discardPileManager.DiscardCard(cardSelected);
-        //        SortCards();
-
-        //    }
-        //}
-        //return;
-
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -256,10 +184,14 @@ public class HandDisplayer : MonoBehaviour
             }
 
             if (cardSelected == player.hand.cards[selectedCardType][0] && Input.GetMouseButtonUp(0)) {
+                Debug.Log("Remove and play a card");
                 player.hand.RemoveCard(cardSelected);
                 RemoveCardFromDisplay(cardSelected);
                 selectedCardType = CardManager.CardType.NONE;
                 player.PlayCard(cardSelected);
+            }
+            else {
+                Debug.Log("Fail to play the card");
             }
         }
     }
@@ -355,20 +287,5 @@ public class HandDisplayer : MonoBehaviour
                     circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
                     circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
            );
-
-        //Gizmos.color = Color.red;
-        //Debug.Log("Number of type registered : " + positions.Count);
-        //for (int i = 0; i < positions.Count; i++) {
-        //    Gizmos.DrawCube(transform.TransformPoint(new Vector3(
-        //                circlePosition.x +
-        //                    circleRadius *
-        //                        (Mathf.Sin((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
-        //                circlePosition.y +
-        //                    circleRadius *
-        //                        (Mathf.Cos((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f))
-        //                        )),
-        //                        Vector3.one * 0.5f
-        //                        );
-        //}
     }
 }

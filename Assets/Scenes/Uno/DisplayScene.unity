@@ -550,6 +550,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overviewedCardType: 22
+  selectedCardType: 22
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -1177,7 +1179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handDisplayer: {fileID: 247817716}
   fieldDisplayer: {fileID: 803749624}
-  canPlay: 0
+  canPlay: 1
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
 --- !u!1 &247817715
@@ -1209,6 +1211,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overviewedCardType: 22
+  selectedCardType: 22
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -2003,8 +2007,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnStep: 0
+  playerTurn: 0
   players: []
-  playerTurns: 
 --- !u!4 &394499567
 Transform:
   m_ObjectHideFlags: 0
@@ -2060,6 +2064,7 @@ MonoBehaviour:
   - {fileID: 217956435}
   - {fileID: 1179894521}
   - {fileID: 467796209}
+  cardShowcasePosition: {fileID: 0}
 --- !u!4 &431090484 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
@@ -6599,6 +6604,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overviewedCardType: 22
+  selectedCardType: 22
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
@@ -9309,6 +9316,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overviewedCardType: 22
+  selectedCardType: 22
   maxAngle: 10
   fanningMaxAngle: 25
   fanPosition: {x: 0, y: 0, z: 0}
