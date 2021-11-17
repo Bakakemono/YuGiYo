@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
         NEXT_TURN
     }
 
-    public TurnStep turnStep = TurnStep.PAUSE;
+    public TurnStep turnStep = TurnStep.START_OF_TURN;
 
     public int playerTurn = 0;
 
@@ -30,21 +30,26 @@ public class GameManager : MonoBehaviour {
             cardManager.InstantiateCards();
             startPile = false;
         }
+        if(cardManager.initialHandGiven)
+            TurnProgress();
     }
 
     void TurnProgress() {
         switch (turnStep) {
             case TurnStep.PAUSE:
                 break;
+
             case TurnStep.START_OF_TURN:
-                players[playerTurn].canPlay = true;
                 cardManager.DrawCardToPlayer(players[playerTurn]);
                 turnStep = TurnStep.PLAYER_TURN;
+                players[playerTurn].canPlay = true;
                 break;
 
             case TurnStep.PLAYER_TURN:
                 break;
+
             case TurnStep.NEXT_TURN:
+                Debug.Log("Change of player");
                 players[playerTurn].canPlay = false;
                 playerTurn++;
                 playerTurn = playerTurn % players.Count;

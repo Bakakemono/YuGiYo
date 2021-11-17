@@ -30,9 +30,6 @@ public class HandDisplayer : MonoBehaviour
     List<Vector3> cardPositions = new List<Vector3>();
 
     const int INVALID_CARD = -1;
-    int currentOverviewedCard = INVALID_CARD;
-    int selectedCard = INVALID_CARD;
-    int drawedCard = INVALID_CARD;
     float overviewElevationHeight = 0.5f;
     float overviewClosingDistance = 0.03f;
     float lerpSpeed = 0.2f;
@@ -43,10 +40,6 @@ public class HandDisplayer : MonoBehaviour
     public float maxAngleRadiant;
     public float fanningMaxAngleRadiant;
 
-    DiscardPileManager discardPileManager;
-
-    bool caseA = true;
-
     void Start() {
         positions = new List<List<Vector3>>();
         positionsType = new List<CardManager.CardType>();
@@ -55,13 +48,9 @@ public class HandDisplayer : MonoBehaviour
 
         maxAngleRadiant = maxAngle * Mathf.Deg2Rad;
         fanningMaxAngleRadiant = fanningMaxAngle * Mathf.Deg2Rad;
-
-        discardPileManager = FindObjectOfType<DiscardPileManager>();
     }
 
     private void Update() {
-        DrawCard();
-
         SelectACard();
 
         if (!player.canPlay)
@@ -184,32 +173,10 @@ public class HandDisplayer : MonoBehaviour
             }
 
             if (cardSelected == player.hand.cards[selectedCardType][0] && Input.GetMouseButtonUp(0)) {
-                Debug.Log("Remove and play a card");
                 player.hand.RemoveCard(cardSelected);
                 RemoveCardFromDisplay(cardSelected);
                 selectedCardType = CardManager.CardType.NONE;
                 player.PlayCard(cardSelected);
-            }
-            else {
-                Debug.Log("Fail to play the card");
-            }
-        }
-    }
-
-    void DrawCard() {
-        if (caseA ? Input.GetKeyDown(KeyCode.D) : Input.GetKeyDown(KeyCode.F)) {
-            if (caseA)
-                caseA = false;
-            else
-                caseA = true;
-
-            DrawPileManager drawPileManager = FindObjectOfType<DrawPileManager>();
-            if (drawPileManager) {
-                Card newCard = drawPileManager.DrawCard();
-                if (newCard.cardType == CardManager.CardType.NONE)
-                    return;
-                player.hand.AddCard(newCard);
-                AddCardToDisplay(newCard);
             }
         }
     }

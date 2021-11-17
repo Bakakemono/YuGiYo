@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 79069848}
   - component: {fileID: 79069847}
   m_Layer: 0
-  m_Name: CardHolder_Three
+  m_Name: CardHolder_Two
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1044,7 +1044,7 @@ GameObject:
   - component: {fileID: 217956434}
   - component: {fileID: 217956435}
   m_Layer: 0
-  m_Name: Player_Two
+  m_Name: Player_Three
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1064,7 +1064,7 @@ Transform:
   - {fileID: 1219003741}
   - {fileID: 565491596}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &217956435
 MonoBehaviour:
@@ -1107,13 +1107,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234476348}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.18, y: 0.19, z: 17.06}
+  m_LocalRotation: {x: 0, y: -0.86602545, z: 0, w: 0.49999994}
+  m_LocalPosition: {x: 7.15, y: 0.19, z: 12.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 467796208}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -120, z: 0}
 --- !u!114 &234476350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,7 +1126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 467796209}
   raceTypePossessed: 
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
@@ -1163,7 +1163,7 @@ Transform:
   - {fileID: 247817717}
   - {fileID: 803749625}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &247779792
 MonoBehaviour:
@@ -1179,7 +1179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handDisplayer: {fileID: 247817716}
   fieldDisplayer: {fileID: 803749624}
-  canPlay: 1
+  canPlay: 0
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
 --- !u!1 &247817715
@@ -2006,9 +2006,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d43111606679147b3affb429e2db8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnStep: 0
+  turnStep: 1
   playerTurn: 0
-  players: []
+  players:
+  - {fileID: 247779792}
+  - {fileID: 1179894521}
+  - {fileID: 217956435}
+  - {fileID: 467796209}
 --- !u!4 &394499567
 Transform:
   m_ObjectHideFlags: 0
@@ -2017,7 +2021,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 394499565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1335822, y: 3.2456682, z: -3.336745}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2061,10 +2065,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3846c0a71f64cda4db4b392f4f471485, type: 2}
   players:
   - {fileID: 247779792}
-  - {fileID: 217956435}
   - {fileID: 1179894521}
+  - {fileID: 217956435}
   - {fileID: 467796209}
-  cardShowcasePosition: {fileID: 0}
+  startingCardNumber: 6
+  initialHandGiven: 0
+  cardShowcasePosition: {fileID: 832060056}
 --- !u!4 &431090484 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
@@ -2191,7 +2197,7 @@ Transform:
   - {fileID: 1857098930}
   - {fileID: 234476349}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &467796209
 MonoBehaviour:
@@ -2586,7 +2592,7 @@ GameObject:
   - component: {fileID: 565491596}
   - component: {fileID: 565491597}
   m_Layer: 0
-  m_Name: People_Two
+  m_Name: People_Three
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2599,13 +2605,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 565491595}
-  m_LocalRotation: {x: 0, y: 0.86602545, z: 0, w: 0.49999994}
-  m_LocalPosition: {x: -7.01, y: 0.19, z: 12.93}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0.18, y: 0.19, z: 17.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 217956434}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &565491597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2618,7 +2624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 217956435}
   raceTypePossessed: 
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
@@ -2885,7 +2891,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c9e0f9de955dd8c42914d66894d2aa41, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c9e0f9de955dd8c42914d66894d2aa41, type: 3}
       propertyPath: m_LocalScale.x
@@ -3189,7 +3195,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &658212992
 MonoBehaviour:
@@ -4063,7 +4069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 247779792}
   raceTypePossessed: 
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
@@ -4263,6 +4269,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a117ca6868aefdf4db01c1d051b99d05, type: 3}
+--- !u!1 &832060055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 832060056}
+  m_Layer: 0
+  m_Name: ShowCasePosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &832060056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832060055}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.16, z: 8.88}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &840882668
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5567,7 +5603,7 @@ GameObject:
   - component: {fileID: 1035609969}
   - component: {fileID: 1035609970}
   m_Layer: 0
-  m_Name: People_Three
+  m_Name: People_Two
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5580,13 +5616,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1035609968}
-  m_LocalRotation: {x: 0, y: -0.86602545, z: 0, w: 0.49999994}
-  m_LocalPosition: {x: 7.15, y: 0.19, z: 12.64}
+  m_LocalRotation: {x: 0, y: 0.86602545, z: 0, w: 0.49999994}
+  m_LocalPosition: {x: -7.15, y: 0.19, z: 12.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1179894520}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: -120, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
 --- !u!114 &1035609970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5599,7 +5635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcc02eface7ad6943b934a5273f3b02a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 1179894521}
   raceTypePossessed: 
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
@@ -6297,7 +6333,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1136600115
 MonoBehaviour:
@@ -6407,7 +6443,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &1165622195
 MonoBehaviour:
@@ -6507,7 +6543,7 @@ GameObject:
   - component: {fileID: 1179894520}
   - component: {fileID: 1179894521}
   m_Layer: 0
-  m_Name: Player_Three
+  m_Name: Player_Two
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6586,7 +6622,7 @@ GameObject:
   - component: {fileID: 1219003741}
   - component: {fileID: 1219003740}
   m_Layer: 0
-  m_Name: CardHolder_Two
+  m_Name: CardHolder_Three
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8753,7 +8789,7 @@ Transform:
   - {fileID: 1963438281}
   - {fileID: 2030694053}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 180}
 --- !u!4 &1776738706 stripped
 Transform:
@@ -9935,7 +9971,7 @@ Transform:
   - {fileID: 652160618}
   - {fileID: 902183570}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &1960871348 stripped
 Transform:

@@ -20,6 +20,9 @@ public class Hand
     }
 
     public void RemoveCard(Card card) {
+        if (!cards.ContainsKey(card.cardType)) {
+            return;
+        }
         cards[card.cardType].Remove(card);
         if (cards[card.cardType].Count == 0) {
             cards.Remove(card.cardType);

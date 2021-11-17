@@ -48,6 +48,8 @@ public class FieldDisplayer : MonoBehaviour
                         break;
                 }
             }
+            
+
             for (int j = 0; j < cardPositions[i].Count; j++) {
                 player.field.cards[currentType][j].customTransform.localPosition =
                     Vector3.Lerp(

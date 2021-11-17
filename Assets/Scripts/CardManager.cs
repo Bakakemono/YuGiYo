@@ -81,16 +81,18 @@ public class CardManager : MonoBehaviour
 
     [SerializeField] List<Player> players;
 
-    int startingCardNumber = 6;
+    [SerializeField] int startingCardNumber = 6;
 
     bool startDistributingFirstHand = false;
+
+    public bool initialHandGiven = false;
 
     [SerializeField] Transform cardShowcasePosition;
 
     Card cardPlayed = null;
     Player player = null;
 
-    float lerpSpeed = 0.2f;
+    float lerpSpeed = 0.05f;
     float distanceTolerance = 0.1f;
 
     void Start() {
@@ -99,10 +101,13 @@ public class CardManager : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         if(drawPileManager.drawPileInstantiated && !startDistributingFirstHand) {
             startDistributingFirstHand = true;
             StartCoroutine(DrawInitialHand());
+        }
+        if (initialHandGiven) {
+            CardPlayedProgress();
         }
     }
 
@@ -136,6 +141,8 @@ public class CardManager : MonoBehaviour
                 yield return new WaitForSeconds(0.1f);
             }
         }
+        yield return new WaitForSeconds(4.0f);
+        initialHandGiven = true;
     }
 
     public CardEndLocaion CardLocaionGoal(CardType cardType) {
@@ -156,21 +163,26 @@ public class CardManager : MonoBehaviour
     public void CardPlayedProgress() {
         switch (progressCardPlayed) {
             case ProgressCardPlayed.WAITING_FOR_CARD:
-                if(player != null && card != null) {
+                if(player != null && cardPlayed != null) {
                     progressCardPlayed = ProgressCardPlayed.CARD_PLAYED;
                 }
                 break;
             case ProgressCardPlayed.CARD_PLAYED:
+                player.canPlay = false;
+                cardPlayed.customTransform.parent = cardShowcasePosition.transform;
                 cardPlayed.customTransform.localPosition = Vector3.Lerp(cardPlayed.customTransform.localPosition, Vector3.zero, lerpSpeed);
-                if(Vector3.SqrMagnitude(cardPlayed.customTransform.localPosition) < distanceTolerance * distanceTolerance) {
+                cardPlayed.customTransform.localRotation = Quaternion.Lerp(cardPlayed.customTransform.localRotation, Quaternion.identity, lerpSpeed);
+                if (Vector3.SqrMagnitude(cardPlayed.customTransform.localPosition) < distanceTolerance * distanceTolerance) {
                     if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE) {
                         player.hand.RemoveCard(cardPlayed);
                         discardPileManager.DiscardCard(cardPlayed);
+                        player.canPlay = true;
                     }
                     else {
                         player.hand.RemoveCard(cardPlayed);
                         player.field.AddCard(cardPlayed);
                         player.fieldDisplayer.AddCardToField(cardPlayed);
+                        player.canPlay = true;
                         gameManager.NextPlayer();
                     }
                     progressCardPlayed = ProgressCardPlayed.RESET;
