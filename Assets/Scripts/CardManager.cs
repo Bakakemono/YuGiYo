@@ -64,6 +64,7 @@ public class CardManager : MonoBehaviour
     public enum ProgressCardPlayed
     {
         WAITING_FOR_CARD,
+        CARD_IS_SHOWN,
         CARD_PLAYED,
         RESET
     }
@@ -92,8 +93,12 @@ public class CardManager : MonoBehaviour
     Card cardPlayed = null;
     Player player = null;
 
-    float lerpSpeed = 0.05f;
-    float distanceTolerance = 0.1f;
+    int frameMovementTotal = 50;
+    int frameGobaleTotal = 75;
+    int frameCountCurrent = 0;
+
+    Vector3 initialPos;
+    Quaternion initialRotation;
 
     void Start() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
@@ -164,29 +169,37 @@ public class CardManager : MonoBehaviour
         switch (progressCardPlayed) {
             case ProgressCardPlayed.WAITING_FOR_CARD:
                 if(player != null && cardPlayed != null) {
+                    frameCountCurrent = 0;
+                    cardPlayed.customTransform.parent = cardShowcasePosition.transform;
+                    initialRotation = cardPlayed.customTransform.localRotation;
+                    initialPos = cardPlayed.customTransform.localPosition;
+                    progressCardPlayed = ProgressCardPlayed.CARD_IS_SHOWN;
+                }
+                break;
+            case ProgressCardPlayed.CARD_IS_SHOWN:
+                player.canPlay = false;
+                frameCountCurrent++;
+                cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)frameCountCurrent / frameMovementTotal);
+                cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)frameCountCurrent / frameMovementTotal);
+                if (frameCountCurrent == frameGobaleTotal) {
                     progressCardPlayed = ProgressCardPlayed.CARD_PLAYED;
                 }
                 break;
+
             case ProgressCardPlayed.CARD_PLAYED:
-                player.canPlay = false;
-                cardPlayed.customTransform.parent = cardShowcasePosition.transform;
-                cardPlayed.customTransform.localPosition = Vector3.Lerp(cardPlayed.customTransform.localPosition, Vector3.zero, lerpSpeed);
-                cardPlayed.customTransform.localRotation = Quaternion.Lerp(cardPlayed.customTransform.localRotation, Quaternion.identity, lerpSpeed);
-                if (Vector3.SqrMagnitude(cardPlayed.customTransform.localPosition) < distanceTolerance * distanceTolerance) {
-                    if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE) {
-                        player.hand.RemoveCard(cardPlayed);
-                        discardPileManager.DiscardCard(cardPlayed);
-                        player.canPlay = true;
-                    }
-                    else {
-                        player.hand.RemoveCard(cardPlayed);
-                        player.field.AddCard(cardPlayed);
-                        player.fieldDisplayer.AddCardToField(cardPlayed);
-                        player.canPlay = true;
-                        gameManager.NextPlayer();
-                    }
-                    progressCardPlayed = ProgressCardPlayed.RESET;
+                if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE) {
+                    player.hand.RemoveCard(cardPlayed);
+                    discardPileManager.DiscardCard(cardPlayed);
+                    player.canPlay = true;
                 }
+                else {
+                    player.hand.RemoveCard(cardPlayed);
+                    player.field.AddCard(cardPlayed);
+                    player.fieldDisplayer.AddCardToField(cardPlayed);
+                    player.canPlay = true;
+                    gameManager.NextPlayer();
+                }
+                progressCardPlayed = ProgressCardPlayed.RESET;
                 break;
             case ProgressCardPlayed.RESET:
                 player = null;

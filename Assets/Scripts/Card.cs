@@ -2,30 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Card : MonoBehaviour
-{
+public class Card : MonoBehaviour {
     public enum CardType {
-        HUMAN,              
-        WEREWOLF,           
-        OGRE,               
-        DRYAD,              
-        KORRIGAN,           
-        GNOME,              
-        FAIRY,              
-        LEPRECHAUN,         
-        FARFADET,           
-        ELF,                
-        HUMAN_SECRET,       
-        WEREWOLF_SECRET,    
-        OGRE_SECRET,        
-        DRYAD_SECRET,       
-        KORRIGAN_SECRET,    
-        GNOME_SECRET,       
-        FAIRY_SECRET,       
-        LEPRECHAUN_SECRET,  
-        FARFADET_SECRET,    
-        ELF_SECRET,         
-        BEER                
+        HUMAN,
+        WEREWOLF,
+        OGRE,
+        DRYAD,
+        KORRIGAN,
+        GNOME,
+        FAIRY,
+        LEPRECHAUN,
+        FARFADET,
+        ELF,
+        HUMAN_SECRET,
+        WEREWOLF_SECRET,
+        OGRE_SECRET,
+        DRYAD_SECRET,
+        KORRIGAN_SECRET,
+        GNOME_SECRET,
+        FAIRY_SECRET,
+        LEPRECHAUN_SECRET,
+        FARFADET_SECRET,
+        ELF_SECRET,
+        BEER
     }
 
     public static int cardColumnNmb = 6;

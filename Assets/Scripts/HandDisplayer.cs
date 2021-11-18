@@ -7,38 +7,47 @@ using Vector3 = UnityEngine.Vector3;
 
 public class HandDisplayer : MonoBehaviour
 {
-    float cardNumber = 0;
     Player player;
     List<List<Vector3>> positions;
     List<CardManager.CardType> positionsType;
-    Vector2Int latestCardAdded = new Vector2Int(-1, -1);
+
+    // The type of the card currently overviewed and selected.
     [SerializeField] CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
     [SerializeField] CardManager.CardType selectedCardType = CardManager.CardType.NONE;
+
     const int TYPE_NOT_AVAILABLE = -1;
 
     int selectedCardIndex;
 
     float anglePerCard = 0;
 
+    // Angle at which each card are placed on the fan and the max angle for the fan to display card.
     [SerializeField] float maxAngle = 10.0f;
     [SerializeField] float fanningMaxAngle = 25.0f;
+
+    // Angle value for the fan stored as Radiant instead of degree.
+    float maxAngleRadiant;
+    float fanningMaxAngleRadiant;
+
 
     [SerializeField] Vector3 fanPosition = Vector3.zero;
     [SerializeField] float circleRadius = 10.0f;
     public Vector3 circlePosition;
 
-    List<Vector3> cardPositions = new List<Vector3>();
+    const int INVALID_INDEX = -1;
 
-    const int INVALID_CARD = -1;
+    // Parameters of the placement for the card that is overviewed.
     float overviewElevationHeight = 0.5f;
     float overviewClosingDistance = 0.03f;
-    float lerpSpeed = 0.2f;
+
+    // Spot where the card is placed when selected.
     Vector3 selectedCardSpotPosition = new Vector3(-3.0f, 2.0f);
+    
+    // Ratio at wich value lerped are closing at each time.
+    float lerpValue = 0.2f;
 
+    // Distance used to check if the values that are lerped are close enough to be consider equal.
     float acceptableSpaceLerp = 0.01f;
-
-    public float maxAngleRadiant;
-    public float fanningMaxAngleRadiant;
 
     void Start() {
         positions = new List<List<Vector3>>();
@@ -57,8 +66,9 @@ public class HandDisplayer : MonoBehaviour
             return;
 
         if (selectedCardType != CardManager.CardType.NONE &&
-            selectedCardIndex != INVALID_CARD && 
-            (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude < acceptableSpaceLerp * acceptableSpaceLerp) {
+            selectedCardIndex != INVALID_INDEX && 
+            (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude <
+                acceptableSpaceLerp * acceptableSpaceLerp) {
 
             PlayCard();
         }
@@ -67,14 +77,11 @@ public class HandDisplayer : MonoBehaviour
     private void FixedUpdate() {
         circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
-        maxAngleRadiant = maxAngle * Mathf.Deg2Rad;
-        fanningMaxAngleRadiant = fanningMaxAngle * Mathf.Deg2Rad;
-
         // Calculate the angle depending on how much card there are left and the space allocated.
         anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
                                 fanningMaxAngleRadiant / (positionsType.Count - 1) : maxAngleRadiant;
 
-        // Calculate the position of each card around the fan
+        // Calculate the position of each card around the fan.
         for (int i = 0; i < positions.Count; i++) {
             for (int j = 0; j < positions[i].Count; j++) {
                 positions[i][j] = new Vector3(
@@ -90,10 +97,10 @@ public class HandDisplayer : MonoBehaviour
             }
         }
 
-        // Create an index variable for the selected card
-        int overviewedCardIndex = INVALID_CARD;
+        // Create an index variable for the selected card.
+        int overviewedCardIndex = INVALID_INDEX;
 
-        // If there is an overviewed card, Modifie the pos of the said card to expose it
+        // If there is an overviewed card, Modifie the pos of the said card to expose it.
         if (overviewedCardType != CardManager.CardType.NONE) {
             overviewedCardIndex = FindIndex(overviewedCardType);
 
@@ -116,7 +123,7 @@ public class HandDisplayer : MonoBehaviour
             positions[selectedCardIndex][0] = fanPosition + selectedCardSpotPosition;
         }
         else {
-            selectedCardIndex = INVALID_CARD;
+            selectedCardIndex = INVALID_INDEX;
         }
 
         //Apply the previously calcuclate position to each card
@@ -126,20 +133,23 @@ public class HandDisplayer : MonoBehaviour
                 player.hand.cards[positionsType[i]][j].customTransform.localPosition =
                     Vector3.Lerp(player.hand.cards[positionsType[i]][j].customTransform.localPosition,
                     positions[i][j],
-                    lerpSpeed);
+                    lerpValue);
                 player.hand.cards[positionsType[i]][j].customTransform.localRotation =
                     Quaternion.Lerp(
                         player.hand.cards[positionsType[i]][j].customTransform.localRotation,
                         (selectedCardIndex == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
-                        lerpSpeed
+                        lerpValue
                         );
             }
         }
     }
 
+    // Select cards and put them on overviewed mode or selected mode.
     void SelectACard() {
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+        // Put a card currently under the mouse on overviewed mode if she is in hand.
         if (Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
             if (cardSelected != null && player.hand.IsCardInHand(cardSelected)) {
@@ -153,25 +163,31 @@ public class HandDisplayer : MonoBehaviour
             overviewedCardType = CardManager.CardType.NONE;
         }
 
+        // Select the card that you click on if the overviewed type is not the same as
+        // the current selected one and if there is one currently overviewed.
         if (overviewedCardType != CardManager.CardType.NONE && overviewedCardType != selectedCardType &&
             Input.GetMouseButtonUp(0)) {
             selectedCardType = overviewedCardType;
         }
+        // If there is no type currently overviewed and thât the mouse is pressed cleare the current selected type.
         else if (overviewedCardType == CardManager.CardType.NONE && Input.GetMouseButtonUp(0)) {
             selectedCardType = CardManager.CardType.NONE;
         }
     }
 
+    // Play the card selected by clicking on it
     void PlayCard() {
         RaycastHit hitBis;
         Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
+            // If there is no card overviewed or if there is the card is not in hand.
             if (!(cardSelected != null && player.hand.IsCardInHand(cardSelected))) {
                 return;
             }
 
+            // If the card currently overviewed is the card selected and the mouse is clicked play the card.
             if (cardSelected == player.hand.cards[selectedCardType][0] && Input.GetMouseButtonUp(0)) {
                 player.hand.RemoveCard(cardSelected);
                 RemoveCardFromDisplay(cardSelected);
@@ -197,7 +213,7 @@ public class HandDisplayer : MonoBehaviour
             }
 
             for (int i = 0; i < positionsType.Count; i++) {
-                if ((int)positionsType[i] < latestCardAdded.x) {
+                if (positionsType[i] < card.cardType) {
                     if (i == positionsType.Count - 1) {
                         positionsType.Add(card.cardType);
                         positions.Add(new List<Vector3>());

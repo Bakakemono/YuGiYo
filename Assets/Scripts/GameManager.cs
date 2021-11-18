@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviour {
                 break;
 
             case TurnStep.NEXT_TURN:
-                Debug.Log("Change of player");
                 players[playerTurn].canPlay = false;
                 playerTurn++;
                 playerTurn = playerTurn % players.Count;
@@ -62,4 +61,8 @@ public class GameManager : MonoBehaviour {
         turnStep = TurnStep.NEXT_TURN;
     }
 
+
+    public Player GetPlayer(int id) {
+        return players[id];
+    }
 }

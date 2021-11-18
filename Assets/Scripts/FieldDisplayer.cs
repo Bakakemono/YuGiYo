@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldDisplayer : MonoBehaviour
-{
+public class FieldDisplayer : MonoBehaviour {
     [SerializeField] Player player;
     List<List<Vector3>> cardPositions;
     List<CardManager.CardType> cardTypesPossessed;
@@ -27,9 +26,15 @@ public class FieldDisplayer : MonoBehaviour
 
     float lerpSpeed = 0.2f;
 
-    [SerializeField] Vector2 CardDisplayArea = Vector2.one;
+    int frameMovementTotal = 50;
+    int frameCountCurrent = 0;
 
-    
+    Vector2Int lastCardAdded = new Vector2Int();
+    Vector2Int NO_CARD {
+        get {
+            return new Vector2Int(-1, -1);
+        }
+    }
 
     bool addCarts = true;
     void Start() {
@@ -50,7 +55,7 @@ public class FieldDisplayer : MonoBehaviour
             }
             
 
-            for (int j = 0; j < cardPositions[i].Count; j++) {
+            for (int j = 0; j < cardPositions[i].Count; j++) {                
                 player.field.cards[currentType][j].customTransform.localPosition =
                     Vector3.Lerp(
                         player.field.cards[currentType][j].customTransform.localPosition,
