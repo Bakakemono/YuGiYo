@@ -73,8 +73,9 @@ public class CardManager : MonoBehaviour
 
     [SerializeField] GameObject card;
 
-    [SerializeField]
-    List<Material> cardMaterials = new List<Material>();
+    Dictionary<CardType, List<Card>> cards;
+
+    [SerializeField] List<Material> cardMaterials = new List<Material>();
 
     GameManager gameManager;
     DrawPileManager drawPileManager;
@@ -104,6 +105,8 @@ public class CardManager : MonoBehaviour
         drawPileManager = FindObjectOfType<DrawPileManager>();
         discardPileManager = FindObjectOfType<DiscardPileManager>();
         gameManager = FindObjectOfType<GameManager>();
+
+        cards = new Dictionary<CardType, List<Card>>();
     }
 
     private void FixedUpdate() {
@@ -120,12 +123,15 @@ public class CardManager : MonoBehaviour
         List<GameObject> allCards = new List<GameObject>();
 
         for (int i = 0; i < cardsNumber.Count; i++) {
+            cards.Add((CardType)i, new List<Card>());
             for (int j = 0; j < cardsNumber[i]; j++) {
                 allCards.Add(Instantiate(card, Vector3.one * 1000.0f, Quaternion.identity));
                 Card newCard = allCards[allCards.Count - 1].GetComponent<Card>();
                 newCard.cardType = (CardType)i;
-                newCard.ID = j;
+                newCard.id = j;
                 newCard.UpdateCard(cardMaterials[i]);
+
+                cards[(CardType)i].Add(newCard);
             }
         }
 
@@ -176,6 +182,7 @@ public class CardManager : MonoBehaviour
                     progressCardPlayed = ProgressCardPlayed.CARD_IS_SHOWN;
                 }
                 break;
+
             case ProgressCardPlayed.CARD_IS_SHOWN:
                 player.canPlay = false;
                 frameCountCurrent++;
@@ -187,7 +194,7 @@ public class CardManager : MonoBehaviour
                 break;
 
             case ProgressCardPlayed.CARD_PLAYED:
-                if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE) {
+                if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE && player.hand.cards.Count > 0) {
                     player.hand.RemoveCard(cardPlayed);
                     discardPileManager.DiscardCard(cardPlayed);
                     player.canPlay = true;
@@ -201,6 +208,7 @@ public class CardManager : MonoBehaviour
                 }
                 progressCardPlayed = ProgressCardPlayed.RESET;
                 break;
+
             case ProgressCardPlayed.RESET:
                 player = null;
                 cardPlayed = null;

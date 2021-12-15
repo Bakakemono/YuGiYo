@@ -37,7 +37,7 @@ public class Card : MonoBehaviour {
 
     [SerializeField] public CardManager.CardType cardType = CardManager.CardType.NONE;
 
-    [SerializeField] public int ID = INVALID_ID;
+    [SerializeField] public int id = INVALID_ID;
 
     [SerializeField] private MeshRenderer faceRenderer;
 

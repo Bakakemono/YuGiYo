@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour {
     CardManager cardManager;
 
     bool startPile = true;
-    bool cardPlayed = false;
 
     void Start() {
         cardManager = GetComponent<CardManager>();
