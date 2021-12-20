@@ -557,8 +557,6 @@ MonoBehaviour:
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 10
   circlePosition: {x: 0, y: -10, z: 0}
-  maxAngleRadiant: 0
-  fanningMaxAngleRadiant: 0
 --- !u!4 &79069848
 Transform:
   m_ObjectHideFlags: 0
@@ -1131,7 +1129,6 @@ MonoBehaviour:
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
-  CardDisplayArea: {x: 1, y: 1}
 --- !u!1 &247779790
 GameObject:
   m_ObjectHideFlags: 0
@@ -1218,8 +1215,6 @@ MonoBehaviour:
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 10
   circlePosition: {x: 0, y: -10, z: 0}
-  maxAngleRadiant: 0
-  fanningMaxAngleRadiant: 0
 --- !u!4 &247817717
 Transform:
   m_ObjectHideFlags: 0
@@ -2629,7 +2624,6 @@ MonoBehaviour:
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
-  CardDisplayArea: {x: 1, y: 1}
 --- !u!4 &577993406 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4329081368951428244, guid: 59d37d638b2952e4ba92127651da5c36, type: 3}
@@ -4074,7 +4068,6 @@ MonoBehaviour:
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
-  CardDisplayArea: {x: 1, y: 1}
 --- !u!4 &803749625
 Transform:
   m_ObjectHideFlags: 0
@@ -5640,7 +5633,6 @@ MonoBehaviour:
   spaceBetweenColumn: 0.1
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
-  CardDisplayArea: {x: 1, y: 1}
 --- !u!1001 &1035805744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6647,8 +6639,6 @@ MonoBehaviour:
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 10
   circlePosition: {x: 0, y: -10, z: 0}
-  maxAngleRadiant: 0
-  fanningMaxAngleRadiant: 0
 --- !u!4 &1219003741
 Transform:
   m_ObjectHideFlags: 0
@@ -9359,8 +9349,6 @@ MonoBehaviour:
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 10
   circlePosition: {x: 0, y: -10, z: 0}
-  maxAngleRadiant: 0
-  fanningMaxAngleRadiant: 0
 --- !u!4 &1857098930
 Transform:
   m_ObjectHideFlags: 0

@@ -10,8 +10,6 @@ public class DrawPileManager : MonoBehaviour
 
     BoxCollider boxCollider;
 
-    bool playerTurn = true;
-
     float lerpSpeed = 0.2f;
     bool organising = false;
     public bool drawPileInstantiated = false;

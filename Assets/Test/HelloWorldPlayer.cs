@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HelloWorld {
     public class HelloWorldPlayer : NetworkBehaviour {
-        public NetworkVariableVector3 Position = new NetworkVariableVector3(new NetworkVariableSettings {
+        public NetworkVariableVector3 position = new NetworkVariableVector3(new NetworkVariableSettings {
             WritePermission = NetworkVariablePermission.ServerOnly,
             ReadPermission = NetworkVariablePermission.Everyone
         });
@@ -18,7 +18,7 @@ namespace HelloWorld {
             if (NetworkManager.Singleton.IsServer) {
                 var randomPosition = GetRandomPositionOnPlane();
                 transform.position = randomPosition;
-                Position.Value = randomPosition;
+                position.Value = randomPosition;
             }
             else {
                 SubmitPositionRequestServerRpc();
@@ -27,7 +27,7 @@ namespace HelloWorld {
 
         [ServerRpc]
         void SubmitPositionRequestServerRpc(ServerRpcParams rpcParams = default) {
-            Position.Value = GetRandomPositionOnPlane();
+            position.Value = GetRandomPositionOnPlane();
         }
 
         static Vector3 GetRandomPositionOnPlane() {
@@ -35,7 +35,7 @@ namespace HelloWorld {
         }
 
         private void Update() {
-            transform.position = Position.Value;
+            transform.position = position.Value;
         }
     }
 }
