@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Uno/DisplayScene.unity
-    guid: dfebe77f82bdb5546972a3c303dbb28f
   - enabled: 1
-    path: Assets/Scenes/NetTest.unity
-    guid: 17bade83f86b2b84b958b7bba97ecb78
+    path: Assets/Scenes/Networking/Photon_Test.unity
+    guid: 1fa757f1624eb0a4696138495fd22ec3
+  - enabled: 1
+    path: Assets/Scenes/Networking/Photon_PlayerConnected.unity
+    guid: d4786ffc236c6fc489f01bf3e2daeef3
   m_configObjects: {}
