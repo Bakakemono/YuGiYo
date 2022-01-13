@@ -386,6 +386,7 @@
 "Assets/Scripts/Hand.cs"
 "Assets/Scripts/HandDisplayer.cs"
 "Assets/Scripts/HandPlacement.cs"
+"Assets/Scripts/Mythology/MainMenuManager.cs"
 "Assets/Scripts/Network/Photon_test/DelayStartLobbyController.cs"
 "Assets/Scripts/Network/Photon_test/DelayStartRoomController.cs"
 "Assets/Scripts/Network/Photon_test/GameSetupController.cs"
