@@ -1,10 +1,19 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
-    - GameSetupController
+    - Card
+    - CardManager
+    - DiscardPileManager
+    - DrawPileManager
+    - FieldDisplayer
+    - GameManager
+    - HandDisplayer
+    - LobbyController
+    - MainMenuManager
     - NetworkController
-    - QuickStartLobbyController
-    - QuickStartRoomController
+    - Player
+    - PlayerSpawner
+    - RoomController
     PhotonUnityNetworking.Demos.dll:
     - Photon.Pun.Demo.Asteroids.Asteroid
     - Photon.Pun.Demo.Asteroids.Bullet
@@ -25,6 +34,7 @@ ScriptsOnlyBuild:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
     - TMPro.TMP_FontAsset
+    - TMPro.TMP_InputField
     - TMPro.TMP_Settings
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
@@ -40,11 +50,13 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.LayoutElement
+    - UnityEngine.UI.RectMask2D
     - UnityEngine.UI.Shadow
     - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
   sceneClasses:
-    Assets/Scenes/Networking/Photon_PlayerConnected.unity:
+    Assets/Scenes/Game/Game.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -53,9 +65,17 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 21
       Script: {instanceID: 0}
+    - Class: 23
+      Script: {instanceID: 0}
     - Class: 28
       Script: {instanceID: 0}
+    - Class: 33
+      Script: {instanceID: 0}
+    - Class: 43
+      Script: {instanceID: 0}
     - Class: 48
+      Script: {instanceID: 0}
+    - Class: 65
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
@@ -66,14 +86,30 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 24878}
+      Script: {instanceID: 1864}
+    - Class: 114
+      Script: {instanceID: 2368}
+    - Class: 114
+      Script: {instanceID: 2374}
+    - Class: 114
+      Script: {instanceID: 3684}
+    - Class: 114
+      Script: {instanceID: 3838}
+    - Class: 114
+      Script: {instanceID: 7758}
+    - Class: 114
+      Script: {instanceID: 7968}
+    - Class: 114
+      Script: {instanceID: 8250}
+    - Class: 114
+      Script: {instanceID: 23934}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
       Script: {instanceID: 0}
-    Assets/Scenes/Networking/Photon_Test.unity:
+    Assets/Scenes/Game/MainMenu.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -115,67 +151,75 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1528}
+      Script: {instanceID: 1554}
     - Class: 114
-      Script: {instanceID: 1530}
+      Script: {instanceID: 1556}
     - Class: 114
-      Script: {instanceID: 1624}
+      Script: {instanceID: 1652}
     - Class: 114
-      Script: {instanceID: 1782}
+      Script: {instanceID: 1736}
     - Class: 114
-      Script: {instanceID: 2208}
+      Script: {instanceID: 1810}
     - Class: 114
-      Script: {instanceID: 2678}
+      Script: {instanceID: 2150}
     - Class: 114
-      Script: {instanceID: 2900}
+      Script: {instanceID: 2240}
     - Class: 114
-      Script: {instanceID: 3110}
+      Script: {instanceID: 2710}
     - Class: 114
-      Script: {instanceID: 3202}
+      Script: {instanceID: 2932}
     - Class: 114
-      Script: {instanceID: 3984}
+      Script: {instanceID: 3142}
     - Class: 114
-      Script: {instanceID: 3986}
+      Script: {instanceID: 3234}
     - Class: 114
-      Script: {instanceID: 4158}
+      Script: {instanceID: 4016}
     - Class: 114
-      Script: {instanceID: 4304}
+      Script: {instanceID: 4018}
     - Class: 114
-      Script: {instanceID: 4576}
+      Script: {instanceID: 4192}
     - Class: 114
-      Script: {instanceID: 5252}
+      Script: {instanceID: 4320}
     - Class: 114
-      Script: {instanceID: 5276}
+      Script: {instanceID: 4338}
     - Class: 114
-      Script: {instanceID: 5338}
+      Script: {instanceID: 4610}
     - Class: 114
-      Script: {instanceID: 5708}
+      Script: {instanceID: 5154}
     - Class: 114
-      Script: {instanceID: 5748}
+      Script: {instanceID: 5286}
     - Class: 114
-      Script: {instanceID: 5942}
+      Script: {instanceID: 5310}
     - Class: 114
-      Script: {instanceID: 6092}
+      Script: {instanceID: 5372}
     - Class: 114
-      Script: {instanceID: 6428}
+      Script: {instanceID: 5742}
     - Class: 114
-      Script: {instanceID: 6436}
+      Script: {instanceID: 5782}
     - Class: 114
-      Script: {instanceID: 7046}
+      Script: {instanceID: 5978}
     - Class: 114
-      Script: {instanceID: 7574}
+      Script: {instanceID: 6080}
     - Class: 114
-      Script: {instanceID: 7968}
+      Script: {instanceID: 6130}
     - Class: 114
-      Script: {instanceID: 8096}
+      Script: {instanceID: 6466}
     - Class: 114
-      Script: {instanceID: 8408}
+      Script: {instanceID: 6474}
     - Class: 114
-      Script: {instanceID: 24880}
+      Script: {instanceID: 7084}
     - Class: 114
-      Script: {instanceID: 24882}
+      Script: {instanceID: 7612}
     - Class: 114
-      Script: {instanceID: 24888}
+      Script: {instanceID: 8006}
+    - Class: 114
+      Script: {instanceID: 8134}
+    - Class: 114
+      Script: {instanceID: 8446}
+    - Class: 114
+      Script: {instanceID: 25088}
+    - Class: 114
+      Script: {instanceID: 25094}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -237,6 +281,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UIElements
     className: PanelRaycaster
+  - hash:
+      serializedVersion: 2
+      Hash: 0aa66775abfe93909e6e81998317ef9e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: QuickStartRoomController
   - hash:
       serializedVersion: 2
       Hash: 4d9f3379d9846c3f857ff61792c5ee3b
@@ -363,6 +413,18 @@ ScriptsOnlyBuild:
     assemblyName: PhotonUnityNetworking.Demos.dll
     namespaceName: Photon.Pun.Demo.Cockpit
     className: RoomListCell
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DelayStartLobbyController
+  - hash:
+      serializedVersion: 2
+      Hash: d75620008a29b8e7e9800e847d640e8e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MainMenuManager
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -845,6 +907,12 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DelayStartRoomController
+  - hash:
+      serializedVersion: 2
       Hash: c656dcc13ae391b68d594cc8f9c590b0
     assemblyName: PhotonUnityNetworking.Demos.dll
     namespaceName: Photon.Pun.Demo.Cockpit
@@ -1271,6 +1339,12 @@ ScriptsOnlyBuild:
     className: SplineWalker
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameSetupController
+  - hash:
+      serializedVersion: 2
       Hash: 2574ac7d50617d23cdefe4ad22f5e1ad
     assemblyName: Unity.VisualScripting.State.dll
     namespaceName: Unity.VisualScripting
@@ -1329,6 +1403,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: AspectRatioFitter
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: NetworkController
   - hash:
       serializedVersion: 2
       Hash: 760787567e1b60d64a3e421ab83ee14a
@@ -1739,6 +1819,12 @@ ScriptsOnlyBuild:
     className: PhotonStatsGui
   - hash:
       serializedVersion: 2
+      Hash: 6806e2047be037653aa5c2f8f4e8c2d2
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: QuickStartLobbyController
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
@@ -1922,39 +2008,21 @@ ScriptsOnlyBuild:
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: GameSetupController
+    className: PlayerSpawner
   - hash:
       serializedVersion: 2
-      Hash: 3e059e870f5dfa94e2c3ae9e0668c927
+      Hash: bba21154f04854dc1a5f790c84d0d8ce
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: NetworkController
+    className: LobbyController
   - hash:
       serializedVersion: 2
       Hash: 0aa66775abfe93909e6e81998317ef9e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: QuickStartRoomController
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: DelayStartRoomController
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: DelayStartLobbyController
-  - hash:
-      serializedVersion: 2
-      Hash: 6806e2047be037653aa5c2f8f4e8c2d2
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: QuickStartLobbyController
+    className: RoomController
   platform: 19
   scenePathNames:
-  - Assets/Scenes/Networking/Photon_Test.unity
-  - Assets/Scenes/Networking/Photon_PlayerConnected.unity
-  playerPath: D:/Private/Projects/Builds/YuGiYo_V2/Mythology.exe
+  - Assets/Scenes/Game/MainMenu.unity
+  - Assets/Scenes/Game/Game.unity
+  playerPath: D:/Private/Projects/Builds/YugiYo_V3/Mythology.exe

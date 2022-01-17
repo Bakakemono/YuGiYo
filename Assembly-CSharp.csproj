@@ -58,6 +58,7 @@
     <Compile Include="Assets\Scripts\CardManager.cs" />
     <Compile Include="Assets\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
     <Compile Include="Assets\Scripts\Network\Photon_test\DelayStartLobbyController.cs" />
+    <Compile Include="Assets\Scripts\Mythology\MainMenuManager.cs" />
     <Compile Include="Assets\Scripts\HandDisplayer.cs" />
     <Compile Include="Assets\Scripts\FieldDisplayer.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
     <Compile Include="Assets\Scripts\Network\Photon_test\GameSetupController.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
-    <Compile Include="Assets\Scripts\Network\Photon_test\NetworkController.cs" />
+    <Compile Include="Assets\Scripts\Mythology\NetworkController.cs" />
     <Compile Include="Assets\Scripts\Field.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
@@ -84,7 +85,10 @@
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
-    <Compile Include="Assets\Scripts\Mythology\MainMenuManager.cs" />
+    <Compile Include="Assets\Scripts\Mythology\PlayerSpawner.cs" />
+    <Compile Include="Assets\Scripts\Mythology\LobbyController.cs" />
+    <Compile Include="Assets\Scripts\Mythology\RoomController.cs" />
+    <Compile Include="Assets\Scripts\Mythology\WaitingPanelManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
