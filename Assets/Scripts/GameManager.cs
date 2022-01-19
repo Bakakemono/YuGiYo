@@ -14,14 +14,19 @@ public class GameManager : MonoBehaviour {
     public TurnStep turnStep = TurnStep.START_OF_TURN;
 
     public int playerTurn = 0;
+    const int playerNumber = 4;
 
-    [SerializeField] List<Player> players;
+    [SerializeField] Player[] players;
     CardManager cardManager;
+    WaitingPanelManager WaitingPanelManager;
+
+    int ownerId;
 
     bool startPile = true;
 
     void Start() {
         cardManager = GetComponent<CardManager>();
+        players = new Player[playerNumber];
     }
 
     private void Update() {
@@ -39,9 +44,9 @@ public class GameManager : MonoBehaviour {
                 break;
 
             case TurnStep.START_OF_TURN:
-                cardManager.DrawCardToPlayer(players[playerTurn]);
+                cardManager.DrawCardToPlayer(players[(playerTurn - ownerId) % playerNumber]);
                 turnStep = TurnStep.PLAYER_TURN;
-                players[playerTurn].canPlay = true;
+                players[(playerTurn - ownerId) % playerNumber].canPlay = true;
                 break;
 
             case TurnStep.PLAYER_TURN:
@@ -50,7 +55,7 @@ public class GameManager : MonoBehaviour {
             case TurnStep.NEXT_TURN:
                 players[playerTurn].canPlay = false;
                 playerTurn++;
-                playerTurn = playerTurn % players.Count;
+                playerTurn = playerTurn % players.Length;
                 turnStep = TurnStep.START_OF_TURN;
                 break;
         }
@@ -63,5 +68,17 @@ public class GameManager : MonoBehaviour {
 
     public Player GetPlayer(int id) {
         return players[id];
+    }
+
+    public void OwnerRegister(int id) {
+        ownerId = id;
+    }
+
+    public void Register(Player newPlayer, int playerId) {
+        players[(playerId - ownerId) % playerNumber] = newPlayer;
+    }
+
+    public void ShowGame() {
+        WaitingPanelManager.HideWaitingPanel();
     }
 }

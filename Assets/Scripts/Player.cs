@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 [System.Serializable]
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviourPunCallbacks {
     public Hand hand = new Hand();
     public Field field = new Field();
 
