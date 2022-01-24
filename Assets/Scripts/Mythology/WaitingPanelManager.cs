@@ -9,6 +9,8 @@ public class WaitingPanelManager : MonoBehaviourPunCallbacks
     [SerializeField] TextMeshProUGUI totalPlayer;
     [SerializeField] TextMeshProUGUI playerCount;
 
+    [SerializeField] public TextMeshProUGUI id;
+
     [SerializeField] GameObject WaitingPanel;
 
     private void Start() {

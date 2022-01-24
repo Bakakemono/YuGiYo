@@ -41,6 +41,14 @@ MonoBehaviour:
   - RespawnSpaceship
   - RPC_UpdatePlayerPos
   - RPC_SayHello
+  - RPC_Initialize
+  - RPC_Destroy
+  - RPC_GetId
+  - RPC_Update
+  - RPC_SendAvailableSlotUpdated
+  - RPC_UpdateAvailableSlot
+  - RPC_RegisterSelectedSlot
+  - RPC_SendAndSelectAvailableSlot
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

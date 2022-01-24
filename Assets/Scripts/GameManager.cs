@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviourPunCallbacks {
     public enum TurnStep
     {
         PAUSE,
@@ -16,26 +15,76 @@ public class GameManager : MonoBehaviour {
     public int playerTurn = 0;
     const int playerNumber = 4;
 
-    [SerializeField] Player[] players;
+    [SerializeField] Player[] players = new Player[playerNumber];
     CardManager cardManager;
     WaitingPanelManager WaitingPanelManager;
+    PhotonView view;
 
-    int ownerId;
+    const int NO_ID = -1;
+    int ownerId = NO_ID;
+    bool[] availableIds = new bool[playerNumber];
 
     bool startPile = true;
 
-    void Start() {
-        cardManager = GetComponent<CardManager>();
-        players = new Player[playerNumber];
+    NetworkSpawner networkSpawner;
+
+    private void Awake() {
+        if(PhotonNetwork.IsMasterClient) {
+            view.RPC("RPC_Initialize", RpcTarget.AllBuffered);
+        }
     }
 
-    private void Update() {
-        if (startPile) {
-            cardManager.InstantiateCards();
-            startPile = false;
+#region Initialization and slot attribution
+    [PunRPC]
+    void RPC_Initialize() {
+        players = new Player[playerNumber];
+        view = GetComponent<PhotonView>();
+        networkSpawner = FindObjectOfType<NetworkSpawner>();
+
+        for(int i = 0; i < availableIds.Length; i++) {
+            availableIds[i] = false;
         }
-        if(cardManager.initialHandGiven)
-            TurnProgress();
+
+        cardManager = FindObjectOfType<CardManager>();
+        WaitingPanelManager = FindObjectOfType<WaitingPanelManager>();
+        view.RPC("RPC_UpdateAvailableSlot", RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    void RPC_UpdateAvailableSlot() {
+        view.RPC("RPC_SendAndSelectAvailableSlot", RpcTarget.All, availableIds);
+    }
+
+    [PunRPC]
+    void RPC_SendAndSelectAvailableSlot(bool[] availableIdsUpdated) {
+        availableIds = availableIdsUpdated;
+        if(ownerId == NO_ID) {
+            while(true) {
+                int id = Random.Range(0, playerNumber);
+                if(availableIds[id]) {
+                    continue;
+                }
+                ownerId = id;
+                WaitingPanelManager.id.text = ownerId.ToString();
+                view.RPC("RPC_RegisterSelectedSlot", RpcTarget.MasterClient, id);
+                break;
+            }
+        }
+    }
+
+    [PunRPC]
+    void RPC_RegisterSelectedSlot(int id) {
+        availableIds[id] = true;
+    }
+#endregion
+
+    private void Update() {
+        //if (startPile) {
+        //    cardManager.InstantiateCards();
+        //    startPile = false;
+        //}
+        //if(cardManager.initialHandGiven)
+        //    TurnProgress();
     }
 
     void TurnProgress() {
