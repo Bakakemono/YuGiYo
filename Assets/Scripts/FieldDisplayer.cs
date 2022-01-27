@@ -1,8 +1,9 @@
- using System.Collections;
+using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldDisplayer : MonoBehaviour {
+public class FieldDisplayer : MonoBehaviourPunCallbacks {
     [SerializeField] Player player;
     List<List<Vector3>> cardPositions;
     List<CardManager.CardType> cardTypesPossessed;

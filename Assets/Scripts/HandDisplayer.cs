@@ -8,6 +8,8 @@ using Vector3 = UnityEngine.Vector3;
 public class HandDisplayer : MonoBehaviour
 {
     Player player;
+    bool playerSet = false;
+
     List<List<Vector3>> positions;
     List<CardManager.CardType> positionsType;
 
@@ -60,6 +62,9 @@ public class HandDisplayer : MonoBehaviour
     }
 
     private void Update() {
+        if(!playerSet)
+            return;
+
         SelectACard();
 
         if (!player.canPlay)
@@ -248,27 +253,28 @@ public class HandDisplayer : MonoBehaviour
 
     public void SetPlayer(Player pl) {
         player = pl;
+        playerSet = true;
     }
 
-    private void OnDrawGizmosSelected() {
-        Gizmos.color = Color.red;
+    //private void OnDrawGizmosSelected() {
+    //    Gizmos.color = Color.red;
 
-        circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
+    //    circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
-        Gizmos.DrawSphere(transform.position + circlePosition, 0.3f);
+    //    Gizmos.DrawSphere(transform.position + circlePosition, 0.3f);
 
-        Gizmos.DrawLine(
-            transform.position + circlePosition,
-                transform.position + new Vector3(
-                    circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
-                    circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
-            );
+    //    Gizmos.DrawLine(
+    //        transform.position + circlePosition,
+    //            transform.position + new Vector3(
+    //                circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+    //                circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
+    //        );
 
-        Gizmos.DrawLine(
-            transform.position + circlePosition,
-                transform.position + new Vector3(
-                    circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
-                    circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
-           );
-    }
+    //    Gizmos.DrawLine(
+    //        transform.position + circlePosition,
+    //            transform.position + new Vector3(
+    //                circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+    //                circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
+    //       );
+    //}
 }

@@ -15,7 +15,7 @@ public class NetworkSpawner : MonoBehaviourPunCallbacks
             SpawnGameManager();
     }
 
-    void SpawnPlayer() {
+    public void SpawnPlayer() {
         PhotonNetwork.Instantiate(
             Path.Combine(prefabsFolderName, playerPrefabName),
             Vector3.zero,
@@ -23,7 +23,7 @@ public class NetworkSpawner : MonoBehaviourPunCallbacks
             );
     }
 
-    void SpawnHandDisplayer() {
+    public void SpawnHandDisplayer() {
         PhotonNetwork.Instantiate(
             Path.Combine(prefabsFolderName, handPrefabName),
             Vector3.zero,
@@ -31,7 +31,7 @@ public class NetworkSpawner : MonoBehaviourPunCallbacks
             );
     }
 
-    void SpawnFieldDisplayer() {
+    public void SpawnFieldDisplayer() {
         PhotonNetwork.Instantiate(
             Path.Combine(prefabsFolderName, fieldPrefabName),
             Vector3.zero,

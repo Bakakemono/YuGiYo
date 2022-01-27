@@ -13,22 +13,25 @@ public class GameManager : MonoBehaviourPunCallbacks {
     public TurnStep turnStep = TurnStep.START_OF_TURN;
 
     public int playerTurn = 0;
-    const int playerNumber = 4;
+    public const int EXCPECTED_PLAYER_NUMBER = 4;
 
-    [SerializeField] Player[] players = new Player[playerNumber];
+    [SerializeField] Player[] players = new Player[EXCPECTED_PLAYER_NUMBER];
     CardManager cardManager;
     WaitingPanelManager WaitingPanelManager;
     PhotonView view;
 
     const int NO_ID = -1;
     int ownerId = NO_ID;
-    bool[] availableIds = new bool[playerNumber];
+    bool[] availableIds = new bool[EXCPECTED_PLAYER_NUMBER];
+    bool allPlayerConnected = false;
+    bool playersInstantiated = false;
 
     bool startPile = true;
 
     NetworkSpawner networkSpawner;
 
     private void Awake() {
+        view = GetComponent<PhotonView>();
         if(PhotonNetwork.IsMasterClient) {
             view.RPC("RPC_Initialize", RpcTarget.AllBuffered);
         }
@@ -37,12 +40,12 @@ public class GameManager : MonoBehaviourPunCallbacks {
 #region Initialization and slot attribution
     [PunRPC]
     void RPC_Initialize() {
-        players = new Player[playerNumber];
         view = GetComponent<PhotonView>();
+        players = new Player[EXCPECTED_PLAYER_NUMBER];
         networkSpawner = FindObjectOfType<NetworkSpawner>();
 
         for(int i = 0; i < availableIds.Length; i++) {
-            availableIds[i] = false;
+            availableIds[i] = true;
         }
 
         cardManager = FindObjectOfType<CardManager>();
@@ -60,8 +63,8 @@ public class GameManager : MonoBehaviourPunCallbacks {
         availableIds = availableIdsUpdated;
         if(ownerId == NO_ID) {
             while(true) {
-                int id = Random.Range(0, playerNumber);
-                if(availableIds[id]) {
+                int id = Random.Range(0, EXCPECTED_PLAYER_NUMBER);
+                if(!availableIds[id]) {
                     continue;
                 }
                 ownerId = id;
@@ -74,11 +77,19 @@ public class GameManager : MonoBehaviourPunCallbacks {
 
     [PunRPC]
     void RPC_RegisterSelectedSlot(int id) {
-        availableIds[id] = true;
+        availableIds[id] = false;
+
+        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == (byte)EXCPECTED_PLAYER_NUMBER) {
+            view.RPC("RPC_SpawnPlayers", RpcTarget.All);
+        }
     }
 #endregion
 
     private void Update() {
+        if(allPlayerConnected) {
+
+        }
+
         //if (startPile) {
         //    cardManager.InstantiateCards();
         //    startPile = false;
@@ -93,9 +104,9 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 break;
 
             case TurnStep.START_OF_TURN:
-                cardManager.DrawCardToPlayer(players[(playerTurn - ownerId) % playerNumber]);
+                cardManager.DrawCardToPlayer(players[(playerTurn - ownerId) % EXCPECTED_PLAYER_NUMBER]);
                 turnStep = TurnStep.PLAYER_TURN;
-                players[(playerTurn - ownerId) % playerNumber].canPlay = true;
+                players[(playerTurn - ownerId) % EXCPECTED_PLAYER_NUMBER].canPlay = true;
                 break;
 
             case TurnStep.PLAYER_TURN:
@@ -123,11 +134,25 @@ public class GameManager : MonoBehaviourPunCallbacks {
         ownerId = id;
     }
 
+    public int GetOwnerId() {
+        return ownerId;
+    }
+
     public void Register(Player newPlayer, int playerId) {
-        players[(playerId - ownerId) % playerNumber] = newPlayer;
+        int localId = (playerId - ownerId) < 0 ? playerId - ownerId + EXCPECTED_PLAYER_NUMBER : playerId - ownerId;
+        players[localId] = newPlayer;
     }
 
     public void ShowGame() {
         WaitingPanelManager.HideWaitingPanel();
+    }
+
+    public int GetExpectedPlayerNumber() {
+        return EXCPECTED_PLAYER_NUMBER;
+    }
+
+    [PunRPC]
+    void RPC_SpawnPlayers() {
+        networkSpawner.SpawnPlayer();
     }
 }

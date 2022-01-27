@@ -49,6 +49,10 @@ MonoBehaviour:
   - RPC_UpdateAvailableSlot
   - RPC_RegisterSelectedSlot
   - RPC_SendAndSelectAvailableSlot
+  - RPC_UpdateId
+  - RPC_Setup
+  - SpawnPlayers
+  - RPC_SpawnPlayers
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
