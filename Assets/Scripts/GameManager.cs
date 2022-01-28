@@ -13,22 +13,29 @@ public class GameManager : MonoBehaviourPunCallbacks {
     public TurnStep turnStep = TurnStep.START_OF_TURN;
 
     public int playerTurn = 0;
-    public const int EXCPECTED_PLAYER_NUMBER = 4;
+    public const int EXPECTED_PLAYER_NUMBER = 4;
 
-    [SerializeField] Player[] players = new Player[EXCPECTED_PLAYER_NUMBER];
+    [SerializeField] Player[] players = new Player[EXPECTED_PLAYER_NUMBER];
     CardManager cardManager;
     WaitingPanelManager WaitingPanelManager;
     PhotonView view;
 
     const int NO_ID = -1;
     int ownerId = NO_ID;
-    bool[] availableIds = new bool[EXCPECTED_PLAYER_NUMBER];
+    bool[] availableIds = new bool[EXPECTED_PLAYER_NUMBER];
     bool allPlayerConnected = false;
     bool playersInstantiated = false;
 
     bool startPile = true;
 
     NetworkSpawner networkSpawner;
+
+    int timerTotalTime = 3;
+    int timeEndTime;
+    bool timerStart = false;
+    bool timerEnd = false;
+
+    bool gameStarted = false;
 
     private void Awake() {
         view = GetComponent<PhotonView>();
@@ -41,7 +48,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
     [PunRPC]
     void RPC_Initialize() {
         view = GetComponent<PhotonView>();
-        players = new Player[EXCPECTED_PLAYER_NUMBER];
+        players = new Player[EXPECTED_PLAYER_NUMBER];
         networkSpawner = FindObjectOfType<NetworkSpawner>();
 
         for(int i = 0; i < availableIds.Length; i++) {
@@ -63,7 +70,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
         availableIds = availableIdsUpdated;
         if(ownerId == NO_ID) {
             while(true) {
-                int id = Random.Range(0, EXCPECTED_PLAYER_NUMBER);
+                int id = Random.Range(0, EXPECTED_PLAYER_NUMBER);
                 if(!availableIds[id]) {
                     continue;
                 }
@@ -79,23 +86,42 @@ public class GameManager : MonoBehaviourPunCallbacks {
     void RPC_RegisterSelectedSlot(int id) {
         availableIds[id] = false;
 
-        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == (byte)EXCPECTED_PLAYER_NUMBER) {
+        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == (byte)EXPECTED_PLAYER_NUMBER) {
             view.RPC("RPC_SpawnPlayers", RpcTarget.All);
+            view.RPC("RPC_StartTimer",
+                RpcTarget.All,
+                (int)(System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 8, 0, 0, System.DateTimeKind.Utc)).TotalSeconds + timerTotalTime);
         }
+    }
+
+    [PunRPC]
+    void RPC_StartTimer(int endTime) {
+        timeEndTime = endTime;  
+        timerStart = true;
     }
 #endregion
 
     private void Update() {
-        if(allPlayerConnected) {
-
+        if(timerStart && !timerEnd) {
+            int time = (int)(System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 8, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
+            WaitingPanelManager.SetTimer(timeEndTime - time);
+            if(timeEndTime < time) {
+                timerEnd = true;
+                WaitingPanelManager.HideWaitingPanel();
+            }
+            return;
         }
 
-        //if (startPile) {
-        //    cardManager.InstantiateCards();
-        //    startPile = false;
-        //}
-        //if(cardManager.initialHandGiven)
-        //    TurnProgress();
+        if(gameStarted) {
+            if(startPile) {
+                cardManager.RegisterPlayers(players);
+                playerTurn = (0 - ownerId) < 0 ? 0 - ownerId + EXPECTED_PLAYER_NUMBER : 0 - ownerId;
+                cardManager.InstantiateCards();
+                startPile = false;
+            }
+            if(cardManager.initialHandGiven)
+                TurnProgress();
+        }
     }
 
     void TurnProgress() {
@@ -104,9 +130,9 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 break;
 
             case TurnStep.START_OF_TURN:
-                cardManager.DrawCardToPlayer(players[(playerTurn - ownerId) % EXCPECTED_PLAYER_NUMBER]);
+                cardManager.DrawCardToPlayer(players[playerTurn]);
                 turnStep = TurnStep.PLAYER_TURN;
-                players[(playerTurn - ownerId) % EXCPECTED_PLAYER_NUMBER].canPlay = true;
+                players[(playerTurn - ownerId) % EXPECTED_PLAYER_NUMBER].canPlay = true;
                 break;
 
             case TurnStep.PLAYER_TURN:
@@ -139,20 +165,27 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     public void Register(Player newPlayer, int playerId) {
-        int localId = (playerId - ownerId) < 0 ? playerId - ownerId + EXCPECTED_PLAYER_NUMBER : playerId - ownerId;
+        int localId = (playerId - ownerId) < 0 ? playerId - ownerId + EXPECTED_PLAYER_NUMBER : playerId - ownerId;
         players[localId] = newPlayer;
-    }
+        if(!PhotonNetwork.IsMasterClient)
+            return;
 
-    public void ShowGame() {
-        WaitingPanelManager.HideWaitingPanel();
-    }
-
-    public int GetExpectedPlayerNumber() {
-        return EXCPECTED_PLAYER_NUMBER;
+        int playerNumber = 0;
+        foreach(Player player in players) {
+            if(player != null)
+                playerNumber++;
+        }
+        if(playerNumber == EXPECTED_PLAYER_NUMBER)
+            view.RPC("StartGame", RpcTarget.All);
     }
 
     [PunRPC]
     void RPC_SpawnPlayers() {
         networkSpawner.SpawnPlayer();
+    }
+
+    [PunRPC]
+    void StartGame() {
+        gameStarted = true;
     }
 }

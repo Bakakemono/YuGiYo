@@ -53,6 +53,9 @@ MonoBehaviour:
   - RPC_Setup
   - SpawnPlayers
   - RPC_SpawnPlayers
+  - StartTimer
+  - RPC_StartTimer
+  - StartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

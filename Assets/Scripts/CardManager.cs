@@ -81,7 +81,7 @@ public class CardManager : MonoBehaviour
     DrawPileManager drawPileManager;
     DiscardPileManager discardPileManager;
 
-    [SerializeField] List<Player> players;
+    [SerializeField] Player[] players;
 
     [SerializeField] int startingCardNumber = 6;
 
@@ -216,4 +216,9 @@ public class CardManager : MonoBehaviour
                 break;
         }
     }
+
+    public void RegisterPlayers(Player[] gmPlayers) {
+        players = gmPlayers;
+    }
+
 }

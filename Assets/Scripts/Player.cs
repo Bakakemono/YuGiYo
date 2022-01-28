@@ -52,7 +52,7 @@ public class Player : MonoBehaviourPunCallbacks {
         int ownerId = gameManager.GetOwnerId();
         gameManager.Register(this, id);
         SlotDistributor slotDistributor = FindObjectOfType<SlotDistributor>();
-        int localId = (id - ownerId) < 0 ? id - ownerId + GameManager.EXCPECTED_PLAYER_NUMBER : id - ownerId;
+        int localId = (id - ownerId) < 0 ? id - ownerId + GameManager.EXPECTED_PLAYER_NUMBER : id - ownerId;
         Transform slotTransform = slotDistributor.GetPlayerSlots(localId).transform;
         transform.position = slotTransform.position;
         transform.rotation = slotTransform.rotation;
