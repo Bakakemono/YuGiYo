@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardManager : MonoBehaviour
+public class CardManager : MonoBehaviourPunCallbacks
 {
     public enum CardType {
         HUMAN,
@@ -75,6 +76,9 @@ public class CardManager : MonoBehaviour
 
     Dictionary<CardType, List<Card>> cards;
 
+    List<int> cardsCount;
+    List<CardType> pileOrder;
+
     [SerializeField] List<Material> cardMaterials = new List<Material>();
 
     GameManager gameManager;
@@ -100,6 +104,8 @@ public class CardManager : MonoBehaviour
 
     Vector3 initialPos;
     Quaternion initialRotation;
+
+    int totalCards;
 
     void Start() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
@@ -134,8 +140,51 @@ public class CardManager : MonoBehaviour
                 cards[(CardType)i].Add(newCard);
             }
         }
-
+        PrepareCardsOrder();
         drawPileManager.InitializeDrawPile(allCards);
+    }
+
+    void PrepareCardsOrder  () {
+        int totalCardTypes = (int)CardType.Length;
+        List<CardType> allTypes = new List<CardType>();
+        cardsCount = cardsNumber; 
+
+        for(CardType type = 0; type != CardType.Length; type++) {
+            allTypes.Add(type);
+        }
+
+        while(true) {
+            int typeSelected = Random.Range(0, allTypes.Count);
+
+            pileOrder.Add(allTypes[typeSelected]);
+
+            cardsCount[typeSelected]--;
+            if(cardsCount[typeSelected] == 0) {
+                cardsCount.RemoveAt(typeSelected);
+                allTypes.RemoveAt(typeSelected);
+                if(allTypes.Count == 0) {
+                    break;
+                }
+            }
+        }
+    }
+    void InitializeDrawPile(List<CardType> cardsOrders) {
+        Dictionary<CardType, List<Card>> copyCards = cards;
+        List<Card> drawPileCards = new List<Card>();
+        int totalCards = cardsOrders.Count;
+
+        while(true) {
+            drawPileCards.Insert(0, copyCards[cardsOrders[0]][0]);
+            drawPileCards[0].customTransform.localPosition = 
+                new Vector3(Random.Range(-100.0f, 100.0f), Random.Range(0.0f, 30.0f), Random.Range(-100.0f, 100.0f));
+            drawPileCards[0].customTransform.parent = drawPileManager.transform;
+            copyCards[cardsOrders[0]].RemoveAt(0);
+            cardsOrders.RemoveAt(0);
+
+            totalCards--;
+            if(totalCards == 0)
+                break;
+        }
     }
 
     public void DrawCardToPlayer(Player player) {
