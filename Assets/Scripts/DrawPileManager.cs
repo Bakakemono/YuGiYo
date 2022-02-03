@@ -62,28 +62,16 @@ public class DrawPileManager : MonoBehaviour
         CalculateHitBoxSize();
     }
 
-    public void InitializeDrawPile(List<GameObject> allCards) {
-        StartCoroutine(AddCardsToDrawPile(allCards));
+    public void InitializeDrawPile(List<Card> _cardsPile) {
+        Debug.Log("Init draw pile");
+        StartCoroutine(AddCardsToDrawPile(_cardsPile));
     }
 
-    public IEnumerator AddCardsToDrawPile(List<GameObject> allCards) {
+    public IEnumerator AddCardsToDrawPile(List<Card> _cardsPile) {
         yield return new WaitForFixedUpdate();
-        organising = true;
 
-        bool shuffle = true;
-        int totalCards = allCards.Count - 1;
-        while (shuffle) {
-            int cardSelected = Random.Range(0, totalCards);
-            
-            cards.Insert(0, allCards[cardSelected].GetComponent<Card>());
-            cards[0].customTransform.localPosition = new Vector3(Random.Range(-100.0f, 100.0f), Random.Range(0.0f, 30.0f), Random.Range(-100.0f, 100.0f));
-            allCards[cardSelected].transform.parent = transform;
-            allCards.RemoveAt(cardSelected);
-
-            totalCards--;
-            if (totalCards == 0)
-                shuffle = false;
-
+        for(int i = _cardsPile.Count - 1; i <= 0; i--) {
+            cards.Insert(0, _cardsPile[i]);
             yield return new WaitForSeconds(timeBetweenCard);
         }
 

@@ -6,13 +6,13 @@ public class NetworkSpawner : MonoBehaviourPunCallbacks
 {
     [SerializeField] string prefabsFolderName;
     [SerializeField] string playerPrefabName;
-    [SerializeField] string handPrefabName;
-    [SerializeField] string fieldPrefabName;
+    [SerializeField] string cardManagerPrefabName;
     [SerializeField] string gameManagerPrefabName;
 
     private void Start() {
-        if(PhotonNetwork.IsMasterClient)
+        if(PhotonNetwork.IsMasterClient) {
             SpawnGameManager();
+        }
     }
 
     public void SpawnPlayer() {
@@ -23,17 +23,9 @@ public class NetworkSpawner : MonoBehaviourPunCallbacks
             );
     }
 
-    public void SpawnHandDisplayer() {
+    public void SpawnCardManager() {
         PhotonNetwork.Instantiate(
-            Path.Combine(prefabsFolderName, handPrefabName),
-            Vector3.zero,
-            Quaternion.identity
-            );
-    }
-
-    public void SpawnFieldDisplayer() {
-        PhotonNetwork.Instantiate(
-            Path.Combine(prefabsFolderName, fieldPrefabName),
+            Path.Combine(prefabsFolderName, cardManagerPrefabName),
             Vector3.zero,
             Quaternion.identity
             );

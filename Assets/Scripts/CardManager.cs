@@ -77,10 +77,13 @@ public class CardManager : MonoBehaviourPunCallbacks
     Dictionary<CardType, List<Card>> cards;
 
     List<int> cardsCount;
-    List<CardType> pileOrder;
 
     [SerializeField] List<Material> cardMaterials = new List<Material>();
 
+    // Components
+    PhotonView view;
+
+    // External Manager
     GameManager gameManager;
     DrawPileManager drawPileManager;
     DiscardPileManager discardPileManager;
@@ -107,10 +110,11 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     int totalCards;
 
-    void Start() {
+    void Awake() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
         discardPileManager = FindObjectOfType<DiscardPileManager>();
         gameManager = FindObjectOfType<GameManager>();
+        view = GetComponent<PhotonView>();
 
         cards = new Dictionary<CardType, List<Card>>();
     }
@@ -126,6 +130,7 @@ public class CardManager : MonoBehaviourPunCallbacks
     }
 
     public void InstantiateCards() {
+        Debug.Log("InstantiateCards");
         List<GameObject> allCards = new List<GameObject>();
 
         for (int i = 0; i < cardsNumber.Count; i++) {
@@ -140,13 +145,16 @@ public class CardManager : MonoBehaviourPunCallbacks
                 cards[(CardType)i].Add(newCard);
             }
         }
-        PrepareCardsOrder();
-        drawPileManager.InitializeDrawPile(allCards);
+
+        view.RPC("RPC_PrepareCardsOrder", RpcTarget.MasterClient);
     }
 
-    void PrepareCardsOrder  () {
-        int totalCardTypes = (int)CardType.Length;
+    [PunRPC]
+    void RPC_PrepareCardsOrder() {
+        Debug.Log("RPC_PrepareCardsOrder");
+
         List<CardType> allTypes = new List<CardType>();
+        List<CardType> cardsOrder = new List<CardType>();
         cardsCount = cardsNumber; 
 
         for(CardType type = 0; type != CardType.Length; type++) {
@@ -156,7 +164,7 @@ public class CardManager : MonoBehaviourPunCallbacks
         while(true) {
             int typeSelected = Random.Range(0, allTypes.Count);
 
-            pileOrder.Add(allTypes[typeSelected]);
+            cardsOrder.Add(allTypes[typeSelected]);
 
             cardsCount[typeSelected]--;
             if(cardsCount[typeSelected] == 0) {
@@ -167,24 +175,32 @@ public class CardManager : MonoBehaviourPunCallbacks
                 }
             }
         }
+
+        view.RPC("RPC_InitializeDrawPile", RpcTarget.All, cardsOrder);
     }
-    void InitializeDrawPile(List<CardType> cardsOrders) {
+
+    [PunRPC]
+    void RPC_InitializeDrawPile(List<CardType> _cardsOrder) {
+        Debug.Log("RPC_InitializeDrawPile");
+
         Dictionary<CardType, List<Card>> copyCards = cards;
         List<Card> drawPileCards = new List<Card>();
-        int totalCards = cardsOrders.Count;
+        int totalCards = _cardsOrder.Count;
 
         while(true) {
-            drawPileCards.Insert(0, copyCards[cardsOrders[0]][0]);
+            drawPileCards.Insert(0, copyCards[_cardsOrder[0]][0]);
             drawPileCards[0].customTransform.localPosition = 
                 new Vector3(Random.Range(-100.0f, 100.0f), Random.Range(0.0f, 30.0f), Random.Range(-100.0f, 100.0f));
             drawPileCards[0].customTransform.parent = drawPileManager.transform;
-            copyCards[cardsOrders[0]].RemoveAt(0);
-            cardsOrders.RemoveAt(0);
+            copyCards[_cardsOrder[0]].RemoveAt(0);
+            _cardsOrder.RemoveAt(0);
 
             totalCards--;
             if(totalCards == 0)
                 break;
         }
+
+        drawPileManager.InitializeDrawPile(drawPileCards);
     }
 
     public void DrawCardToPlayer(Player player) {
@@ -196,8 +212,8 @@ public class CardManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(0.5f);
 
         for (int i = 0; i < startingCardNumber; i++) {
-            foreach (Player player in players) {
-                DrawCardToPlayer(player);
+            for(int j = 0; j < players.Length; j++) {
+                DrawCardToPlayer(players[(gameManager.playerTurn + j) % GameManager.EXPECTED_PLAYER_NUMBER]);
                 yield return new WaitForSeconds(0.1f);
             }
         }

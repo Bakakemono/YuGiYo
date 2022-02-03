@@ -2,8 +2,7 @@ using Photon.Pun;
 using UnityEngine;
 
 public class GameManager : MonoBehaviourPunCallbacks {
-    public enum TurnStep
-    {
+    public enum TurnStep {
         PAUSE,
         START_OF_TURN,
         PLAYER_TURN,
@@ -17,7 +16,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
 
     [SerializeField] Player[] players = new Player[EXPECTED_PLAYER_NUMBER];
     CardManager cardManager;
-    WaitingPanelManager WaitingPanelManager;
+    WaitingPanelManager waitingPanelManager;
     PhotonView view;
 
     const int NO_ID = -1;
@@ -51,12 +50,15 @@ public class GameManager : MonoBehaviourPunCallbacks {
         players = new Player[EXPECTED_PLAYER_NUMBER];
         networkSpawner = FindObjectOfType<NetworkSpawner>();
 
+        networkSpawner.SpawnCardManager();
+
         for(int i = 0; i < availableIds.Length; i++) {
             availableIds[i] = true;
         }
 
         cardManager = FindObjectOfType<CardManager>();
-        WaitingPanelManager = FindObjectOfType<WaitingPanelManager>();
+        waitingPanelManager = FindObjectOfType<WaitingPanelManager>();
+
         view.RPC("RPC_UpdateAvailableSlot", RpcTarget.MasterClient);
     }
 
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
                     continue;
                 }
                 ownerId = id;
-                WaitingPanelManager.id.text = ownerId.ToString();
+                waitingPanelManager.id.text = ownerId.ToString();
                 view.RPC("RPC_RegisterSelectedSlot", RpcTarget.MasterClient, id);
                 break;
             }
@@ -104,10 +106,10 @@ public class GameManager : MonoBehaviourPunCallbacks {
     private void Update() {
         if(timerStart && !timerEnd) {
             int time = (int)(System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 8, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
-            WaitingPanelManager.SetTimer(timeEndTime - time);
+            waitingPanelManager.SetTimer(timeEndTime - time);
             if(timeEndTime < time) {
                 timerEnd = true;
-                WaitingPanelManager.HideWaitingPanel();
+                waitingPanelManager.HideWaitingPanel();
             }
             return;
         }
@@ -118,6 +120,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 playerTurn = (0 - ownerId) < 0 ? 0 - ownerId + EXPECTED_PLAYER_NUMBER : 0 - ownerId;
                 cardManager.InstantiateCards();
                 startPile = false;
+                Debug.Log("StartPile = false");
             }
             if(cardManager.initialHandGiven)
                 TurnProgress();

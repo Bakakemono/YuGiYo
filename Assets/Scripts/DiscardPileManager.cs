@@ -18,7 +18,7 @@ public class DiscardPileManager : MonoBehaviour
         cards.Add(card);
         card.customTransform.parent = transform;
         lastCardIndex = cards.Count - 1;
-        lastCardPosition = new Vector3(0, 0, -cardThickness / 2.0f + lastCardIndex * cardThickness);
+        lastCardPosition = new Vector3(0, 0, -cardThickness / 2.0f + lastCardIndex * -cardThickness);
         updateLastCard = true;
     }
 
