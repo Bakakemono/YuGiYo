@@ -76,8 +76,6 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     Dictionary<CardType, List<Card>> cards;
 
-    List<int> cardsCount;
-
     [SerializeField] List<Material> cardMaterials = new List<Material>();
 
     // Components
@@ -109,6 +107,7 @@ public class CardManager : MonoBehaviourPunCallbacks
     Quaternion initialRotation;
 
     int totalCards;
+
 
     void Awake() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
@@ -145,8 +144,11 @@ public class CardManager : MonoBehaviourPunCallbacks
                 cards[(CardType)i].Add(newCard);
             }
         }
+        totalCards = allCards.Count;
 
-        view.RPC("RPC_PrepareCardsOrder", RpcTarget.MasterClient);
+        if(PhotonNetwork.IsMasterClient) {
+            RPC_PrepareCardsOrder();
+        }
     }
 
     [PunRPC]
@@ -154,53 +156,61 @@ public class CardManager : MonoBehaviourPunCallbacks
         Debug.Log("RPC_PrepareCardsOrder");
 
         List<CardType> allTypes = new List<CardType>();
-        List<CardType> cardsOrder = new List<CardType>();
-        cardsCount = cardsNumber; 
+        int[] cardsOrder = new int[totalCards];
+        List<int> cardsCount = cardsNumber; 
 
         for(CardType type = 0; type != CardType.Length; type++) {
             allTypes.Add(type);
         }
 
+        int count = 0;
+
         while(true) {
             int typeSelected = Random.Range(0, allTypes.Count);
 
-            cardsOrder.Add(allTypes[typeSelected]);
-
-            cardsCount[typeSelected]--;
-            if(cardsCount[typeSelected] == 0) {
+            if(cardsCount[typeSelected] <= 0) {
                 cardsCount.RemoveAt(typeSelected);
                 allTypes.RemoveAt(typeSelected);
                 if(allTypes.Count == 0) {
                     break;
                 }
             }
+            else {
+                cardsOrder[0] = (int)allTypes[typeSelected];
+
+                cardsCount[typeSelected]--;
+                count++;
+            }
         }
+
+        Debug.Log("PrepareCardsOrder End");
 
         view.RPC("RPC_InitializeDrawPile", RpcTarget.All, cardsOrder);
     }
 
     [PunRPC]
-    void RPC_InitializeDrawPile(List<CardType> _cardsOrder) {
+    void RPC_InitializeDrawPile(int[] _cardsOrder) {
         Debug.Log("RPC_InitializeDrawPile");
-
         Dictionary<CardType, List<Card>> copyCards = cards;
         List<Card> drawPileCards = new List<Card>();
-        int totalCards = _cardsOrder.Count;
+        int cardsCountdown = totalCards;
+
+        int index = 0;
 
         while(true) {
-            drawPileCards.Insert(0, copyCards[_cardsOrder[0]][0]);
+            drawPileCards.Insert(0, copyCards[(CardType)_cardsOrder[index]][0]);
             drawPileCards[0].customTransform.localPosition = 
                 new Vector3(Random.Range(-100.0f, 100.0f), Random.Range(0.0f, 30.0f), Random.Range(-100.0f, 100.0f));
             drawPileCards[0].customTransform.parent = drawPileManager.transform;
-            copyCards[_cardsOrder[0]].RemoveAt(0);
-            _cardsOrder.RemoveAt(0);
+            copyCards[(CardType)_cardsOrder[index]].RemoveAt(0);
 
-            totalCards--;
-            if(totalCards == 0)
+            index++;
+            cardsCountdown--;
+            if(cardsCountdown == 0)
                 break;
         }
 
-        drawPileManager.InitializeDrawPile(drawPileCards);
+        //drawPileManager.InitializeDrawPile(drawPileCards);
     }
 
     public void DrawCardToPlayer(Player player) {

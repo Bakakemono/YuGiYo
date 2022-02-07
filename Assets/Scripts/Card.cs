@@ -43,11 +43,13 @@ public class Card : MonoBehaviour {
 
     public Transform customTransform;
 
-    private void Start() {
+    private void Awake() {
         customTransform = transform;
     }
 
     public void UpdateCard(Material cardMaterial) {
         faceRenderer.material = cardMaterial;
+
+        gameObject.name = cardType.ToString() + " " + id.ToString();
     }
 }

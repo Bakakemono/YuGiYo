@@ -50,13 +50,10 @@ public class GameManager : MonoBehaviourPunCallbacks {
         players = new Player[EXPECTED_PLAYER_NUMBER];
         networkSpawner = FindObjectOfType<NetworkSpawner>();
 
-        networkSpawner.SpawnCardManager();
-
         for(int i = 0; i < availableIds.Length; i++) {
             availableIds[i] = true;
         }
 
-        cardManager = FindObjectOfType<CardManager>();
         waitingPanelManager = FindObjectOfType<WaitingPanelManager>();
 
         view.RPC("RPC_UpdateAvailableSlot", RpcTarget.MasterClient);
@@ -89,6 +86,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
         availableIds[id] = false;
 
         if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == (byte)EXPECTED_PLAYER_NUMBER) {
+            networkSpawner.SpawnCardManager();
             view.RPC("RPC_SpawnPlayers", RpcTarget.All);
             view.RPC("RPC_StartTimer",
                 RpcTarget.All,
@@ -116,11 +114,10 @@ public class GameManager : MonoBehaviourPunCallbacks {
 
         if(gameStarted) {
             if(startPile) {
+                startPile = false;
                 cardManager.RegisterPlayers(players);
                 playerTurn = (0 - ownerId) < 0 ? 0 - ownerId + EXPECTED_PLAYER_NUMBER : 0 - ownerId;
                 cardManager.InstantiateCards();
-                startPile = false;
-                Debug.Log("StartPile = false");
             }
             if(cardManager.initialHandGiven)
                 TurnProgress();
@@ -189,6 +186,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
 
     [PunRPC]
     void StartGame() {
+        cardManager = FindObjectOfType<CardManager>();
         gameStarted = true;
     }
 }
