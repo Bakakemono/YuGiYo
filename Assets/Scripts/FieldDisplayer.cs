@@ -54,7 +54,6 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
                         break;
                 }
             }
-            
 
             for (int j = 0; j < cardPositions[i].Count; j++) {                
                 player.field.cards[currentType][j].customTransform.localPosition =
@@ -168,5 +167,9 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
             if (!cardTypesPossessed.Contains(card.cardType + Card.raceNmb) && !cardTypesPossessed.Contains(card.cardType - Card.raceNmb))
                 raceTypePossessed.Remove(card.cardType - Card.raceNmb < 0 ? card.cardType : card.cardType - Card.raceNmb);
         }
+    }
+
+    public void SetPlayer(Player _player) {
+        player = _player;
     }
 }

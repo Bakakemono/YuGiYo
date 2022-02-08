@@ -15,7 +15,7 @@ public class DrawPileManager : MonoBehaviour
     public bool drawPileInstantiated = false;
 
     float cardSpeed = 2.0f;
-    float timeBetweenCard = 0.1f;
+    float timeBetweenCard = 0.01f;
 
     void Start() {
         boxCollider = GetComponent<BoxCollider>();

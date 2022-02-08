@@ -132,14 +132,14 @@ public class GameManager : MonoBehaviourPunCallbacks {
             case TurnStep.START_OF_TURN:
                 cardManager.DrawCardToPlayer(players[playerTurn]);
                 turnStep = TurnStep.PLAYER_TURN;
-                players[(playerTurn - ownerId) % EXPECTED_PLAYER_NUMBER].canPlay = true;
+                players[playerTurn].IsPlayerTurn(true);
                 break;
 
             case TurnStep.PLAYER_TURN:
                 break;
 
             case TurnStep.NEXT_TURN:
-                players[playerTurn].canPlay = false;
+                players[playerTurn].IsPlayerTurn(false);
                 playerTurn++;
                 playerTurn = playerTurn % players.Length;
                 turnStep = TurnStep.START_OF_TURN;

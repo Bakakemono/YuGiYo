@@ -202,6 +202,13 @@ public class HandDisplayer : MonoBehaviour
         }
     }
 
+    public void UpdateCardPlayed(Card _cardToUpdate) {
+        player.hand.RemoveCard(_cardToUpdate);
+        RemoveCardFromDisplay(_cardToUpdate);
+        selectedCardType = CardManager.CardType.NONE;
+        player.PlayCard(_cardToUpdate);
+    }
+
     public void AddCardToDisplay(Card card) {
         card.customTransform.parent = transform;
 

@@ -45,6 +45,9 @@ public class Player : MonoBehaviourPunCallbacks {
 
     public void PlayCard(Card card) {
         cardManager.PlayCard(this, card);
+        if(view.IsMine) {
+            view.RPC("RPC_PlayCard", RpcTarget.Others, card.cardType, card.id);
+        }
     }
 
     [PunRPC]
@@ -65,10 +68,26 @@ public class Player : MonoBehaviourPunCallbacks {
 
         fieldDisplayer = slotDistributor.GetfieldSlots(localId);
         fieldDisplayer.transform.parent = transform;
-
+        fieldDisplayer.SetPlayer(this);
 
 
         isSetup = true;
+    }
+
+    [PunRPC]
+    public void RPC_PlayCard(int _cardType, int _id) {
+        Card cardPlayed = hand.cards[(CardManager.CardType)_cardType][0];
+        for(int i = 0; i < hand.cards[(CardManager.CardType)_cardType].Count; i++) {
+            if(hand.cards[(CardManager.CardType)_cardType][i].id == _id) {
+                handDisplayer.UpdateCardPlayed(hand.cards[(CardManager.CardType)_cardType][i]);
+            }
+        }
+    }
+
+    public void IsPlayerTurn(bool _canPlay) {
+        if(view.IsMine) {
+            canPlay = _canPlay;
+        }
     }
 
     private void OnDrawGizmos() {
