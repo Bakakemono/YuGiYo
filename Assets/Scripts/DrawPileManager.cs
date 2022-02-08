@@ -15,7 +15,7 @@ public class DrawPileManager : MonoBehaviour
     public bool drawPileInstantiated = false;
 
     float cardSpeed = 2.0f;
-    float timeBetweenCard = 0.02f;
+    float timeBetweenCard = 0.1f;
 
     void Start() {
         boxCollider = GetComponent<BoxCollider>();
@@ -69,8 +69,10 @@ public class DrawPileManager : MonoBehaviour
 
     public IEnumerator AddCardsToDrawPile(List<Card> _cardsPile) {
         yield return new WaitForFixedUpdate();
+        organising = true;
 
-        for(int i = _cardsPile.Count - 1; i <= 0; i--) {
+        for(int i = _cardsPile.Count - 1; i > 0; i--) {
+            Debug.Log(_cardsPile[i].cardType.ToString() + " | " + _cardsPile[i].id);
             cards.Insert(0, _cardsPile[i]);
             yield return new WaitForSeconds(timeBetweenCard);
         }
@@ -83,7 +85,10 @@ public class DrawPileManager : MonoBehaviour
             cards[i].customTransform.localRotation = Quaternion.identity;
         }
 
+        Debug.Log("Organising Draw Pile End");
+
         organising = false;
-        drawPileInstantiated = true;
+        //drawPileInstantiated = true;
+        FindObjectOfType<CardManager>().StartGivingInitialHand(); 
     }
 }

@@ -22,6 +22,8 @@ public class Player : MonoBehaviourPunCallbacks {
 
     bool isSetup = false;
 
+    [SerializeField] Color playersColor;
+
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
         cardManager = FindObjectOfType<CardManager>();
@@ -63,6 +65,9 @@ public class Player : MonoBehaviourPunCallbacks {
 
         fieldDisplayer = slotDistributor.GetfieldSlots(localId);
         fieldDisplayer.transform.parent = transform;
+
+
+
         isSetup = true;
     }
 
@@ -85,6 +90,7 @@ public class Player : MonoBehaviourPunCallbacks {
                 break;
         }
 
+        playersColor = Gizmos.color;
         Gizmos.DrawCube(fieldDisplayer.transform.position, Vector3.one);
     }
 }

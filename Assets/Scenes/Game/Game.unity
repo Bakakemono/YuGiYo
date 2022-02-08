@@ -322,6 +322,7 @@ MonoBehaviour:
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
   id: 0
+  playersColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &260395002
 Transform:
   m_ObjectHideFlags: 0
@@ -1335,6 +1336,7 @@ MonoBehaviour:
   - {fileID: 2114176473}
   - {fileID: 1985095133}
   - {fileID: 2056013385}
+  showCasePosition: {fileID: 438064350}
 --- !u!4 &882067679
 Transform:
   m_ObjectHideFlags: 0
@@ -1693,6 +1695,7 @@ MonoBehaviour:
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
   id: 0
+  playersColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1205935334
 Transform:
   m_ObjectHideFlags: 0
@@ -1752,6 +1755,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  showCasePosition: {fileID: 0}
 --- !u!4 &1308274557
 Transform:
   m_ObjectHideFlags: 0
@@ -1806,6 +1810,7 @@ MonoBehaviour:
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
   id: 0
+  playersColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1393384140
 Transform:
   m_ObjectHideFlags: 0
@@ -1905,6 +1910,7 @@ MonoBehaviour:
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
   id: 0
+  playersColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1404886331
 Transform:
   m_ObjectHideFlags: 0

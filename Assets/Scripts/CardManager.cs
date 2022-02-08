@@ -116,20 +116,18 @@ public class CardManager : MonoBehaviourPunCallbacks
         view = GetComponent<PhotonView>();
 
         cards = new Dictionary<CardType, List<Card>>();
+
+        cardShowcasePosition = FindObjectOfType<SlotDistributor>().GetShowCasePosition();
     }
 
     private void FixedUpdate() {
-        if(drawPileManager.drawPileInstantiated && !startDistributingFirstHand) {
-            startDistributingFirstHand = true;
-            StartCoroutine(DrawInitialHand());
-        }
+
         if (initialHandGiven) {
             CardPlayedProgress();
         }
     }
 
     public void InstantiateCards() {
-        Debug.Log("InstantiateCards");
         List<GameObject> allCards = new List<GameObject>();
 
         for (int i = 0; i < cardsNumber.Count; i++) {
@@ -153,8 +151,6 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     [PunRPC]
     void RPC_PrepareCardsOrder() {
-        Debug.Log("RPC_PrepareCardsOrder");
-
         List<CardType> allTypes = new List<CardType>();
         int[] cardsOrder = new int[totalCards];
         List<int> cardsCount = cardsNumber; 
@@ -163,7 +159,7 @@ public class CardManager : MonoBehaviourPunCallbacks
             allTypes.Add(type);
         }
 
-        int count = 0;
+        int index = 0;
 
         while(true) {
             int typeSelected = Random.Range(0, allTypes.Count);
@@ -176,14 +172,12 @@ public class CardManager : MonoBehaviourPunCallbacks
                 }
             }
             else {
-                cardsOrder[0] = (int)allTypes[typeSelected];
+                cardsOrder[index] = (int)allTypes[typeSelected];
 
                 cardsCount[typeSelected]--;
-                count++;
+                index++;
             }
         }
-
-        Debug.Log("PrepareCardsOrder End");
 
         view.RPC("RPC_InitializeDrawPile", RpcTarget.All, cardsOrder);
     }
@@ -210,7 +204,7 @@ public class CardManager : MonoBehaviourPunCallbacks
                 break;
         }
 
-        //drawPileManager.InitializeDrawPile(drawPileCards);
+        drawPileManager.InitializeDrawPile(drawPileCards);
     }
 
     public void DrawCardToPlayer(Player player) {
@@ -219,6 +213,7 @@ public class CardManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator DrawInitialHand() {
+        Debug.Log("DrawInitialHand");
         yield return new WaitForSeconds(0.5f);
 
         for (int i = 0; i < startingCardNumber; i++) {
@@ -296,4 +291,8 @@ public class CardManager : MonoBehaviourPunCallbacks
         players = gmPlayers;
     }
 
+
+    public void StartGivingInitialHand() {
+        StartCoroutine(DrawInitialHand());
+    }
 }
