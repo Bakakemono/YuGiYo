@@ -209,7 +209,7 @@ public class HandDisplayer : MonoBehaviour
         player.PlayCard(_cardToUpdate);
     }
 
-    public void AddCardToDisplay(Card card) {
+    public void AddCardToHand(Card card) {
         card.customTransform.parent = transform;
 
         if (positionsType.Contains(card.cardType)) {

@@ -207,18 +207,28 @@ public class CardManager : MonoBehaviourPunCallbacks
         drawPileManager.InitializeDrawPile(drawPileCards);
     }
 
-    public void DrawCardToPlayer(Player player) {
+    public void DrawCardToPlayer(Player player, int numberOfCard, float timeToWait) {
+        if(numberOfCard == 1) {
         Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
-        player.handDisplayer.AddCardToDisplay(player.hand.cards[(CardType)index.x][index.y]);
+        player.handDisplayer.AddCardToHand(player.hand.cards[(CardType)index.x][index.y]);
+        }
+        else {
+            StartCoroutine(DrawMultipleCard(player, numberOfCard, timeToWait));
+        }
+    }
+
+    IEnumerator DrawMultipleCard(Player player, int numberOfCard, float timeToWait) {
+        for(int i = 0; i < numberOfCard; i++) {
+            Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
+            player.handDisplayer.AddCardToHand(player.hand.cards[(CardType)index.x][index.y]);
+            yield return new WaitForSeconds(timeToWait);
+        }
     }
 
     IEnumerator DrawInitialHand() {
-        Debug.Log("DrawInitialHand");
-        yield return new WaitForSeconds(0.5f);
-
         for (int i = 0; i < startingCardNumber; i++) {
             for(int j = 0; j < players.Length; j++) {
-                DrawCardToPlayer(players[(gameManager.playerTurn + j) % GameManager.EXPECTED_PLAYER_NUMBER]);
+                DrawCardToPlayer(players[(gameManager.playerTurn + j) % GameManager.EXPECTED_PLAYER_NUMBER], 1, 0);
                 yield return new WaitForSeconds(0.1f);
             }
         }

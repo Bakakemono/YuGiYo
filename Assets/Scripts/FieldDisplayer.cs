@@ -172,4 +172,13 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
     public void SetPlayer(Player _player) {
         player = _player;
     }
+
+    private void OnDrawGizmosSelected() {
+        int x = -10;
+        int xBis = 10;
+
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(x, 0, 0)), transform.TransformPoint(new Vector3(xBis, 0, 0)));
+    }
 }

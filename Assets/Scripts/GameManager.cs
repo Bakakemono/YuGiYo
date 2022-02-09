@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 break;
 
             case TurnStep.START_OF_TURN:
-                cardManager.DrawCardToPlayer(players[playerTurn]);
+                cardManager.DrawCardToPlayer(players[playerTurn], 1, 0.0f);
                 turnStep = TurnStep.PLAYER_TURN;
                 players[playerTurn].IsPlayerTurn(true);
                 break;
