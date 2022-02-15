@@ -64,10 +64,16 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     public enum ProgressCardPlayed
     {
-        WAITING_FOR_CARD,
-        CARD_IS_SHOWN,
-        CARD_PLAYED,
-        RESET
+        DRAW_FIRST_CARD,
+        SELECT_CARD_TO_PLAY, 
+        SELECT_TARGET,
+        SELECT_TARGET_HAND_CARD,
+        SELECT_TARGET_FIELD_CARD,
+        SELECT_HAND_CARD,
+        SELECT_FIELD_CARD,
+        UPDATE_ALL_PLAYER,
+        ANIMATION_PLAYIING,
+        END_OF_TURN
     }
 
     ProgressCardPlayed progressCardPlayed = ProgressCardPlayed.WAITING_FOR_CARD;
@@ -253,27 +259,27 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     public void CardPlayedProgress() {
         switch (progressCardPlayed) {
-            case ProgressCardPlayed.WAITING_FOR_CARD:
+            case ProgressCardPlayed.SELECT_CARD_TO_PLAY:
                 if(player != null && cardPlayed != null) {
                     frameCountCurrent = 0;
                     cardPlayed.customTransform.parent = cardShowcasePosition.transform;
                     initialRotation = cardPlayed.customTransform.localRotation;
                     initialPos = cardPlayed.customTransform.localPosition;
-                    progressCardPlayed = ProgressCardPlayed.CARD_IS_SHOWN;
+                    progressCardPlayed = ProgressCardPlayed.ANIMATION_PLAYIING;
                 }
                 break;
 
-            case ProgressCardPlayed.CARD_IS_SHOWN:
+            case ProgressCardPlayed.ANIMATION_PLAYIING:
                 player.canPlay = false;
                 frameCountCurrent++;
                 cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)frameCountCurrent / frameMovementTotal);
                 cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)frameCountCurrent / frameMovementTotal);
                 if (frameCountCurrent == frameGobaleTotal) {
-                    progressCardPlayed = ProgressCardPlayed.CARD_PLAYED;
+                    progressCardPlayed = ProgressCardPlayed.END_OF_TURN;
                 }
                 break;
 
-            case ProgressCardPlayed.CARD_PLAYED:
+            case ProgressCardPlayed.END_OF_TURN:
                 if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE && player.hand.cards.Count > 0) {
                     player.hand.RemoveCard(cardPlayed);
                     discardPileManager.DiscardCard(cardPlayed);
@@ -286,13 +292,9 @@ public class CardManager : MonoBehaviourPunCallbacks
                     player.canPlay = true;
                     gameManager.NextPlayer();
                 }
-                progressCardPlayed = ProgressCardPlayed.RESET;
-                break;
-
-            case ProgressCardPlayed.RESET:
                 player = null;
                 cardPlayed = null;
-                progressCardPlayed = ProgressCardPlayed.WAITING_FOR_CARD;
+                progressCardPlayed = ProgressCardPlayed.SELECT_CARD_TO_PLAY;
                 break;
         }
     }

@@ -174,11 +174,27 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
     }
 
     private void OnDrawGizmosSelected() {
-        int x = -10;
-        int xBis = 10;
+        int raceNumber = 10;
+
+        cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn - 1;
+
+        float left = -(raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f - Card.cardWidth / 2.0f;
+        float right = (Card.cardWidth + spaceBetweenColumn) * raceNumber - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
+        float top = cardInitialPos + Card.cardLength * decalBetweenCard;
+        float bottom = 1;
 
         Gizmos.color = Color.red;
 
-        Gizmos.DrawLine(transform.TransformPoint(new Vector3(x, 0, 0)), transform.TransformPoint(new Vector3(xBis, 0, 0)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(left, 0, bottom)), transform.TransformPoint(new Vector3(right, 0, bottom)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(left, 0, top)), transform.TransformPoint(new Vector3(right, 0, top)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(left, 0, bottom)), transform.TransformPoint(new Vector3(left, 0, top)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(right, 0, bottom)), transform.TransformPoint(new Vector3(right, 0, top)));
+
+        for(int i = 0; i < raceNumber; i++) {
+            float xPos = (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f + spaceBetweenColumn / 2.0f;
+
+            Gizmos.DrawLine(transform.TransformPoint(new Vector3(xPos, 0, bottom)), transform.TransformPoint(new Vector3(xPos, 0, top)));
+
+        }
     }
 }

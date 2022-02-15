@@ -118,6 +118,8 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 cardManager.RegisterPlayers(players);
                 playerTurn = (0 - ownerId) < 0 ? 0 - ownerId + EXPECTED_PLAYER_NUMBER : 0 - ownerId;
                 cardManager.InstantiateCards();
+
+
             }
             if(cardManager.initialHandGiven)
                 TurnProgress();
@@ -143,6 +145,15 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 playerTurn++;
                 playerTurn = playerTurn % players.Length;
                 turnStep = TurnStep.START_OF_TURN;
+
+                // Debug indicator
+                if(playerTurn == 0) {
+                    waitingPanelManager.indicator.color = Color.green;
+                }
+                else {
+                    waitingPanelManager.indicator.color = Color.red;
+                }
+
                 break;
         }
     }

@@ -36,7 +36,6 @@ public class Player : MonoBehaviourPunCallbacks {
     }
 
     private void Update() {
-        
     }
 
     public void SetPlayerTurn(bool isPlayerTurn) {
