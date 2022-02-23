@@ -43,6 +43,8 @@ public class Card : MonoBehaviour {
 
     public Transform customTransform;
 
+    [SerializeField] public CardEffect cardEffect;
+
     private void Awake() {
         customTransform = transform;
     }

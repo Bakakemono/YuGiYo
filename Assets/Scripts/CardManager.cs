@@ -3,6 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+struct CardPlayedData {
+    
+    Vector2 cardPlayed;
+
+    // Raw index
+    int targetSelected;
+    Vector2 targetHandCard;
+    Vector2 targetFieldCard;
+    Vector2 handCard;
+    Vector2 fieldCard;
+}
+
 public class CardManager : MonoBehaviourPunCallbacks
 {
     public enum CardType {
@@ -76,7 +88,7 @@ public class CardManager : MonoBehaviourPunCallbacks
         END_OF_TURN
     }
 
-    ProgressCardPlayed progressCardPlayed = ProgressCardPlayed.WAITING_FOR_CARD;
+    ProgressCardPlayed progressCardPlayed = ProgressCardPlayed.SELECT_CARD_TO_PLAY;
 
     [SerializeField] GameObject card;
 
@@ -92,8 +104,10 @@ public class CardManager : MonoBehaviourPunCallbacks
     DrawPileManager drawPileManager;
     DiscardPileManager discardPileManager;
 
+    // List of all players
     [SerializeField] Player[] players;
 
+    // Number of card that each player will get at the start of the 
     [SerializeField] int startingCardNumber = 6;
 
     bool startDistributingFirstHand = false;
@@ -133,6 +147,8 @@ public class CardManager : MonoBehaviourPunCallbacks
         }
     }
 
+    #region Draw Pile Creation
+    // Instantiate all the card that will be played during the game.
     public void InstantiateCards() {
         List<GameObject> allCards = new List<GameObject>();
 
@@ -155,6 +171,7 @@ public class CardManager : MonoBehaviourPunCallbacks
         }
     }
 
+    // The master client shuffle the cards and then send the order to each players.
     [PunRPC]
     void RPC_PrepareCardsOrder() {
         List<CardType> allTypes = new List<CardType>();
@@ -188,6 +205,8 @@ public class CardManager : MonoBehaviourPunCallbacks
         view.RPC("RPC_InitializeDrawPile", RpcTarget.All, cardsOrder);
     }
 
+    // Use the order recieved from the master clien and each player will setup their card order
+    // and then send the info to the Draw Pile Manager.
     [PunRPC]
     void RPC_InitializeDrawPile(int[] _cardsOrder) {
         Debug.Log("RPC_InitializeDrawPile");
@@ -200,7 +219,7 @@ public class CardManager : MonoBehaviourPunCallbacks
         while(true) {
             drawPileCards.Insert(0, copyCards[(CardType)_cardsOrder[index]][0]);
             drawPileCards[0].customTransform.localPosition = 
-                new Vector3(Random.Range(-100.0f, 100.0f), Random.Range(0.0f, 30.0f), Random.Range(-100.0f, 100.0f));
+                new Vector3(Random.Range(-100.0f, 100.0f), 1000.0f, Random.Range(-100.0f, 100.0f));
             drawPileCards[0].customTransform.parent = drawPileManager.transform;
             copyCards[(CardType)_cardsOrder[index]].RemoveAt(0);
 
@@ -212,7 +231,9 @@ public class CardManager : MonoBehaviourPunCallbacks
 
         drawPileManager.InitializeDrawPile(drawPileCards);
     }
+    #endregion
 
+    // Give the designated player a certain number of card.
     public void DrawCardToPlayer(Player player, int numberOfCard, float timeToWait) {
         if(numberOfCard == 1) {
         Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
@@ -231,6 +252,7 @@ public class CardManager : MonoBehaviourPunCallbacks
         }
     }
 
+    // Give the cards each player should have at the begining of the game.
     IEnumerator DrawInitialHand() {
         for (int i = 0; i < startingCardNumber; i++) {
             for(int j = 0; j < players.Length; j++) {
@@ -242,7 +264,8 @@ public class CardManager : MonoBehaviourPunCallbacks
         initialHandGiven = true;
     }
 
-    public CardEndLocaion CardLocaionGoal(CardType cardType) {
+    // Return where the card should go when played depending on the type
+    public CardEndLocaion CardLocationGoal(CardType cardType) {
         switch (cardType) {
             case CardType.BEER:
                 return CardEndLocaion.DISCARD_PILE;
@@ -252,35 +275,103 @@ public class CardManager : MonoBehaviourPunCallbacks
         }
     }
 
+
     public void PlayCard(Player pl, Card cd) {
         player = pl;
         cardPlayed = cd;
     }
 
+    [PunRPC]
+    void RPC_UpdatePlayers(CardPlayedData cardPlayedData) {
+        player = players[gameManager.playerTurn];
+        //cardPlayed = 
+    }
+
     public void CardPlayedProgress() {
-        switch (progressCardPlayed) {
+        switch(progressCardPlayed) {
+            case ProgressCardPlayed.DRAW_FIRST_CARD:
+                break;
+
             case ProgressCardPlayed.SELECT_CARD_TO_PLAY:
                 if(player != null && cardPlayed != null) {
-                    frameCountCurrent = 0;
-                    cardPlayed.customTransform.parent = cardShowcasePosition.transform;
-                    initialRotation = cardPlayed.customTransform.localRotation;
-                    initialPos = cardPlayed.customTransform.localPosition;
-                    progressCardPlayed = ProgressCardPlayed.ANIMATION_PLAYIING;
+                    if(view.IsMine) {
+                        frameCountCurrent = 0;
+                        cardPlayed.customTransform.parent = cardShowcasePosition.transform;
+                        initialRotation = cardPlayed.customTransform.localRotation;
+                        initialPos = cardPlayed.customTransform.localPosition;
+
+                        if(cardPlayed.cardEffect.DoTargetPlayer()) {
+                            progressCardPlayed = ProgressCardPlayed.SELECT_TARGET;
+                            break;
+                        }
+                        else if(cardPlayed.cardEffect.DoSelectCard()) {
+                            progressCardPlayed = ProgressCardPlayed.SELECT_HAND_CARD;
+                            break;
+                        }
+                        else if(cardPlayed.cardEffect.DoSelectField()) {
+                            progressCardPlayed = ProgressCardPlayed.SELECT_FIELD_CARD;
+                            break;
+                        }
+
+                        progressCardPlayed = ProgressCardPlayed.UPDATE_ALL_PLAYER;
+                    }
                 }
+                break;
+
+            case ProgressCardPlayed.SELECT_TARGET:
+                if(cardPlayed.cardEffect.DoTargetHand()) {
+                    progressCardPlayed = ProgressCardPlayed.SELECT_TARGET_HAND_CARD;
+                    break;
+                }
+                else if(cardPlayed.cardEffect.DoTargetField()) {
+                    progressCardPlayed = ProgressCardPlayed.SELECT_TARGET_FIELD_CARD;
+                    break;
+                }
+                break;
+
+            case ProgressCardPlayed.SELECT_TARGET_HAND_CARD:
+                if(cardPlayed.cardEffect.DoSelectCard()) {
+                    progressCardPlayed = ProgressCardPlayed.SELECT_HAND_CARD;
+                    break;
+                }
+                else if (cardPlayed.cardEffect.DoSelectField()) {
+                    progressCardPlayed = ProgressCardPlayed.SELECT_FIELD_CARD;
+                    break;
+                }
+                break;
+
+            case ProgressCardPlayed.SELECT_TARGET_FIELD_CARD:
+                if(cardPlayed.cardEffect.DoSelectCard()) {
+                    progressCardPlayed = ProgressCardPlayed.SELECT_HAND_CARD;
+                    break;
+                }
+                else if(cardPlayed.cardEffect.DoSelectField()) {
+                    progressCardPlayed = ProgressCardPlayed.SELECT_FIELD_CARD;
+                    break;
+                }
+                break;
+
+            case ProgressCardPlayed.SELECT_HAND_CARD:
+                progressCardPlayed = ProgressCardPlayed.UPDATE_ALL_PLAYER;
+                break;
+
+            case ProgressCardPlayed.SELECT_FIELD_CARD:
+                progressCardPlayed = ProgressCardPlayed.UPDATE_ALL_PLAYER;
+                break;
+
+            case ProgressCardPlayed.UPDATE_ALL_PLAYER:
+                progressCardPlayed = ProgressCardPlayed.ANIMATION_PLAYIING;
                 break;
 
             case ProgressCardPlayed.ANIMATION_PLAYIING:
-                player.canPlay = false;
-                frameCountCurrent++;
-                cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)frameCountCurrent / frameMovementTotal);
-                cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)frameCountCurrent / frameMovementTotal);
-                if (frameCountCurrent == frameGobaleTotal) {
-                    progressCardPlayed = ProgressCardPlayed.END_OF_TURN;
+                if(frameCountCurrent != frameGobaleTotal) {
+                    player.canPlay = false;
+                    frameCountCurrent++;
+                    cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)frameCountCurrent / frameMovementTotal);
+                    cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)frameCountCurrent / frameMovementTotal);
+                    break;
                 }
-                break;
-
-            case ProgressCardPlayed.END_OF_TURN:
-                if(CardLocaionGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE && player.hand.cards.Count > 0) {
+                if(CardLocationGoal(cardPlayed.cardType) == CardEndLocaion.DISCARD_PILE && player.hand.cards.Count > 0) {
                     player.hand.RemoveCard(cardPlayed);
                     discardPileManager.DiscardCard(cardPlayed);
                     player.canPlay = true;
@@ -292,6 +383,9 @@ public class CardManager : MonoBehaviourPunCallbacks
                     player.canPlay = true;
                     gameManager.NextPlayer();
                 }
+                break;
+
+            case ProgressCardPlayed.END_OF_TURN:
                 player = null;
                 cardPlayed = null;
                 progressCardPlayed = ProgressCardPlayed.SELECT_CARD_TO_PLAY;
@@ -302,7 +396,6 @@ public class CardManager : MonoBehaviourPunCallbacks
     public void RegisterPlayers(Player[] gmPlayers) {
         players = gmPlayers;
     }
-
 
     public void StartGivingInitialHand() {
         StartCoroutine(DrawInitialHand());

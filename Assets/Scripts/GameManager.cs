@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
         PAUSE,
         START_OF_TURN,
         PLAYER_TURN,
-        NEXT_TURN
+        NEXT_PLAYER
     }
 
     public TurnStep turnStep = TurnStep.START_OF_TURN;
@@ -116,10 +116,12 @@ public class GameManager : MonoBehaviourPunCallbacks {
             if(startPile) {
                 startPile = false;
                 cardManager.RegisterPlayers(players);
-                playerTurn = (0 - ownerId) < 0 ? 0 - ownerId + EXPECTED_PLAYER_NUMBER : 0 - ownerId;
+                playerTurn = ConvertPlayerIndex(0);
                 cardManager.InstantiateCards();
 
-
+                if(playerTurn == 0) {
+                    waitingPanelManager.indicator.color = Color.green;
+                }
             }
             if(cardManager.initialHandGiven)
                 TurnProgress();
@@ -140,7 +142,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
             case TurnStep.PLAYER_TURN:
                 break;
 
-            case TurnStep.NEXT_TURN:
+            case TurnStep.NEXT_PLAYER:
                 players[playerTurn].IsPlayerTurn(false);
                 playerTurn++;
                 playerTurn = playerTurn % players.Length;
@@ -159,7 +161,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     public void NextPlayer() {
-        turnStep = TurnStep.NEXT_TURN;
+        turnStep = TurnStep.NEXT_PLAYER;
     }
 
 
@@ -176,7 +178,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     public void Register(Player newPlayer, int playerId) {
-        int localId = (playerId - ownerId) < 0 ? playerId - ownerId + EXPECTED_PLAYER_NUMBER : playerId - ownerId;
+        int localId = ConvertPlayerIndex(playerId);
         players[localId] = newPlayer;
         if(!PhotonNetwork.IsMasterClient)
             return;
@@ -199,5 +201,9 @@ public class GameManager : MonoBehaviourPunCallbacks {
     void StartGame() {
         cardManager = FindObjectOfType<CardManager>();
         gameStarted = true;
+    }
+
+    public int ConvertPlayerIndex(int index) {
+        return (index - ownerId) < 0 ? index - ownerId + EXPECTED_PLAYER_NUMBER : index - ownerId;
     }
 }
