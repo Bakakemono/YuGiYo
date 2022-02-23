@@ -59,6 +59,7 @@ MonoBehaviour:
   - RPC_InitializeDrawPile
   - RPC_PrepareCardsOrder
   - RPC_PlayCard
+  - RPC_UpdatePlayers
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
