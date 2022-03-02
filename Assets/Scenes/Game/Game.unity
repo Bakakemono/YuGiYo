@@ -309,7 +309,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318924488}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -1, y: 0.2, z: 9}
+  m_LocalPosition: {x: -0.5, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -599,7 +599,7 @@ GameObject:
   - component: {fileID: 421032707}
   - component: {fileID: 421032706}
   m_Layer: 0
-  m_Name: CardHolder_Two
+  m_Name: Hand_Two
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -617,13 +617,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOwnerProperty: 0
   overviewedCardType: 22
   selectedCardType: 22
-  maxAngle: 10
-  fanningMaxAngle: 25
+  maxAngle: 4
+  fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
-  circleRadius: 10
-  circlePosition: {x: 0, y: -10, z: 0}
+  circleRadius: 3.93
+  circlePosition: {x: 0, y: -3.93, z: 0}
+  selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &421032707
 Transform:
   m_ObjectHideFlags: 0
@@ -632,7 +634,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 421032705}
   m_LocalRotation: {x: -0, y: 0.8964864, z: -0, w: 0.44307122}
-  m_LocalPosition: {x: -13.273245, y: 1.69, z: 16.992126}
+  m_LocalPosition: {x: -4.1, y: 0.9, z: 1.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -663,7 +665,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 438064349}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.2, z: 9}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -816,7 +818,7 @@ GameObject:
   - component: {fileID: 485879192}
   - component: {fileID: 485879191}
   m_Layer: 0
-  m_Name: People_One
+  m_Name: Field_One
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -847,7 +849,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485879190}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.19, z: -1.07}
+  m_LocalPosition: {x: 0, y: 0.19, z: -3.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -940,13 +942,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 539533411}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.40821785, y: -0.23456968, z: 0.10938163, w: 0.8754261}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &560513571
 GameObject:
@@ -1027,7 +1029,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 652358200}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 1, y: 0.2, z: 9}
+  m_LocalPosition: {x: 0.5, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1111,12 +1113,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 770494721}
   m_LocalRotation: {x: 0.25994256, y: -0, z: -0, w: 0.96562415}
-  m_LocalPosition: {x: 0, y: 14.2, z: -17.78}
+  m_LocalPosition: {x: 0, y: 5.2099996, z: -9.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 30.133, y: 0, z: 0}
 --- !u!1 &882067677
 GameObject:
@@ -1653,7 +1655,7 @@ GameObject:
   - component: {fileID: 1599004254}
   - component: {fileID: 1599004253}
   m_Layer: 0
-  m_Name: CardHolder_Four
+  m_Name: Hand_Four
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1671,13 +1673,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOwnerProperty: 0
   overviewedCardType: 22
   selectedCardType: 22
-  maxAngle: 10
-  fanningMaxAngle: 25
+  maxAngle: 4
+  fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
-  circleRadius: 10
-  circlePosition: {x: 0, y: -10, z: 0}
+  circleRadius: 3.93
+  circlePosition: {x: 0, y: -3.93, z: 0}
+  selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &1599004254
 Transform:
   m_ObjectHideFlags: 0
@@ -1686,7 +1690,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599004252}
   m_LocalRotation: {x: -0, y: -0.8964864, z: -0, w: 0.44307122}
-  m_LocalPosition: {x: 14.313244, y: 1.69, z: 15.522127}
+  m_LocalPosition: {x: 4.18, y: 0.9, z: 1.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1702,19 +1706,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1722,11 +1726,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.6
+      value: -3.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.88
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1943,7 +1947,7 @@ GameObject:
   - component: {fileID: 1861518170}
   - component: {fileID: 1861518169}
   m_Layer: 0
-  m_Name: CardHolder_Three
+  m_Name: Hand_Three
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1961,13 +1965,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOwnerProperty: 0
   overviewedCardType: 22
   selectedCardType: 22
-  maxAngle: 10
-  fanningMaxAngle: 25
+  maxAngle: 4
+  fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
-  circleRadius: 10
-  circlePosition: {x: 0, y: -10, z: 0}
+  circleRadius: 3.93
+  circlePosition: {x: 0, y: -3.93, z: 0}
+  selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &1861518170
 Transform:
   m_ObjectHideFlags: 0
@@ -1976,7 +1982,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861518168}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.18, y: 1.69, z: 22.12}
+  m_LocalPosition: {x: 0.18, y: 0.9, z: 3.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2027,7 +2033,7 @@ GameObject:
   - component: {fileID: 1985095134}
   - component: {fileID: 1985095133}
   m_Layer: 0
-  m_Name: People_Three
+  m_Name: Field_Three
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2058,7 +2064,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1985095132}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.18, y: 0.19, z: 19.12}
+  m_LocalPosition: {x: 0.18, y: 0.19, z: 3.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2143,7 +2149,7 @@ GameObject:
   - component: {fileID: 2056013386}
   - component: {fileID: 2056013385}
   m_Layer: 0
-  m_Name: People_Four
+  m_Name: Field_Four
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2174,7 +2180,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2056013384}
   m_LocalRotation: {x: 0, y: -0.8964864, z: 0, w: 0.44307122}
-  m_LocalPosition: {x: 11.93, y: 0.19, z: 13.7}
+  m_LocalPosition: {x: 3.61, y: 0.19, z: 1.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2192,7 +2198,7 @@ GameObject:
   - component: {fileID: 2092484311}
   - component: {fileID: 2092484310}
   m_Layer: 0
-  m_Name: CardHolder_One
+  m_Name: Hand_One
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2210,13 +2216,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ca34373ab0a4041a8dab0b4f093deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOwnerProperty: 1
   overviewedCardType: 22
   selectedCardType: 22
-  maxAngle: 10
-  fanningMaxAngle: 25
+  maxAngle: 4
+  fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
-  circleRadius: 10
-  circlePosition: {x: 0, y: -10, z: 0}
+  circleRadius: 3.93
+  circlePosition: {x: 0, y: -3.93, z: 0}
+  selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &2092484311
 Transform:
   m_ObjectHideFlags: 0
@@ -2225,7 +2233,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092484309}
   m_LocalRotation: {x: 0.2264202, y: -0, z: -0, w: 0.9740298}
-  m_LocalPosition: {x: 0, y: 7.9700003, z: -11.67}
+  m_LocalPosition: {x: 0, y: 2.5100572, z: -6.0021725}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2243,7 +2251,7 @@ GameObject:
   - component: {fileID: 2114176474}
   - component: {fileID: 2114176473}
   m_Layer: 0
-  m_Name: People_Two
+  m_Name: Field_Two
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2274,7 +2282,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114176472}
   m_LocalRotation: {x: 0, y: 0.8964864, z: 0, w: 0.44307122}
-  m_LocalPosition: {x: -10.89, y: 0.19, z: 15.17}
+  m_LocalPosition: {x: -3.54, y: 0.19, z: 1.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2306,7 +2314,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130727938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.79386973, y: -2.3770518, z: 10.695419}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

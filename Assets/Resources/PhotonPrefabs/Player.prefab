@@ -51,7 +51,6 @@ MonoBehaviour:
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
   id: 0
-  playersColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &4466204291594344580
 MonoBehaviour:
   m_ObjectHideFlags: 0

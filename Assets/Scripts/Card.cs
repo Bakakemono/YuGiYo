@@ -29,8 +29,8 @@ public class Card : MonoBehaviour {
 
     public static int cardColumnNmb = 6;
     public static int cardRawNmb = 4;
-    public static float cardLength = 2.54f;
-    public static float cardWidth = 1.778f;
+    public static float cardLength = 0.254f * 3;
+    public static float cardWidth = 0.1778f * 3;
     public static int raceNmb = 10;
 
     private const int INVALID_ID = -1;

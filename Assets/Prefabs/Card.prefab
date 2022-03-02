@@ -29,7 +29,8 @@ Transform:
   m_GameObject: {fileID: 1662697446184525659}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5469902276630858686}
   - {fileID: 8203301425468923310}
@@ -62,9 +63,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardType: 0
-  ID: -1
+  id: -1
   faceRenderer: {fileID: 6603354572548288721}
   customTransform: {fileID: 0}
+  cardEffect: {fileID: 0}
 --- !u!33 &3964613305944003556
 MeshFilter:
   m_ObjectHideFlags: 0

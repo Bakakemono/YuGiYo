@@ -22,8 +22,6 @@ public class Player : MonoBehaviourPunCallbacks {
 
     bool isSetup = false;
 
-    [SerializeField] Color playersColor;
-
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
         cardManager = FindObjectOfType<CardManager>();
@@ -87,28 +85,5 @@ public class Player : MonoBehaviourPunCallbacks {
         if(view.IsMine) {
             canPlay = _canPlay;
         }
-    }
-
-    private void OnDrawGizmos() {
-        if(!isSetup)
-            return;
-
-        switch(id) {
-            case 0:
-                Gizmos.color = Color.blue;
-                break;
-            case 1:
-                Gizmos.color = Color.red;
-                break;
-            case 2:
-                Gizmos.color = Color.yellow;
-                break;
-            case 3:
-                Gizmos.color = new Color(51.0f/ 255.0f, 214.0f / 255.0f, 151.0f / 255.0f, 1);
-                break;
-        }
-
-        playersColor = Gizmos.color;
-        Gizmos.DrawCube(fieldDisplayer.transform.position, Vector3.one);
     }
 }

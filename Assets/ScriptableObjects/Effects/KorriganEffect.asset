@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9d7acbebff9c2148956645cded6bbe9, type: 3}
+  m_Name: KorriganEffect
+  m_EditorClassIdentifier: 
+  targetPlayer: 0
+  targetHand: 0
+  targetField: 0
+  selectHand: 0
+  selectField: 0

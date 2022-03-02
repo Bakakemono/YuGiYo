@@ -9,9 +9,11 @@ public class HandDisplayer : MonoBehaviour
 {
     Player player;
     bool playerSet = false;
+    [SerializeField] public bool isOwnerProperty = true;
 
     List<List<Vector3>> positions;
     List<CardManager.CardType> positionsType;
+    List<Vector3> unordererPositions;
 
     // The type of the card currently overviewed and selected.
     [SerializeField] CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
@@ -24,7 +26,7 @@ public class HandDisplayer : MonoBehaviour
     float anglePerCard = 0;
 
     // Angle at which each card are placed on the fan and the max angle for the fan to display card.
-    [SerializeField] float maxAngle = 10.0f;
+    [SerializeField] float maxAngle = 5.0f;
     [SerializeField] float fanningMaxAngle = 25.0f;
 
     // Angle value for the fan stored as Radiant instead of degree.
@@ -43,7 +45,7 @@ public class HandDisplayer : MonoBehaviour
     float overviewClosingDistance = 0.03f;
 
     // Spot where the card is placed when selected.
-    Vector3 selectedCardSpotPosition = new Vector3(-3.0f, 2.0f);
+    [SerializeField] Vector3 selectedCardSpotPosition = new Vector3(-1.5f, 1.0f);
     
     // Ratio at wich value lerped are closing at each time.
     float lerpValue = 0.2f;
@@ -54,6 +56,7 @@ public class HandDisplayer : MonoBehaviour
     void Start() {
         positions = new List<List<Vector3>>();
         positionsType = new List<CardManager.CardType>();
+        unordererPositions = new List<Vector3>();
 
         circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
@@ -65,87 +68,129 @@ public class HandDisplayer : MonoBehaviour
         if(!playerSet)
             return;
 
-        SelectACard();
+        switch(isOwnerProperty) {
+            case true:
+                SelectACard();
 
-        if (!player.canPlay)
-            return;
+                if(!player.canPlay)
+                    return;
 
-        if (selectedCardType != CardManager.CardType.NONE &&
-            selectedCardIndex != INVALID_INDEX && 
-            (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude <
-                acceptableSpaceLerp * acceptableSpaceLerp) {
+                if(selectedCardType != CardManager.CardType.NONE &&
+                    selectedCardIndex != INVALID_INDEX &&
+                    (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude <
+                        acceptableSpaceLerp * acceptableSpaceLerp) {
 
-            PlayCard();
+                    PlayCard();
+                }
+                break;
+            case false:
+                break;
         }
     }
 
     private void FixedUpdate() {
         circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
-        // Calculate the angle depending on how much card there are left and the space allocated.
-        anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
-                                fanningMaxAngleRadiant / (positionsType.Count - 1) : maxAngleRadiant;
+        // Change card order between ordered and Unordered
+        switch(isOwnerProperty) {
+            case true:
+                // Calculate the angle depending on how much card there are left and the space allocated.
+                anglePerCard = fanningMaxAngleRadiant / (positionsType.Count - 1) < maxAngleRadiant ?
+                                        fanningMaxAngleRadiant / (positionsType.Count - 1) : maxAngleRadiant;
 
-        // Calculate the position of each card around the fan.
-        for (int i = 0; i < positions.Count; i++) {
-            for (int j = 0; j < positions[i].Count; j++) {
-                positions[i][j] = new Vector3(
+                // Calculate the position of each card around the fan.
+                for(int i = 0; i < positions.Count; i++) {
+                    for(int j = 0; j < positions[i].Count; j++) {
+                        positions[i][j] = new Vector3(
+                                circlePosition.x +
+                                    circleRadius *
+                                        (Mathf.Sin((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                                circlePosition.y +
+                                    circleRadius *
+                                        (Mathf.Cos((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                                circlePosition.z +
+                                    j * 0.01f
+                                        );
+                    }
+                }
+
+                // Create an index variable for the selected card.
+                int overviewedCardIndex = INVALID_INDEX;
+
+                // If there is an overviewed card, Modifie the pos of the said card to expose it.
+                if(overviewedCardType != CardManager.CardType.NONE) {
+                    overviewedCardIndex = FindIndex(overviewedCardType);
+
+                    positions[overviewedCardIndex][0] = new Vector3(
+                        circlePosition.x +
+                            (circleRadius + overviewElevationHeight) *
+                                (Mathf.Sin((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                        circlePosition.y +
+                            (circleRadius + overviewElevationHeight) *
+                                (Mathf.Cos((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                        circlePosition.z +
+                            -overviewClosingDistance
+                                );
+                }
+
+                // Set the selected on the side to be viewed more in detail
+                if(selectedCardType != CardManager.CardType.NONE) {
+                    selectedCardIndex = FindIndex(selectedCardType);
+
+                    positions[selectedCardIndex][0] = fanPosition + selectedCardSpotPosition;
+                }
+                else {
+                    selectedCardIndex = INVALID_INDEX;
+                }
+
+                //Apply the previously calcuclate position to each card
+                for(int i = 0; i < positionsType.Count; i++) {
+                    float angle = -((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg;
+                    for(int j = 0; j < positions[i].Count; j++) {
+                        player.hand.cards[positionsType[i]][j].customTransform.localPosition =
+                            Vector3.Lerp(player.hand.cards[positionsType[i]][j].customTransform.localPosition,
+                            positions[i][j],
+                            lerpValue);
+                        player.hand.cards[positionsType[i]][j].customTransform.localRotation =
+                            Quaternion.Lerp(
+                                player.hand.cards[positionsType[i]][j].customTransform.localRotation,
+                                (selectedCardIndex == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
+                                lerpValue
+                                );
+                    }
+                }
+                break;
+            case false:
+                // Calculate the angle depending on how much card there are left and the space allocated.
+                anglePerCard = fanningMaxAngleRadiant / (unordererPositions.Count - 1) < maxAngleRadiant ?
+                                        fanningMaxAngleRadiant / (unordererPositions.Count - 1) : maxAngleRadiant;
+
+                for(int i = 0; i < unordererPositions.Count; i++) {
+                    unordererPositions[i] = new Vector3(
                         circlePosition.x +
                             circleRadius *
-                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
+                                (Mathf.Sin((anglePerCard * i) - anglePerCard * (unordererPositions.Count - 1.0f) / 2.0f)),
                         circlePosition.y +
                             circleRadius *
-                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f - anglePerCard / 20.0f * j)),
-                        circlePosition.z +
-                            j * 0.01f
-                                );
-            }
-        }
-
-        // Create an index variable for the selected card.
-        int overviewedCardIndex = INVALID_INDEX;
-
-        // If there is an overviewed card, Modifie the pos of the said card to expose it.
-        if (overviewedCardType != CardManager.CardType.NONE) {
-            overviewedCardIndex = FindIndex(overviewedCardType);
-
-            positions[overviewedCardIndex][0] = new Vector3(
-                circlePosition.x +
-                    (circleRadius + overviewElevationHeight) *
-                        (Mathf.Sin((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
-                circlePosition.y +
-                    (circleRadius + overviewElevationHeight) *
-                        (Mathf.Cos((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
-                circlePosition.z +
-                    -overviewClosingDistance
+                                (Mathf.Cos((anglePerCard * i) - anglePerCard * (unordererPositions.Count - 1.0f) / 2.0f)),
+                        circlePosition.z
                         );
-        }
+                }
 
-        // Set the selected on the side to be viewed more in detail
-        if (selectedCardType != CardManager.CardType.NONE) {
-            selectedCardIndex = FindIndex(selectedCardType);
-
-            positions[selectedCardIndex][0] = fanPosition + selectedCardSpotPosition;
-        }
-        else {
-            selectedCardIndex = INVALID_INDEX;
-        }
-
-        //Apply the previously calcuclate position to each card
-        for (int i = 0; i < positionsType.Count; i++) {
-            float angle = -((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg;
-            for (int j = 0; j < positions[i].Count; j++) {
-                player.hand.cards[positionsType[i]][j].customTransform.localPosition =
-                    Vector3.Lerp(player.hand.cards[positionsType[i]][j].customTransform.localPosition,
-                    positions[i][j],
-                    lerpValue);
-                player.hand.cards[positionsType[i]][j].customTransform.localRotation =
-                    Quaternion.Lerp(
-                        player.hand.cards[positionsType[i]][j].customTransform.localRotation,
-                        (selectedCardIndex == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
-                        lerpValue
-                        );
-            }
+                for(int i = 0; i < unordererPositions.Count; i++) {
+                    float angle = -((anglePerCard * i) - anglePerCard * (unordererPositions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg;
+                    player.hand.unorderedCards[i].customTransform.localPosition =
+                        Vector3.Lerp(player.hand.unorderedCards[i].customTransform.localPosition,
+                        unordererPositions[i],
+                        lerpValue);
+                    player.hand.unorderedCards[i].customTransform.localRotation =
+                        Quaternion.Lerp(
+                            player.hand.unorderedCards[i].customTransform.localRotation,
+                            Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
+                            lerpValue
+                            );
+                }
+                break;
         }
     }
 
@@ -194,8 +239,8 @@ public class HandDisplayer : MonoBehaviour
 
             // If the card currently overviewed is the card selected and the mouse is clicked play the card.
             if (cardSelected == player.hand.cards[selectedCardType][0] && Input.GetMouseButtonUp(0)) {
+                RemoveCard(cardSelected);
                 player.hand.RemoveCard(cardSelected);
-                RemoveCardFromDisplay(cardSelected);
                 selectedCardType = CardManager.CardType.NONE;
                 player.PlayCard(cardSelected);
             }
@@ -203,52 +248,67 @@ public class HandDisplayer : MonoBehaviour
     }
 
     public void UpdateCardPlayed(Card _cardToUpdate) {
+        RemoveCard(_cardToUpdate);
         player.hand.RemoveCard(_cardToUpdate);
-        RemoveCardFromDisplay(_cardToUpdate);
         selectedCardType = CardManager.CardType.NONE;
         player.PlayCard(_cardToUpdate);
     }
 
-    public void AddCardToHand(Card card) {
+    public void AddCard(Card card) {
         card.customTransform.parent = transform;
-
-        if (positionsType.Contains(card.cardType)) {
-            int index = FindIndex(card.cardType);
-            positions[index].Add(new Vector3());
-        }
-        else {
-            if (positionsType.Count == 0) {
-                positionsType.Add(card.cardType);
-                positions.Add(new List<Vector3>());
-                positions[0].Add(new Vector3());
-                return;
-            }
-
-            for (int i = 0; i < positionsType.Count; i++) {
-                if (positionsType[i] < card.cardType) {
-                    if (i == positionsType.Count - 1) {
+        switch(isOwnerProperty) {
+            case true:
+                if(positionsType.Contains(card.cardType)) {
+                    int index = FindIndex(card.cardType);
+                    positions[index].Add(new Vector3());
+                }
+                else {
+                    if(positionsType.Count == 0) {
                         positionsType.Add(card.cardType);
                         positions.Add(new List<Vector3>());
-                        positions[positions.Count - 1].Add(new Vector3());
+                        positions[0].Add(new Vector3());
                         return;
                     }
-                    continue;
-                }
 
-                positionsType.Insert(i, card.cardType);
-                positions.Insert(i, new List<Vector3>());
-                positions[i].Add(new Vector3());
-                return;
-            }
+                    for(int i = 0; i < positionsType.Count; i++) {
+                        if(positionsType[i] < card.cardType) {
+                            if(i == positionsType.Count - 1) {
+                                positionsType.Add(card.cardType);
+                                positions.Add(new List<Vector3>());
+                                positions[positions.Count - 1].Add(new Vector3());
+                                return;
+                            }
+                            continue;
+                        }
+
+                        positionsType.Insert(i, card.cardType);
+                        positions.Insert(i, new List<Vector3>());
+                        positions[i].Add(new Vector3());
+                        return;
+                    }
+                }
+                break;
+            case false:
+                unordererPositions.Add(new Vector3());
+                break;
         }
     }
 
-    public void RemoveCardFromDisplay(Card card) {
-        int index = FindIndex(card.cardType);
-        positions[index].RemoveAt(0);
-        if (positions[index].Count == 0) {
-            positions.RemoveAt(index);
-            positionsType.RemoveAt(index);
+    // Remove all preset for the card
+    // The card must still be in the hand
+    public void RemoveCard(Card card) {
+        switch(isOwnerProperty) {
+            case true:
+                int index = FindIndex(card.cardType);
+                positions[index].RemoveAt(0);
+                if(positions[index].Count == 0) {
+                    positions.RemoveAt(index);
+                    positionsType.RemoveAt(index);
+                }
+                break;
+            case false:
+                unordererPositions.RemoveAt(player.hand.unorderedCards.FindIndex(x => x == card));
+                break;
         }
     }
 
@@ -263,25 +323,32 @@ public class HandDisplayer : MonoBehaviour
         playerSet = true;
     }
 
-    //private void OnDrawGizmosSelected() {
-    //    Gizmos.color = Color.red;
+    private void OnDrawGizmosSelected() {
+        Gizmos.color = Color.red;
 
-    //    circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
+        circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
-    //    Gizmos.DrawSphere(transform.position + circlePosition, 0.3f);
+        Gizmos.DrawSphere(transform.TransformPoint(circlePosition), 0.3f);
 
-    //    Gizmos.DrawLine(
-    //        transform.position + circlePosition,
-    //            transform.position + new Vector3(
-    //                circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
-    //                circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
-    //        );
+        Gizmos.DrawLine(
+            transform.TransformPoint((circlePosition + new Vector3(
+                    circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+                    circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f))) / 2.0f),
+                transform.TransformPoint(new Vector3(
+                    circlePosition.x + circleRadius * Mathf.Sin(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+                    circlePosition.y + circleRadius * Mathf.Cos(-fanningMaxAngle * Mathf.Deg2Rad / 2.0f)))
+            );
 
-    //    Gizmos.DrawLine(
-    //        transform.position + circlePosition,
-    //            transform.position + new Vector3(
-    //                circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
-    //                circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))
-    //       );
-    //}
+        Gizmos.DrawLine(
+            transform.TransformPoint((circlePosition + new Vector3(
+                    circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+                    circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f))) / 2.0f),
+                transform.TransformPoint(new Vector3(
+                    circlePosition.x + circleRadius * Mathf.Sin(fanningMaxAngle * Mathf.Deg2Rad / 2.0f),
+                    circlePosition.y + circleRadius * Mathf.Cos(fanningMaxAngle * Mathf.Deg2Rad / 2.0f)))
+           );
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(transform.TransformPoint(selectedCardSpotPosition), 0.1f);
+    }
 }

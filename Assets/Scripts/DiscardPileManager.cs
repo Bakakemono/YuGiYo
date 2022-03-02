@@ -6,7 +6,7 @@ public class DiscardPileManager : MonoBehaviour
 {
     List<Card> cards = new List<Card>();
     bool updateLastCard = false;
-    float cardThickness = 0.01f;
+    float cardThickness = 0.001f;
     int lastCardIndex = -1;
     float acceptableSpace = 0.01f;
     float cardLerpSpeed = 0.2f;

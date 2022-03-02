@@ -42,6 +42,8 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
         cardPositions = new List<List<Vector3>>();
         cardTypesPossessed = new List<CardManager.CardType>();
         raceTypePossessed = new List<CardManager.CardType>();
+
+        cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
     }
 
     private void Update() {
@@ -141,6 +143,7 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
                         0.1f,
                         cardInitialPos - Card.cardLength * j * decalBetweenCard
                         );
+                Debug.Log("Position expected : " + cardPositions[i][j]);
             }
         }
 
@@ -174,14 +177,16 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
     }
 
     private void OnDrawGizmosSelected() {
+        return;
         int raceNumber = 10;
 
-        cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn - 1;
+        cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
+        Debug.Log("cardInitialPos : " + cardInitialPos);
 
         float left = -(raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f - Card.cardWidth / 2.0f;
-        float right = (Card.cardWidth + spaceBetweenColumn) * raceNumber - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
-        float top = cardInitialPos + Card.cardLength * decalBetweenCard;
-        float bottom = 1;
+        float right = (Card.cardWidth + spaceBetweenColumn) * (raceNumber - 1) - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
+        float top = cardInitialPos + Card.cardLength / 2.0f;
+        float bottom = 0;
 
         Gizmos.color = Color.red;
 
@@ -191,10 +196,22 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
         Gizmos.DrawLine(transform.TransformPoint(new Vector3(right, 0, bottom)), transform.TransformPoint(new Vector3(right, 0, top)));
 
         for(int i = 0; i < raceNumber; i++) {
-            float xPos = (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f + spaceBetweenColumn / 2.0f;
+            float xPos = (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
 
             Gizmos.DrawLine(transform.TransformPoint(new Vector3(xPos, 0, bottom)), transform.TransformPoint(new Vector3(xPos, 0, top)));
+        }
 
+        for(int i = 0; i < raceNumber; i++) {
+            for(int j = 0; j < cardMaxNumberPerColumn; j++) {
+                Gizmos.DrawSphere(transform.TransformPoint(new Vector3(
+                        (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
+                        0.1f,
+                        cardInitialPos - Card.cardLength * j * decalBetweenCard
+                        )),
+                        0.1f
+                        );
+                ;
+            }
         }
     }
 }

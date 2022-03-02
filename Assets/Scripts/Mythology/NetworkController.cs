@@ -14,9 +14,10 @@ public class NetworkController : MonoBehaviourPunCallbacks
 
     private void Start() {
         PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.ConnectToRegion("eu");
     }
 
     public override void OnConnectedToMaster() {
-        Debug.Log("We are now connected to the : " + PhotonNetwork.CloudRegion + " Server ! ");
+        Debug.LogError("We are now connected to the : " + PhotonNetwork.CloudRegion + " Server ! ");
     }
 }

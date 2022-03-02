@@ -13,6 +13,22 @@ struct CardPlayedData {
     Vector2 targetFieldCard;
     Vector2 handCard;
     Vector2 fieldCard;
+
+    CardPlayedData(Vector2 _cardPlayed, int _targetSelected, Vector2 _targetHandCard, Vector2 _targetFieldCard, Vector2 _handCard, Vector2 _fieldCard) {
+        cardPlayed = new Vector2();
+        targetSelected = -1;
+        targetHandCard = new Vector2();
+        targetFieldCard = new Vector2();
+        handCard = new Vector2();
+        fieldCard = new Vector2();
+
+        cardPlayed = _cardPlayed;
+        targetSelected = _targetSelected;
+        targetHandCard = _targetHandCard;
+        targetFieldCard = _targetFieldCard;
+        handCard = _handCard;
+        fieldCard = _fieldCard;
+    }
 }
 
 public class CardManager : MonoBehaviourPunCallbacks
@@ -67,6 +83,9 @@ public class CardManager : MonoBehaviourPunCallbacks
         1,
         12
     };
+
+    [SerializeField] CardEffect[] cardEffects;
+
 
     public enum CardEndLocaion
     {
@@ -128,6 +147,7 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     int totalCards;
 
+    CardPlayedData cardplayedData;
 
     void Awake() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
@@ -159,6 +179,7 @@ public class CardManager : MonoBehaviourPunCallbacks
                 Card newCard = allCards[allCards.Count - 1].GetComponent<Card>();
                 newCard.cardType = (CardType)i;
                 newCard.id = j;
+                newCard.cardEffect = cardEffects[i];
                 newCard.UpdateCard(cardMaterials[i]);
 
                 cards[(CardType)i].Add(newCard);
@@ -237,7 +258,7 @@ public class CardManager : MonoBehaviourPunCallbacks
     public void DrawCardToPlayer(Player player, int numberOfCard, float timeToWait) {
         if(numberOfCard == 1) {
         Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
-        player.handDisplayer.AddCardToHand(player.hand.cards[(CardType)index.x][index.y]);
+        player.handDisplayer.AddCard(player.hand.cards[(CardType)index.x][index.y]);
         }
         else {
             StartCoroutine(DrawMultipleCard(player, numberOfCard, timeToWait));
@@ -247,7 +268,7 @@ public class CardManager : MonoBehaviourPunCallbacks
     IEnumerator DrawMultipleCard(Player player, int numberOfCard, float timeToWait) {
         for(int i = 0; i < numberOfCard; i++) {
             Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
-            player.handDisplayer.AddCardToHand(player.hand.cards[(CardType)index.x][index.y]);
+            player.handDisplayer.AddCard(player.hand.cards[(CardType)index.x][index.y]);
             yield return new WaitForSeconds(timeToWait);
         }
     }
@@ -283,7 +304,7 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     [PunRPC]
     void RPC_UpdatePlayers(CardPlayedData cardPlayedData) {
-        player = players[gameManager.playerTurn];
+        //player = players[gameManager.playerTurn];
         //cardPlayed = 
     }
 
@@ -294,7 +315,7 @@ public class CardManager : MonoBehaviourPunCallbacks
 
             case ProgressCardPlayed.SELECT_CARD_TO_PLAY:
                 if(player != null && cardPlayed != null) {
-                    if(view.IsMine) {
+                    //if(view.IsMine) {
                         frameCountCurrent = 0;
                         cardPlayed.customTransform.parent = cardShowcasePosition.transform;
                         initialRotation = cardPlayed.customTransform.localRotation;
@@ -314,7 +335,7 @@ public class CardManager : MonoBehaviourPunCallbacks
                         }
 
                         progressCardPlayed = ProgressCardPlayed.UPDATE_ALL_PLAYER;
-                    }
+                    //}
                 }
                 break;
 
@@ -360,6 +381,7 @@ public class CardManager : MonoBehaviourPunCallbacks
                 break;
 
             case ProgressCardPlayed.UPDATE_ALL_PLAYER:
+                view.RPC("RPC_UpdatePlayers", RpcTarget.Others, cardplayedData);
                 progressCardPlayed = ProgressCardPlayed.ANIMATION_PLAYIING;
                 break;
 
@@ -382,6 +404,7 @@ public class CardManager : MonoBehaviourPunCallbacks
                     player.fieldDisplayer.AddCardToField(cardPlayed);
                     player.canPlay = true;
                     gameManager.NextPlayer();
+                    progressCardPlayed = ProgressCardPlayed.END_OF_TURN;
                 }
                 break;
 
@@ -399,5 +422,9 @@ public class CardManager : MonoBehaviourPunCallbacks
 
     public void StartGivingInitialHand() {
         StartCoroutine(DrawInitialHand());
+    }
+
+    public Card GetCard(CardType cardType, int id) {
+        return cards[cardType][id];
     }
 }
