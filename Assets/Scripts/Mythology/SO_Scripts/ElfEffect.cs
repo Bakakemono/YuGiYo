@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ElfEffect", menuName = "Cards Effects/Elf")]
 public class ElfEffect : CardEffect
 {
-    public override void Effect(Player _dealer, Player _target, Vector2 _dealerCard, Vector2 _targetCard, CardManager _cardManager) {
+    public override void Effect(Player _dealer, Player _target, Vector2[] _dealerCard, Vector2[] _targetCard, CardManager _cardManager) {
         base.Effect(_dealer, _target, _dealerCard, _targetCard, _cardManager);
     }
 }

@@ -63,7 +63,6 @@ public class DrawPileManager : MonoBehaviour
     }
 
     public void InitializeDrawPile(List<Card> _cardsPile) {
-        Debug.Log("Init draw pile");
         StartCoroutine(AddCardsToDrawPile(_cardsPile));
     }
 
@@ -83,8 +82,6 @@ public class DrawPileManager : MonoBehaviour
 
             cards[i].customTransform.localRotation = Quaternion.identity;
         }
-
-        Debug.Log("Organising Draw Pile End");
 
         organising = false;
         //drawPileInstantiated = true;

@@ -18,8 +18,9 @@ public class GameManager : MonoBehaviourPunCallbacks {
     CardManager cardManager;
     WaitingPanelManager waitingPanelManager;
     PhotonView view;
+    CameraManager cameraManager;
 
-    const int NO_ID = -1;
+    public const int NO_ID = -1;
     int ownerId = NO_ID;
     bool[] availableIds = new bool[EXPECTED_PLAYER_NUMBER];
     bool allPlayerConnected = false;
@@ -118,6 +119,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
                 cardManager.RegisterPlayers(players);
                 playerTurn = ConvertPlayerIndex(0);
                 cardManager.InstantiateCards();
+                FindObjectOfType<Selecter>().Initialize();
 
                 if(playerTurn == 0) {
                     waitingPanelManager.indicator.color = Color.green;
@@ -144,7 +146,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
 
             case TurnStep.NEXT_PLAYER:
                 players[playerTurn].IsPlayerTurn(false);
-                playerTurn++;
+                playerTurn++; 
                 playerTurn = playerTurn % players.Length;
                 turnStep = TurnStep.START_OF_TURN;
 
@@ -199,11 +201,17 @@ public class GameManager : MonoBehaviourPunCallbacks {
 
     [PunRPC]
     void StartGame() {
+        cameraManager = FindObjectOfType<CameraManager>();
         cardManager = FindObjectOfType<CardManager>();
         gameStarted = true;
     }
 
     public int ConvertPlayerIndex(int index) {
         return (index - ownerId) < 0 ? index - ownerId + EXPECTED_PLAYER_NUMBER : index - ownerId;
+    }
+
+    public void SetCameraToPlayer(int playerId)
+    {
+        cameraManager.GoToPlayer(ConvertPlayerIndex(playerId));
     }
 }

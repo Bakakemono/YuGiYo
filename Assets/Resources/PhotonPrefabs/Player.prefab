@@ -51,6 +51,9 @@ MonoBehaviour:
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
   id: 0
+  targetType: 0
+  doTargetHand: 0
+  doTargetField: 0
 --- !u!114 &4466204291594344580
 MonoBehaviour:
   m_ObjectHideFlags: 0

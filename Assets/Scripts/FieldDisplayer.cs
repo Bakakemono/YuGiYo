@@ -30,6 +30,9 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
     int frameMovementTotal = 50;
     int frameCountCurrent = 0;
 
+    CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
+    float overviewedHeight = 0.2f;
+
     Vector2Int lastCardAdded = new Vector2Int();
     Vector2Int NO_CARD {
         get {
@@ -45,8 +48,16 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
 
         cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
     }
-
     private void Update() {
+        if(player != null && player.doTargetField) {
+            SelectCard();
+        }
+        else {
+            overviewedCardType = CardManager.CardType.NONE;
+        }
+    }
+
+    private void FixedUpdate() {
         CardManager.CardType currentType = CardManager.CardType.HUMAN;
         for (int i = 0; i < cardPositions.Count; i++) {
             if (!player.field.cards.ContainsKey(currentType)) {
@@ -57,18 +68,35 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
                 }
             }
 
-            for (int j = 0; j < cardPositions[i].Count; j++) {                
-                player.field.cards[currentType][j].customTransform.localPosition =
-                    Vector3.Lerp(
-                        player.field.cards[currentType][j].customTransform.localPosition,
-                        cardPositions[i][j],
-                        lerpSpeed);
+            if((int)overviewedCardType == i && player.targetType) {
+                for(int j = 0; j < cardPositions[i].Count; j++) {
+                    player.field.cards[currentType][j].customTransform.localPosition =
+                        Vector3.Lerp(
+                            player.field.cards[currentType][j].customTransform.localPosition,
+                            cardPositions[i][j] + Vector3.up * overviewedHeight,
+                            lerpSpeed);
 
-                player.field.cards[currentType][j].customTransform.localRotation =
-                    Quaternion.Lerp(
-                        player.field.cards[currentType][j].customTransform.localRotation,
-                        Quaternion.Euler(89.0f, 0.0f, 0.0f),
-                        lerpSpeed);
+                    player.field.cards[currentType][j].customTransform.localRotation =
+                        Quaternion.Lerp(
+                            player.field.cards[currentType][j].customTransform.localRotation,
+                            Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                            lerpSpeed);
+                }
+            }
+            else {
+                for(int j = 0; j < cardPositions[i].Count; j++) {
+                    player.field.cards[currentType][j].customTransform.localPosition =
+                        Vector3.Lerp(
+                            player.field.cards[currentType][j].customTransform.localPosition,
+                            cardPositions[i][j] + Vector3.up * (i == (int)overviewedCardType && j == cardPositions[i].Count - 1 ? overviewedHeight : 0.0f),
+                            lerpSpeed);
+
+                    player.field.cards[currentType][j].customTransform.localRotation =
+                        Quaternion.Lerp(    
+                            player.field.cards[currentType][j].customTransform.localRotation,
+                            Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                            lerpSpeed);
+                }
             }
             currentType++;
         }
@@ -143,7 +171,6 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
                         0.1f,
                         cardInitialPos - Card.cardLength * j * decalBetweenCard
                         );
-                Debug.Log("Position expected : " + cardPositions[i][j]);
             }
         }
 
@@ -161,7 +188,7 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
         }
     }
 
-    void RemoveCardFormDisplay(Card card) {
+    public void RemoveCardFormDisplay(Card card) {
         int index = cardTypesPossessed.FindIndex(x => x == card.cardType);
         cardPositions[index].RemoveAt(0);
         if (cardPositions[index].Count == 0) {
@@ -169,6 +196,33 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
             cardTypesPossessed.RemoveAt(index);
             if (!cardTypesPossessed.Contains(card.cardType + Card.raceNmb) && !cardTypesPossessed.Contains(card.cardType - Card.raceNmb))
                 raceTypePossessed.Remove(card.cardType - Card.raceNmb < 0 ? card.cardType : card.cardType - Card.raceNmb);
+        }
+    }
+
+    // Select cards and put them on overviewed mode.
+    void SelectCard() {
+        RaycastHit hitBis;
+        Ray rayBis = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // Put a card currently under the mouse on overviewed mode if she is in hand.
+        if(Physics.Raycast(rayBis, out hitBis)) {
+            Card cardSelected = hitBis.transform.GetComponent<Card>();
+            if(cardSelected != null && player.field.IsCardOnField(cardSelected)) {
+                overviewedCardType = cardSelected.cardType;
+                Debug.Log("OverviewCardType : " + overviewedCardType);
+            }
+            else {
+                overviewedCardType = CardManager.CardType.NONE;
+            }
+        }
+        else {
+            overviewedCardType = CardManager.CardType.NONE;
+        }
+
+        // Select the card that you click on if there is one currently overviewed.
+        if(overviewedCardType != CardManager.CardType.NONE &&
+            Input.GetMouseButtonUp(0)) {
+            player.TargetFieldCard(new Vector2((float)overviewedCardType, player.field.cards[overviewedCardType][0].id));
         }
     }
 
@@ -181,7 +235,6 @@ public class FieldDisplayer : MonoBehaviourPunCallbacks {
         int raceNumber = 10;
 
         cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
-        Debug.Log("cardInitialPos : " + cardInitialPos);
 
         float left = -(raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f - Card.cardWidth / 2.0f;
         float right = (Card.cardWidth + spaceBetweenColumn) * (raceNumber - 1) - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;

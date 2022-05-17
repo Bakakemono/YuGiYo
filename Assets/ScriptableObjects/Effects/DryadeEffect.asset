@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c50ef0c262dfb4449c206e5c23b5877, type: 3}
   m_Name: DryadeEffect
   m_EditorClassIdentifier: 
-  targetPlayer: 0
+  targetPlayer: 1
   targetHand: 0
-  targetField: 0
+  targetField: 1
   selectHand: 0
   selectField: 0

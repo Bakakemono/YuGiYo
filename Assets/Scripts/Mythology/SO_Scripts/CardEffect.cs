@@ -5,12 +5,20 @@ using UnityEngine;
 public class CardEffect : ScriptableObject
 {
     [SerializeField] private bool targetPlayer = false;
+
     [SerializeField] private bool targetHand = false;
     [SerializeField] private bool targetField = false;
+
+    [SerializeField] private float nmbCardTargeted = 0;
+
+
     [SerializeField] private bool selectHand = false;
     [SerializeField] private bool selectField = false;
 
-    public virtual void Effect(Player _dealer, Player _target, Vector2 _dealerCard, Vector2 _targetCard, CardManager _cardManager) {}
+    [SerializeField] private float nmbCardSelected = 0;
+
+
+    public virtual void Effect(Player _dealer, Player _target, Vector2[] _dealerCards, Vector2[] _targetCards, CardManager _cardManager) {}
 
     public bool DoTargetPlayer() {
         return targetPlayer;
@@ -29,5 +37,10 @@ public class CardEffect : ScriptableObject
 
     public bool DoSelectField() {
         return selectField;
+    }
+
+    public float GetNmbCardTargeted()
+    {
+        return nmbCardTargeted;
     }
 }

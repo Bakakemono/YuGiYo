@@ -120,17 +120,18 @@ public class HandDisplayer : MonoBehaviour
                 // If there is an overviewed card, Modifie the pos of the said card to expose it.
                 if(overviewedCardType != CardManager.CardType.NONE) {
                     overviewedCardIndex = FindIndex(overviewedCardType);
-
-                    positions[overviewedCardIndex][0] = new Vector3(
-                        circlePosition.x +
-                            (circleRadius + overviewElevationHeight) *
-                                (Mathf.Sin((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
-                        circlePosition.y +
-                            (circleRadius + overviewElevationHeight) *
-                                (Mathf.Cos((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
-                        circlePosition.z +
-                            -overviewClosingDistance
-                                );
+                    if(overviewedCardIndex != TYPE_NOT_AVAILABLE) {
+                        positions[overviewedCardIndex][0] = new Vector3(
+                            circlePosition.x +
+                                (circleRadius + overviewElevationHeight) *
+                                    (Mathf.Sin((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                            circlePosition.y +
+                                (circleRadius + overviewElevationHeight) *
+                                    (Mathf.Cos((anglePerCard * overviewedCardIndex) - anglePerCard * (positions.Count - 1.0f) / 2.0f)),
+                            circlePosition.z +
+                                -overviewClosingDistance
+                                    );
+                    }
                 }
 
                 // Set the selected on the side to be viewed more in detail
@@ -251,7 +252,6 @@ public class HandDisplayer : MonoBehaviour
         RemoveCard(_cardToUpdate);
         player.hand.RemoveCard(_cardToUpdate);
         selectedCardType = CardManager.CardType.NONE;
-        player.PlayCard(_cardToUpdate);
     }
 
     public void AddCard(Card card) {

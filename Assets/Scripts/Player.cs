@@ -20,7 +20,12 @@ public class Player : MonoBehaviourPunCallbacks {
     public int id;
     PhotonView view;
 
+    public bool targetType = false;
+
     bool isSetup = false;
+
+    public bool doTargetHand = false;
+    public bool doTargetField = false;
 
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
@@ -33,23 +38,9 @@ public class Player : MonoBehaviourPunCallbacks {
         }
     }
 
-    private void Update() {
-    }
-
-    public void SetPlayerTurn(bool isPlayerTurn) {
-        canPlay = isPlayerTurn;
-    }
-
-    public void PlayCard(Card card) {
-        cardManager.PlayCard(this, card);
-        if(view.IsMine) {
-            view.RPC("RPC_PlayCard", RpcTarget.Others, card.cardType, card.id);
-        }
-    }
-
     [PunRPC]
-    void RPC_Setup(int idUpdated) {
-        id = idUpdated;
+    void RPC_Setup(int _idUpdated) {
+        id = _idUpdated;
         gameManager = FindObjectOfType<GameManager>();
         int ownerId = gameManager.GetOwnerId();
         gameManager.Register(this, id);
@@ -69,6 +60,27 @@ public class Player : MonoBehaviourPunCallbacks {
 
 
         isSetup = true;
+    }
+
+    public void SetPlayerTurn(bool _isPlayerTurn) {
+        canPlay = _isPlayerTurn;
+    }
+
+    public void PlayCard(Card _card) {
+        if(view.IsMine) {
+            cardManager.PlayCard(this, _card);
+        }
+        else {
+            handDisplayer.UpdateCardPlayed(_card);
+        }
+    }
+
+    public bool TargetHandCard(Vector2 _cardInfo) {
+        return cardManager.SelectTargetHandCard(_cardInfo);
+    }
+
+    public bool TargetFieldCard(Vector2 _cardInfo) {
+        return cardManager.SelectTargetFieldCard(_cardInfo);
     }
 
     [PunRPC]
