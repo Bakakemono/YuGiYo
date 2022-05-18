@@ -12,9 +12,13 @@ public class CameraManager : MonoBehaviour
     Vector3 newPosition = new Vector3();
     Quaternion newRotation = new Quaternion();
 
+    // Number of frame the camera will take to move
     float totalStepNumber = 50;
+
+    // Current step the camera is at
     float currentStep = 0;
 
+    // Flag for when the camera position need to be updated
     bool needUpdated = false;
 
     [SerializeField] Transform[] playerLocations; 
@@ -33,18 +37,21 @@ public class CameraManager : MonoBehaviour
         customTransform.position = Vector3.Lerp(oldPosition, newPosition, currentStep / totalStepNumber);
         customTransform.rotation = Quaternion.Lerp(oldRotation, newRotation, currentStep / totalStepNumber);
         
-        if(currentStep == totalStepNumber)
+        // Check if the camera finish moving
+        if(currentStep >= totalStepNumber)
         {
             currentStep = 0;
             needUpdated = false;
         }
     }
 
+    // Make the camera to a player
     public void GoToPlayer(int playerId)
     {
         MoveCamera(playerLocations[playerId]);
     }
 
+    // Update the new camera position and start the update
     private void MoveCamera(Transform _newLocation)
     {
         oldPosition = customTransform.position;
