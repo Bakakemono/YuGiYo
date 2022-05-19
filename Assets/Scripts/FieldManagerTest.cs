@@ -1,0 +1,217 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class FieldManagerTest : MonoBehaviour
+{
+
+    [SerializeField] Player player;
+    [SerializeField] List<List<Vector3>> cardPositions = new List<List<Vector3>>();
+    [SerializeField] List<CardManager.CardType> cardTypesPossessed = new List<CardManager.CardType>();
+    [SerializeField] List<CardManager.CardType> raceTypePossessed = new List<CardManager.CardType>();
+
+    float cardInitialPos = 5.0f;
+
+    int cardMaxNumberPerColumn = 10;
+
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    float spaceBetweenColumn = 0.05f;
+
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    float decalBetweenCard = 0.2f;
+
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    float secretCardAdvance = 0.75f;
+
+    float lerpSpeed = 0.2f;
+
+    int frameMovementTotal = 50;
+    int frameCountCurrent = 0;
+
+    CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
+    float overviewedHeight = 0.2f;
+
+    Vector2Int lastCardAdded = new Vector2Int();
+    Vector2Int NO_CARD {
+        get {
+            return new Vector2Int(-1, -1);
+        }
+    }
+
+    bool addCarts = true;
+
+    private void OnDrawGizmos() {
+        int raceNumber = 10;
+
+        cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
+
+        float left = -(raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f - Card.cardWidth / 2.0f;
+        float right = (Card.cardWidth + spaceBetweenColumn) * (raceNumber - 1) - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
+        float top = cardInitialPos + Card.cardLength / 2.0f;
+        float bottom = 0;
+
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(left, 0, bottom)), transform.TransformPoint(new Vector3(right, 0, bottom)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(left, 0, top)), transform.TransformPoint(new Vector3(right, 0, top)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(left, 0, bottom)), transform.TransformPoint(new Vector3(left, 0, top)));
+        Gizmos.DrawLine(transform.TransformPoint(new Vector3(right, 0, bottom)), transform.TransformPoint(new Vector3(right, 0, top)));
+
+        for(int i = 0; i < raceNumber; i++) {
+            float xPos = (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
+
+            Gizmos.DrawLine(transform.TransformPoint(new Vector3(xPos, 0, bottom)), transform.TransformPoint(new Vector3(xPos, 0, top)));
+        }
+
+        for(int i = 0; i < raceNumber; i++) {
+            for(int j = 0; j < cardMaxNumberPerColumn; j++) {
+                Gizmos.DrawSphere(transform.TransformPoint(new Vector3(
+                        (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
+                        0.1f,
+                        cardInitialPos - Card.cardLength * j * decalBetweenCard
+                        )),
+                        0.1f
+                        );
+                ;
+            }
+        }
+
+        // Logical part
+
+        cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
+
+        Card[] cards = GetComponentsInChildren<Card>();
+        for(int i = 0; i < cards.Length; i++) {
+            //if()
+            if(!cardTypesPossessed.Contains(cards[i].cardType - Card.raceNmb) && !cardTypesPossessed.Contains(cards[i].cardType)) {
+                CardManager.CardType raceType = (cards[i].cardType - Card.raceNmb < 0 ? cards[i].cardType : cards[i].cardType - Card.raceNmb);
+
+                if(raceTypePossessed.Count == 0) {
+                    raceTypePossessed.Add(raceType);
+                }
+                else {
+                    for(int j = 0; j < raceTypePossessed.Count; j++) {
+                        if(raceTypePossessed[j] < raceType) {
+                            if(j == raceTypePossessed.Count - 1) {
+                                raceTypePossessed.Add(raceType);
+                                break;
+                            }
+                            continue;
+                        }
+                        else if(raceTypePossessed[j] == raceType) {
+                            break;
+                        }
+                        raceTypePossessed.Insert(j, raceType);
+                        break;
+                    }
+                }
+            }
+
+            cards[i].customTransform.parent = transform;
+
+            if(cardTypesPossessed.Contains(cards[i].cardType)) {
+                int index = cardTypesPossessed.FindIndex(x => x == cards[i].cardType);
+                cardPositions[index].Add(new Vector3());
+            }
+            else {
+                if(cardTypesPossessed.Count == 0) {
+                    cardTypesPossessed.Add(cards[i].cardType);
+                    cardPositions.Add(new List<Vector3>());
+                    cardPositions[0].Add(new Vector3());
+                }
+                else {
+                    for(int j = 0; j < cardTypesPossessed.Count; j++) {
+                        if(cardTypesPossessed[j] < cards[i].cardType) {
+                            if(i == cardTypesPossessed.Count - 1) {
+                                cardTypesPossessed.Add(cards[i].cardType);
+                                cardPositions.Add(new List<Vector3>());
+                                cardPositions[cardPositions.Count - 1].Add(new Vector3());
+                                break;
+                            }
+                            continue;
+                        }
+
+                        cardTypesPossessed.Insert(j, cards[i].cardType);
+                        cardPositions.Insert(j, new List<Vector3>());
+                        cardPositions[j].Add(new Vector3());
+                        break;
+                    }
+                }
+            }
+
+            for(int j = 0; j < cardPositions.Count; j++) {
+                if(cardTypesPossessed[j] > (CardManager.CardType)Card.raceNmb)
+                    break;
+
+                int index = raceTypePossessed.FindIndex(x => x == (CardManager.CardType)(cardTypesPossessed[j] - Card.raceNmb < 0 ? cardTypesPossessed[j] : cardTypesPossessed[j] - 10));
+                for(int k = 0; k < cardPositions[j].Count; k++) {
+                    cardPositions[j][k] =
+                        new Vector3(
+                            (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
+                            0.1f,
+                            cardInitialPos - Card.cardLength * k * decalBetweenCard
+                            );
+                }
+            }
+
+            for(CardManager.CardType j = CardManager.CardType.HUMAN_SECRET; j < CardManager.CardType.Length; j++) {
+                if(!cardTypesPossessed.Contains((CardManager.CardType)j))
+                    continue;
+
+                int index = raceTypePossessed.FindIndex(x => x == j - Card.raceNmb);
+                cardPositions[cardTypesPossessed.FindIndex(x => x == j)][0] =
+                    new Vector3(
+                        (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
+                        0.0f,
+                        cardInitialPos + Card.cardLength * secretCardAdvance
+                        );
+            }
+        }
+
+        CardManager.CardType currentType = CardManager.CardType.HUMAN;
+        for(int i = 0; i < cardPositions.Count; i++) {
+            if(!player.field.cards.ContainsKey(currentType)) {
+                while(true) {
+                    currentType++;
+                    if(player.field.cards.ContainsKey(currentType))
+                        break;
+                }
+            }
+
+            if((int)overviewedCardType == i && player.targetType) {
+                for(int j = 0; j < cardPositions[i].Count; j++) {
+                    player.field.cards[currentType][j].customTransform.localPosition =
+                        Vector3.Lerp(
+                            player.field.cards[currentType][j].customTransform.localPosition,
+                            cardPositions[i][j] + Vector3.up * overviewedHeight,
+                            lerpSpeed);
+
+                    player.field.cards[currentType][j].customTransform.localRotation =
+                        Quaternion.Lerp(
+                            player.field.cards[currentType][j].customTransform.localRotation,
+                            Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                            lerpSpeed);
+                }
+            }
+            else {
+                for(int j = 0; j < cardPositions[i].Count; j++) {
+                    player.field.cards[currentType][j].customTransform.localPosition =
+                        Vector3.Lerp(
+                            player.field.cards[currentType][j].customTransform.localPosition,
+                            cardPositions[i][j] + Vector3.up * (i == (int)overviewedCardType && j == cardPositions[i].Count - 1 ? overviewedHeight : 0.0f),
+                            lerpSpeed);
+
+                    player.field.cards[currentType][j].customTransform.localRotation =
+                        Quaternion.Lerp(
+                            player.field.cards[currentType][j].customTransform.localRotation,
+                            Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                            lerpSpeed);
+                }
+            }
+            currentType++;
+        }
+    }
+}

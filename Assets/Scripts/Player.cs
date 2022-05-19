@@ -6,8 +6,8 @@ public class Player : MonoBehaviourPunCallbacks {
     public Hand hand = new Hand();
     public Field field = new Field();
 
-    [SerializeField] public HandDisplayer handDisplayer;
-    [SerializeField] public FieldDisplayer fieldDisplayer;
+    [SerializeField] public HandManager handDisplayer;
+    [SerializeField] public FieldManager fieldDisplayer;
 
     CardManager cardManager;
     GameManager gameManager;

@@ -210,8 +210,17 @@ public class GameManager : MonoBehaviourPunCallbacks {
         return (index - ownerId) < 0 ? index - ownerId + EXPECTED_PLAYER_NUMBER : index - ownerId;
     }
 
-    public void SetCameraToPlayer(int playerId)
+    public void SetCameraToPlayer(int playerId, bool toHand = false)
     {
-        cameraManager.GoToPlayer(ConvertPlayerIndex(playerId));
+        if(playerId == ownerId) {
+            cameraManager.ResetCamera();
+            return;
+        }
+        if(toHand) {
+            cameraManager.LookAtHand(ConvertPlayerIndex(playerId));
+        }
+        else {
+            cameraManager.LookAtField(ConvertPlayerIndex(playerId));
+        }
     }
 }

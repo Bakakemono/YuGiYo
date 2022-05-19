@@ -19,9 +19,15 @@ public class CameraManager : MonoBehaviour
     float currentStep = 0;
 
     // Flag for when the camera position need to be updated
-    bool needUpdated = false;
+    bool needUpdate = false;
 
-    [SerializeField] Transform[] playerLocations; 
+    [SerializeField] Transform mainPlayerTransform;
+
+    // Positions and rotations for card in hand selection
+    [SerializeField] Transform[] playerToHandTransform;
+
+    // Position and rotations for card in field selection
+    [SerializeField] Transform[] playerToFieldTransform;
 
     private void Start()
     {
@@ -30,8 +36,9 @@ public class CameraManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!needUpdated)
+        if (!needUpdate)
             return;
+
 
         currentStep++;
         customTransform.position = Vector3.Lerp(oldPosition, newPosition, currentStep / totalStepNumber);
@@ -41,24 +48,37 @@ public class CameraManager : MonoBehaviour
         if(currentStep >= totalStepNumber)
         {
             currentStep = 0;
-            needUpdated = false;
+            needUpdate = false;
         }
     }
 
-    // Make the camera to a player
-    public void GoToPlayer(int playerId)
-    {
-        MoveCamera(playerLocations[playerId]);
-    }
-
-    // Update the new camera position and start the update
-    private void MoveCamera(Transform _newLocation)
-    {
+    public void LookAtHand(int playerId) {
         oldPosition = customTransform.position;
         oldRotation = customTransform.rotation;
-        newPosition = _newLocation.position;
-        newRotation = _newLocation.rotation;
 
-        needUpdated = true;
+        newPosition = playerToHandTransform[playerId - 1].position;
+        newRotation = playerToHandTransform[playerId - 1].rotation;
+
+        needUpdate = true;
+    }
+
+    public void LookAtField(int playerId) {
+        oldPosition = customTransform.position;
+        oldRotation = customTransform.rotation;
+
+        newPosition = playerToFieldTransform[playerId - 1].position;
+        newRotation = playerToFieldTransform[playerId - 1].rotation;
+
+        needUpdate = true;
+    }
+
+    public void ResetCamera() {
+        oldPosition = customTransform.position;
+        oldRotation = customTransform.rotation;
+
+        newPosition = mainPlayerTransform.position;
+        newRotation = mainPlayerTransform.rotation;
+
+        needUpdate = true;
     }
 }

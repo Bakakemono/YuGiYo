@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SlotDistributor : MonoBehaviour {
     [SerializeField] private Transform[] playerSlots = new Transform[4];
-    [SerializeField] private HandDisplayer[] handSlots = new HandDisplayer[4];
-    [SerializeField] private FieldDisplayer[] fieldSlots = new FieldDisplayer[4];
+    [SerializeField] private HandManager[] handSlots = new HandManager[4];
+    [SerializeField] private FieldManager[] fieldSlots = new FieldManager[4];
 
     [SerializeField] private Transform showCasePosition;
 
@@ -13,11 +13,11 @@ public class SlotDistributor : MonoBehaviour {
         return playerSlots[id];
     }
 
-    public HandDisplayer GetHandSlots(int id) {
+    public HandManager GetHandSlots(int id) {
         return handSlots[id];
     }
 
-    public FieldDisplayer GetfieldSlots(int id) {
+    public FieldManager GetfieldSlots(int id) {
         return fieldSlots[id];
     }
 
