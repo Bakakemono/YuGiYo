@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldManagerTest : MonoBehaviour
-{
-
-    [SerializeField] Player player;
+public class FieldManagerTest : MonoBehaviour {
     [SerializeField] List<List<Vector3>> cardPositions = new List<List<Vector3>>();
     [SerializeField] List<CardManager.CardType> cardTypesPossessed = new List<CardManager.CardType>();
     [SerializeField] List<CardManager.CardType> raceTypePossessed = new List<CardManager.CardType>();
@@ -31,9 +28,6 @@ public class FieldManagerTest : MonoBehaviour
     int frameMovementTotal = 50;
     int frameCountCurrent = 0;
 
-    CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
-    float overviewedHeight = 0.2f;
-
     Vector2Int lastCardAdded = new Vector2Int();
     Vector2Int NO_CARD {
         get {
@@ -43,7 +37,12 @@ public class FieldManagerTest : MonoBehaviour
 
     bool addCarts = true;
 
+    [SerializeField] bool update = true;
+
     private void OnDrawGizmos() {
+        if(!update)
+            return;
+
         int raceNumber = 10;
 
         cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
@@ -81,11 +80,17 @@ public class FieldManagerTest : MonoBehaviour
 
         // Logical part
 
+        Field field = new Field();
+        cardPositions = new List<List<Vector3>>();
+        cardTypesPossessed = new List<CardManager.CardType>();
+        raceTypePossessed = new List<CardManager.CardType>();
+
         cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
 
         Card[] cards = GetComponentsInChildren<Card>();
         for(int i = 0; i < cards.Length; i++) {
-            //if()
+            field.AddCard(cards[i]);
+            
             if(!cardTypesPossessed.Contains(cards[i].cardType - Card.raceNmb) && !cardTypesPossessed.Contains(cards[i].cardType)) {
                 CardManager.CardType raceType = (cards[i].cardType - Card.raceNmb < 0 ? cards[i].cardType : cards[i].cardType - Card.raceNmb);
 
@@ -151,7 +156,7 @@ public class FieldManagerTest : MonoBehaviour
                     cardPositions[j][k] =
                         new Vector3(
                             (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
-                            0.1f,
+                            0.02f,
                             cardInitialPos - Card.cardLength * k * decalBetweenCard
                             );
                 }
@@ -173,43 +178,27 @@ public class FieldManagerTest : MonoBehaviour
 
         CardManager.CardType currentType = CardManager.CardType.HUMAN;
         for(int i = 0; i < cardPositions.Count; i++) {
-            if(!player.field.cards.ContainsKey(currentType)) {
+            if(!field.cards.ContainsKey(currentType)) {
                 while(true) {
                     currentType++;
-                    if(player.field.cards.ContainsKey(currentType))
+                    if(field.cards.ContainsKey(currentType))
                         break;
                 }
             }
 
-            if((int)overviewedCardType == i && player.targetType) {
-                for(int j = 0; j < cardPositions[i].Count; j++) {
-                    player.field.cards[currentType][j].customTransform.localPosition =
-                        Vector3.Lerp(
-                            player.field.cards[currentType][j].customTransform.localPosition,
-                            cardPositions[i][j] + Vector3.up * overviewedHeight,
-                            lerpSpeed);
 
-                    player.field.cards[currentType][j].customTransform.localRotation =
-                        Quaternion.Lerp(
-                            player.field.cards[currentType][j].customTransform.localRotation,
-                            Quaternion.Euler(89.0f, 0.0f, 0.0f),
-                            lerpSpeed);
-                }
-            }
-            else {
-                for(int j = 0; j < cardPositions[i].Count; j++) {
-                    player.field.cards[currentType][j].customTransform.localPosition =
-                        Vector3.Lerp(
-                            player.field.cards[currentType][j].customTransform.localPosition,
-                            cardPositions[i][j] + Vector3.up * (i == (int)overviewedCardType && j == cardPositions[i].Count - 1 ? overviewedHeight : 0.0f),
-                            lerpSpeed);
+            for(int j = 0; j < cardPositions[i].Count; j++) {
+                field.cards[currentType][j].customTransform.localPosition =
+                    Vector3.Lerp(
+                        field.cards[currentType][j].customTransform.localPosition,
+                        cardPositions[i][j],
+                        lerpSpeed);
 
-                    player.field.cards[currentType][j].customTransform.localRotation =
-                        Quaternion.Lerp(
-                            player.field.cards[currentType][j].customTransform.localRotation,
-                            Quaternion.Euler(89.0f, 0.0f, 0.0f),
-                            lerpSpeed);
-                }
+                field.cards[currentType][j].customTransform.localRotation =
+                    Quaternion.Lerp(
+                        field.cards[currentType][j].customTransform.localRotation,
+                        Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                        lerpSpeed);
             }
             currentType++;
         }

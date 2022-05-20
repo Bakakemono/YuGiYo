@@ -168,7 +168,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 cardPositions[i][j] =
                     new Vector3(
                         (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
-                        0.1f,
+                        0.02f,
                         cardInitialPos - Card.cardLength * j * decalBetweenCard
                         );
             }
