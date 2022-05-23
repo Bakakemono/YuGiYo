@@ -10903,9 +10903,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44a362c5511d8b44f9ca498b5a4c6b4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainPlayerTransform: {fileID: 0}
-  playerToHandTransform: []
-  playerToFieldTransform: []
+  mainPlayerTransform: {fileID: 1178359602}
+  playerToHandTransform:
+  - {fileID: 1868882362}
+  - {fileID: 1621208846}
+  - {fileID: 582484130}
+  playerToFieldTransform:
+  - {fileID: 834423948}
+  - {fileID: 1216312224}
+  - {fileID: 1819178490}
 --- !u!1001 &774210531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12857,6 +12863,10 @@ PrefabInstance:
     - target: {fileID: 300625702260200789, guid: 0ebf7933a56352045930070b8deb57b9, type: 3}
       propertyPath: m_Name
       value: Dryade (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 300625702260200789, guid: 0ebf7933a56352045930070b8deb57b9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 469159086273309700, guid: 0ebf7933a56352045930070b8deb57b9, type: 3}
       propertyPath: m_RootOrder
@@ -22361,6 +22371,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
       propertyPath: m_Name
       value: test-table
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a4f399f10725344d920c8b4e3185179, type: 3}

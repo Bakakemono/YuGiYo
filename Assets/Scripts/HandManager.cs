@@ -323,7 +323,7 @@ public class HandManager : MonoBehaviour
         playerSet = true;
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmosSelected() {
         Gizmos.color = Color.red;
 
         circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);

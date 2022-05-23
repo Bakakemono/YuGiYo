@@ -35,8 +35,6 @@ public class FieldManagerTest : MonoBehaviour {
         }
     }
 
-    bool addCarts = true;
-
     [SerializeField] bool update = true;
 
     private void OnDrawGizmos() {

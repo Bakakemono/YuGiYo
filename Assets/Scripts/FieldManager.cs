@@ -231,7 +231,6 @@ public class FieldManager : MonoBehaviourPunCallbacks {
     }
 
     private void OnDrawGizmosSelected() {
-        return;
         int raceNumber = 10;
 
         cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
@@ -261,7 +260,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                         0.1f,
                         cardInitialPos - Card.cardLength * j * decalBetweenCard
                         )),
-                        0.1f
+                        0.02f
                         );
                 ;
             }
