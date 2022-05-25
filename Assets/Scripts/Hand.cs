@@ -39,4 +39,8 @@ public class Hand
 
         return false;
     }
+
+    public bool IsEmpty() {
+        return cards.Count == 0;
+    }
 }

@@ -57,7 +57,6 @@ public class CardManager : MonoBehaviourPunCallbacks {
 
     [SerializeField] CardEffect[] cardEffects;
 
-
     public enum CardEndLocaion {
         FIELD,
         DISCARD_PILE
@@ -81,6 +80,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
 
     ProgressCardPlayed progressCardPlayed = ProgressCardPlayed.SELECT_CARD_TO_PLAY;
 
+
     [SerializeField] GameObject card;
 
     Dictionary<CardType, List<Card>> cards;
@@ -96,7 +96,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
     DiscardPileManager discardPileManager;
 
     // List of all players
-    [SerializeField] Player[] players;
+    [SerializeField] public Player[] players;
 
     // Number of card that each player will get at the start of the 
     [SerializeField] int startingCardNumber = 6;
@@ -131,7 +131,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
     bool targetHandCardSelected = false;
     bool targetFieldCardSelected = false;
 
-    int cardCount = 0;
+    bool effectNullified = false;
 
     void Awake() {
         drawPileManager = FindObjectOfType<DrawPileManager>();
@@ -296,7 +296,8 @@ public class CardManager : MonoBehaviourPunCallbacks {
             Vector2[] _targetHandCards,
             Vector2[] _targetFieldCards,
             Vector2[] _handCards,
-            Vector2[] _fieldCards
+            Vector2[] _fieldCards,
+            bool _effectNullified
             ) {
         player = players[gameManager.playerTurn];
         cardPlayed = cards[(CardType)_cardPlayed.x][(int)_cardPlayed.y];
@@ -309,13 +310,14 @@ public class CardManager : MonoBehaviourPunCallbacks {
         handCards = new List<Vector2>(_handCards);
         fieldCards = new List<Vector2>(_fieldCards);
 
-        Debug.LogError("player is updated");
         player.PlayCard(cardPlayed);
 
         frameCountCurrent = 0;
         cardPlayed.customTransform.parent = cardShowcasePosition.transform;
         initialRotation = cardPlayed.customTransform.localRotation;
         initialPos = cardPlayed.customTransform.localPosition;
+
+        effectNullified = _effectNullified;
 
         progressCardPlayed = ProgressCardPlayed.CARD_SHOWCASE;
     }
@@ -332,6 +334,27 @@ public class CardManager : MonoBehaviourPunCallbacks {
                         cardPlayed.customTransform.parent = cardShowcasePosition.transform;
                         initialRotation = cardPlayed.customTransform.localRotation;
                         initialPos = cardPlayed.customTransform.localPosition;
+
+                        if((cardPlayed.cardEffect.DoTargetHand() ? 
+                            players[1].hand.IsEmpty() &&
+                            players[2].hand.IsEmpty() &&
+                            players[3].hand.IsEmpty() :
+                            false) ||
+                            (cardPlayed.cardEffect.DoTargetField() ?
+                            players[1].field.IsEmpty() &&
+                            players[2].field.IsEmpty() &&
+                            players[3].field.IsEmpty() :
+                            false) ||
+                            (cardPlayed.cardEffect.DoSelectCard() ?
+                            players[0].hand.IsEmpty() :
+                            false) ||
+                            (cardPlayed.cardEffect.DoSelectField() ?
+                            players[0].field.IsEmpty() :
+                            false)
+                            ) {
+                            effectNullified = true;
+                            progressCardPlayed = ProgressCardPlayed.UPDATE_ALL_PLAYER;
+                        }
 
                         if(cardPlayed.cardEffect.DoTargetPlayer()) {
                             progressCardPlayed = ProgressCardPlayed.SELECT_TARGET;
@@ -421,7 +444,6 @@ public class CardManager : MonoBehaviourPunCallbacks {
                 break;
 
             case ProgressCardPlayed.UPDATE_ALL_PLAYER:
-                Debug.LogError("Update step");
                 int targetId = target == null ? GameManager.NO_ID : target.id;
                 view.RPC(
                     "RPC_UpdatePlayers",
@@ -431,7 +453,8 @@ public class CardManager : MonoBehaviourPunCallbacks {
                     targetHandCards.ToArray(),
                     targetFieldCards.ToArray(),
                     handCards.ToArray(),
-                    fieldCards.ToArray()
+                    fieldCards.ToArray(),
+                    effectNullified
                     );
                 progressCardPlayed = ProgressCardPlayed.CARD_SHOWCASE;
                 break;
@@ -442,6 +465,10 @@ public class CardManager : MonoBehaviourPunCallbacks {
                 cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)frameCountCurrent / frameMovementTotal);
                 cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)frameCountCurrent / frameMovementTotal);
                 if(frameCountCurrent >= frameGobaleTotal) {
+                    if(effectNullified) {
+                        progressCardPlayed = ProgressCardPlayed.CARD_TO_FINAL_LOCATION;
+                        break;
+                    }
                     progressCardPlayed = ProgressCardPlayed.EFFECT;
                 }
                 break;
@@ -477,6 +504,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
             case ProgressCardPlayed.END_OF_TURN:
                 player = null;
                 cardPlayed = null;
+                effectNullified = false;
                 progressCardPlayed = ProgressCardPlayed.SELECT_CARD_TO_PLAY;
                 break;
         }
