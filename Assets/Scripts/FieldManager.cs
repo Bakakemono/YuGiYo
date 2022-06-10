@@ -6,7 +6,9 @@ using UnityEngine;
 public class FieldManager : MonoBehaviourPunCallbacks {
     [SerializeField] Player player;
     List<List<Vector3>> cardPositions;
+    // All type of cards currently displayed by the field manager, Race and Secret Differentiated.
     List<CardManager.CardType> cardTypesPossessed;
+    // Only the race are included in this one.
     [SerializeField] List<CardManager.CardType> raceTypePossessed;
 
     float cardInitialPos = 5.0f;
@@ -68,7 +70,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 }
             }
 
-            if((int)overviewedCardType == i && player.targetType) {
+            if(overviewedCardType != CardManager.CardType.NONE) {
                 for(int j = 0; j < cardPositions[i].Count; j++) {
                     player.field.cards[currentType][j].customTransform.localPosition =
                         Vector3.Lerp(
@@ -88,7 +90,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                     player.field.cards[currentType][j].customTransform.localPosition =
                         Vector3.Lerp(
                             player.field.cards[currentType][j].customTransform.localPosition,
-                            cardPositions[i][j] + Vector3.up * (i == (int)overviewedCardType && j == cardPositions[i].Count - 1 ? overviewedHeight : 0.0f),
+                            cardPositions[i][j],
                             lerpSpeed);
 
                     player.field.cards[currentType][j].customTransform.localRotation =
@@ -209,7 +211,6 @@ public class FieldManager : MonoBehaviourPunCallbacks {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
             if(cardSelected != null && player.field.IsCardOnField(cardSelected)) {
                 overviewedCardType = cardSelected.cardType;
-                Debug.Log("OverviewCardType : " + overviewedCardType);
             }
             else {
                 overviewedCardType = CardManager.CardType.NONE;
@@ -222,6 +223,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
         // Select the card that you click on if there is one currently overviewed.
         if(overviewedCardType != CardManager.CardType.NONE &&
             Input.GetMouseButtonUp(0)) {
+            Debug.LogError("CardType : " + overviewedCardType.ToString() + " Selected");
             player.TargetFieldCard(new Vector2((float)overviewedCardType, player.field.cards[overviewedCardType][0].id));
         }
     }

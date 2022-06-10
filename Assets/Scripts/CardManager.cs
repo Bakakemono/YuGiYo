@@ -131,6 +131,9 @@ public class CardManager : MonoBehaviourPunCallbacks {
     bool targetHandCardSelected = false;
     bool targetFieldCardSelected = false;
 
+    bool doSelectHand = false;
+    bool doSelectField = false;
+
     bool effectNullified = false;
 
     void Awake() {
@@ -374,7 +377,15 @@ public class CardManager : MonoBehaviourPunCallbacks {
                 break;
 
             case ProgressCardPlayed.SELECT_TARGET:
+                if(cardPlayed.cardEffect.DoTargetHand()) {
+                    doSelectHand = true;
+                }
+                else if(cardPlayed.cardEffect.DoTargetField()) {
+                    doSelectField = true;
+                }
                 if(targetSelected) {
+                    doSelectHand = false;
+                    doSelectField = false;
                     targetSelected = false;
                     if(cardPlayed.cardEffect.DoTargetHand()) {
                         gameManager.SetCameraToPlayer(target.id, true);
@@ -554,5 +565,13 @@ public class CardManager : MonoBehaviourPunCallbacks {
             return true;
         }
         return false;
+    }
+
+    public bool GetDoSelectHand() {
+        return doSelectHand;
+    }
+
+    public bool GetDoSelectField() {
+        return doSelectField;
     }
 }
