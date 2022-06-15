@@ -6,8 +6,10 @@ using UnityEngine;
 public class FieldManager : MonoBehaviourPunCallbacks {
     [SerializeField] Player player;
     List<List<Vector3>> cardPositions;
+
     // All type of cards currently displayed by the field manager, Race and Secret Differentiated.
     List<CardManager.CardType> cardTypesPossessed;
+
     // Only the race are included in this one.
     [SerializeField] List<CardManager.CardType> raceTypePossessed;
 
@@ -43,6 +45,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
     }
 
     bool addCarts = true;
+
     void Start() {
         cardPositions = new List<List<Vector3>>();
         cardTypesPossessed = new List<CardManager.CardType>();
@@ -66,11 +69,11 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 while (true) {
                     currentType++;
                     if (player.field.cards.ContainsKey(currentType))
-                        break;
+                        break; 
                 }
             }
 
-            if(overviewedCardType != CardManager.CardType.NONE) {
+            if(overviewedCardType == cardTypesPossessed[i]) {
                 for(int j = 0; j < cardPositions[i].Count; j++) {
                     player.field.cards[currentType][j].customTransform.localPosition =
                         Vector3.Lerp(
