@@ -186,17 +186,8 @@ public class FieldManagerTest : MonoBehaviour {
 
 
             for(int j = 0; j < cardPositions[i].Count; j++) {
-                field.cards[currentType][j].customTransform.localPosition =
-                    Vector3.Lerp(
-                        field.cards[currentType][j].customTransform.localPosition,
-                        cardPositions[i][j],
-                        lerpSpeed);
-
-                field.cards[currentType][j].customTransform.localRotation =
-                    Quaternion.Lerp(
-                        field.cards[currentType][j].customTransform.localRotation,
-                        Quaternion.Euler(89.0f, 0.0f, 0.0f),
-                        lerpSpeed);
+                field.cards[currentType][j].customTransform.localPosition = cardPositions[i][j];
+                field.cards[currentType][j].customTransform.localRotation = Quaternion.Euler(89.0f, 0.0f, 0.0f);
             }
             currentType++;
         }

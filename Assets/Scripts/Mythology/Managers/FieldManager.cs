@@ -37,6 +37,13 @@ public class FieldManager : MonoBehaviourPunCallbacks {
     CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
     float overviewedHeight = 0.2f;
 
+    [SerializeField] int numberCardsToSelect = 0;
+    [SerializeField] List<CardManager.CardType> selectedCardTypes = new List<CardManager.CardType>();
+    [SerializeField] List<int> selectedCardTypesNumbers = new List<int>();
+    [SerializeField] float selectedCardheight = 0.3f;
+
+    [SerializeField] List<Vector2> selectedcards = new List<Vector2>();
+
     Vector2Int lastCardAdded = new Vector2Int();
     Vector2Int NO_CARD {
         get {
@@ -72,9 +79,12 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                         break; 
                 }
             }
+            if(player.doTargetType && !selectedCardTypes.Contains(overviewedCardType) && overviewedCardType == cardTypesPossessed[i]) {
+                
+            }
 
             if(overviewedCardType == cardTypesPossessed[i]) {
-                for(int j = 0; j < cardPositions[i].Count; j++) {
+                for(int j = 0; j < cardPositions[i].Count - selectedCardTypesNumbers[i]; j++) {
                     player.field.cards[currentType][j].customTransform.localPosition =
                         Vector3.Lerp(
                             player.field.cards[currentType][j].customTransform.localPosition,
@@ -89,7 +99,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 }
             }
             else {
-                for(int j = 0; j < cardPositions[i].Count; j++) {
+                for(int j = 0; j < cardPositions[i].Count - selectedCardTypesNumbers[i]; j++) {
                     player.field.cards[currentType][j].customTransform.localPosition =
                         Vector3.Lerp(
                             player.field.cards[currentType][j].customTransform.localPosition,
@@ -103,6 +113,20 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                             lerpSpeed);
                 }
             }
+            for(int j = cardPositions[i].Count - selectedCardTypesNumbers[i]; j < cardPositions[i].Count; j++) {
+                player.field.cards[currentType][j].customTransform.localPosition =
+                    Vector3.Lerp(
+                        player.field.cards[currentType][j].customTransform.localPosition,
+                        cardPositions[i][j] + Vector3.up * selectedCardheight,
+                        lerpSpeed);
+
+                player.field.cards[currentType][j].customTransform.localRotation =
+                    Quaternion.Lerp(
+                        player.field.cards[currentType][j].customTransform.localRotation,
+                        Quaternion.Euler(89.0f, 0.0f, 0.0f),
+                        lerpSpeed);
+            }
+
             currentType++;
         }
     }
@@ -143,6 +167,8 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 cardTypesPossessed.Add(card.cardType);
                 cardPositions.Add(new List<Vector3>());
                 cardPositions[0].Add(new Vector3());
+
+                selectedCardTypesNumbers.Add(0);
             }
             else {
                 for (int i = 0; i < cardTypesPossessed.Count; i++) {
@@ -151,6 +177,8 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                             cardTypesPossessed.Add(card.cardType);
                             cardPositions.Add(new List<Vector3>());
                             cardPositions[cardPositions.Count - 1].Add(new Vector3());
+
+                            selectedCardTypesNumbers.Add(0);
                             break;
                         }
                         continue;
@@ -159,6 +187,8 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                     cardTypesPossessed.Insert(i, card.cardType);
                     cardPositions.Insert(i, new List<Vector3>());
                     cardPositions[i].Add(new Vector3());
+
+                    selectedCardTypesNumbers.Insert(i, 0);
                     break;
                 }
             }
@@ -199,8 +229,12 @@ public class FieldManager : MonoBehaviourPunCallbacks {
         if (cardPositions[index].Count == 0) {
             cardPositions.RemoveAt(index);
             cardTypesPossessed.RemoveAt(index);
-            if (!cardTypesPossessed.Contains(card.cardType + Card.raceNmb) && !cardTypesPossessed.Contains(card.cardType - Card.raceNmb))
+
+            selectedCardTypesNumbers.RemoveAt(index);
+
+            if (!cardTypesPossessed.Contains(card.cardType + Card.raceNmb) && !cardTypesPossessed.Contains(card.cardType - Card.raceNmb)) {
                 raceTypePossessed.Remove(card.cardType - Card.raceNmb < 0 ? card.cardType : card.cardType - Card.raceNmb);
+            }
         }
     }
 
@@ -226,10 +260,47 @@ public class FieldManager : MonoBehaviourPunCallbacks {
         // Select the card that you click on if there is one currently overviewed.
         if(overviewedCardType != CardManager.CardType.NONE &&
             Input.GetMouseButtonUp(0)) {
-            Debug.LogError("CardType : " + overviewedCardType.ToString() + " Selected");
-            player.TargetFieldCard(new Vector2((float)overviewedCardType, player.field.cards[overviewedCardType][0].id));
+            int typeIndex = raceTypePossessed.FindIndex(x => x == overviewedCardType);
+            if(!player.doTargetType && cardPositions[typeIndex].Count > selectedCardTypesNumbers[typeIndex]) {
+                selectedCardTypes.Add(overviewedCardType);
+                selectedCardTypesNumbers[typeIndex]++;
+                selectedcards.Add(
+                    new Vector2(
+                        (float)overviewedCardType,
+                        player.field.cards[overviewedCardType]
+                            [player.field.cards[overviewedCardType].Count - (selectedCardTypesNumbers[typeIndex])].id
+                        )
+                    );
+            }
+            else if(player.doTargetType && !selectedCardTypes.Contains(overviewedCardType)) {
+                selectedCardTypes.Add(overviewedCardType);
+                selectedCardTypesNumbers[typeIndex] = player.hand.cards[overviewedCardType].Count;
+                for(int i = 0; i < selectedCardTypesNumbers[typeIndex]; i++) {
+                    selectedcards.Add(
+                        new Vector2(
+                            (float)overviewedCardType,
+                            player.field.cards[overviewedCardType][i].id
+                            )
+                        );
+                }
+            }
+            if(numberCardsToSelect == selectedCardTypes.Count) {
+                // TODO : the parametter type to a list so that every cards can be transmitted
+                player.TargetFieldCard(new Vector2((float)overviewedCardType, player.field.cards[overviewedCardType][0].id));
+                new List<Vector2>(selectedcards);
+                selectedCardTypes.Clear();
+                for(int i = 0; i < selectedCardTypesNumbers.Count; i++) {
+                    selectedCardTypesNumbers[i] = 0;
+                }
+                selectedcards.Clear();
+            }
         }
     }
+
+    public void SetNumberCardToSelect(int number) {
+        numberCardsToSelect = number;
+    }
+
 
     public void SetPlayer(Player _player) {
         player = _player;

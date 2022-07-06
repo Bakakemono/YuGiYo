@@ -3,29 +3,36 @@ using UnityEngine;
 
 [System.Serializable]
 public class Player : MonoBehaviourPunCallbacks {
+
+    // id of the player in the current room.
+    public int id;
+
+    PhotonView view;
+
+    CardManager cardManager;
+    GameManager gameManager;
+
     public Hand hand = new Hand();
     public Field field = new Field();
 
     [SerializeField] public HandManager handDisplayer;
     [SerializeField] public FieldManager fieldDisplayer;
 
-    CardManager cardManager;
-    GameManager gameManager;
-
+    // Is true if it is the player turn.
     public bool canPlay = false;
 
+    // is true if a card has been played by this player.
     public bool cardIsPlayed = false;
+
+    // The card that the player just played.
     public Card cardPlayed;
-
-    public int id;
-    PhotonView view;
-
-    public bool targetType = false;
 
     bool isSetup = false;
 
     public bool doTargetHand = false;
     public bool doTargetField = false;
+
+    public bool doTargetType = false;
 
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
@@ -57,7 +64,6 @@ public class Player : MonoBehaviourPunCallbacks {
         fieldDisplayer = slotDistributor.GetfieldSlots(localId);
         fieldDisplayer.transform.parent = transform;
         fieldDisplayer.SetPlayer(this);
-
 
         isSetup = true;
     }
