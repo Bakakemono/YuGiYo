@@ -43,4 +43,10 @@ public class Hand
     public bool IsEmpty() {
         return cards.Count == 0;
     }
+
+    public void ResetHand() {
+        cards.Clear();
+
+        unorderedCards.Clear();
+    }
 }

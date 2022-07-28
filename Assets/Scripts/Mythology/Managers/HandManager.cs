@@ -36,22 +36,22 @@ public class HandManager : MonoBehaviour
 
     [SerializeField] Vector3 fanPosition = Vector3.zero;
     [SerializeField] float circleRadius = 10.0f;
-    public Vector3 circlePosition;
+    Vector3 circlePosition;
 
     const int INVALID_INDEX = -1;
 
     // Parameters of the placement for the card that is overviewed.
-    float overviewElevationHeight = 0.5f;
-    float overviewClosingDistance = 0.03f;
+    readonly float overviewElevationHeight = 0.5f;
+    readonly float overviewClosingDistance = 0.03f;
 
     // Spot where the card is placed when selected.
     [SerializeField] Vector3 selectedCardSpotPosition = new Vector3(-1.5f, 1.0f);
-    
+
     // Ratio at wich value lerped are closing at each time.
-    float lerpValue = 0.2f;
+    readonly float lerpValue = 0.2f;
 
     // Distance used to check if the values that are lerped are close enough to be consider equal.
-    float acceptableSpaceLerp = 0.01f;
+    readonly float acceptableSpaceLerp = 0.01f;
 
     void Start() {
         positions = new List<List<Vector3>>();
@@ -321,6 +321,16 @@ public class HandManager : MonoBehaviour
     public void SetPlayer(Player pl) {
         player = pl;
         playerSet = true;
+    }
+
+    // Reset all the cards datas.
+    public void ResetHandManager() {
+        positions.Clear();
+        positionsType.Clear();
+        unordererPositions.Clear();
+
+        overviewedCardType = CardManager.CardType.NONE;
+        selectedCardType = CardManager.CardType.NONE;
     }
 
     private void OnDrawGizmosSelected() {

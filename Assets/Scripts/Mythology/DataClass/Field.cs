@@ -37,4 +37,8 @@ public class Field
     public bool IsEmpty() {
         return cards.Count == 0;
     }
+
+    public void ResetField() {
+        cards.Clear();
+    }
 }

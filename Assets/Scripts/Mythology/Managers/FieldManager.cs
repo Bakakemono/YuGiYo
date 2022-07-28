@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class FieldManager : MonoBehaviourPunCallbacks {
     [SerializeField] Player player;
+
     List<List<Vector3>> cardPositions;
 
     // All type of cards currently displayed by the field manager, Race and Secret Differentiated.
@@ -29,13 +30,10 @@ public class FieldManager : MonoBehaviourPunCallbacks {
     [Range(0.0f, 1.0f)]
     float secretCardAdvance = 0.75f;
 
-    float lerpSpeed = 0.2f;
-
-    int frameMovementTotal = 50;
-    int frameCountCurrent = 0;
+    readonly float lerpSpeed = 0.2f;
 
     CardManager.CardType overviewedCardType = CardManager.CardType.NONE;
-    float overviewedHeight = 0.2f;
+    readonly float overviewedHeight = 0.2f;
 
     [SerializeField] int numberCardsToSelect = 0;
     [SerializeField] List<CardManager.CardType> selectedCardTypes = new List<CardManager.CardType>();
@@ -78,9 +76,6 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                     if (player.field.cards.ContainsKey(currentType))
                         break; 
                 }
-            }
-            if(player.doTargetType && !selectedCardTypes.Contains(overviewedCardType) && overviewedCardType == cardTypesPossessed[i]) {
-                
             }
 
             if(overviewedCardType == cardTypesPossessed[i]) {
@@ -176,7 +171,9 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                         if (i == cardTypesPossessed.Count - 1) {
                             cardTypesPossessed.Add(card.cardType);
                             cardPositions.Add(new List<Vector3>());
-                            cardPositions[cardPositions.Count - 1].Add(new Vector3());
+                            
+                            // Add a new position at the last elements
+                            cardPositions[^1].Add(new Vector3());
 
                             selectedCardTypesNumbers.Add(0);
                             break;
@@ -198,7 +195,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
             if (cardTypesPossessed[i] > (CardManager.CardType)Card.raceNmb)
                 break;
 
-            int index = raceTypePossessed.FindIndex(x => x == (CardManager.CardType)(cardTypesPossessed[i] - Card.raceNmb < 0 ? cardTypesPossessed[i] : cardTypesPossessed[i] - 10));
+            int index = raceTypePossessed.FindIndex(x => x == (cardTypesPossessed[i] - Card.raceNmb < 0 ? cardTypesPossessed[i] : cardTypesPossessed[i] - 10));
             for (int j = 0; j < cardPositions[i].Count; j++) {
                 cardPositions[i][j] =
                     new Vector3(
@@ -246,7 +243,10 @@ public class FieldManager : MonoBehaviourPunCallbacks {
         // Put a card currently under the mouse on overviewed mode if she is in hand.
         if(Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
-            if(cardSelected != null && player.field.IsCardOnField(cardSelected)) {
+            if(cardSelected != null && 
+                player.field.IsCardOnField(cardSelected) &&
+                cardSelected.cardType >= CardManager.CardType.HUMAN_SECRET) {
+
                 overviewedCardType = cardSelected.cardType;
             }
             else {
@@ -267,8 +267,8 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 selectedcards.Add(
                     new Vector2(
                         (float)overviewedCardType,
-                        player.field.cards[overviewedCardType]
-                            [player.field.cards[overviewedCardType].Count - (selectedCardTypesNumbers[typeIndex])].id
+                        // Get the ID of the last element minus the number of card selected
+                        player.field.cards[overviewedCardType][^(selectedCardTypesNumbers[typeIndex])].id
                         )
                     );
             }
@@ -285,9 +285,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                 }
             }
             if(numberCardsToSelect == selectedCardTypes.Count) {
-                // TODO : the parametter type to a list so that every cards can be transmitted
-                player.TargetFieldCard(new Vector2((float)overviewedCardType, player.field.cards[overviewedCardType][0].id));
-                new List<Vector2>(selectedcards);
+                player.TargetFieldCard(new List<Vector2>(selectedcards));
                 selectedCardTypes.Clear();
                 for(int i = 0; i < selectedCardTypesNumbers.Count; i++) {
                     selectedCardTypesNumbers[i] = 0;
@@ -304,6 +302,20 @@ public class FieldManager : MonoBehaviourPunCallbacks {
 
     public void SetPlayer(Player _player) {
         player = _player;
+    }
+
+    public void ResetFieldManager() {
+        cardPositions.Clear();
+        cardTypesPossessed.Clear();
+        raceTypePossessed.Clear();
+
+        overviewedCardType = CardManager.CardType.NONE;
+
+        numberCardsToSelect = 0;
+        selectedCardTypes.Clear();
+        selectedCardTypesNumbers.Clear();
+
+        selectedcards.Clear();
     }
 
     private void OnDrawGizmosSelected() {

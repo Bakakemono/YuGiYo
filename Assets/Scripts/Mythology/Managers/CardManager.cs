@@ -90,7 +90,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
     // Components
     PhotonView view;
 
-    // External Manager
+    // Other Managers
     GameManager gameManager;
     DrawPileManager drawPileManager;
     DiscardPileManager discardPileManager;
@@ -107,9 +107,8 @@ public class CardManager : MonoBehaviourPunCallbacks {
 
     [SerializeField] Transform cardShowcasePosition;
 
-    int frameMovementTotal = 50;
-    int frameGobaleTotal = 75;
-    int frameCountCurrent = 0;
+    readonly int moveFrameCountTotal = 50;
+    int moveFrameCountCurrent = 0;
 
     Vector3 initialPos;
     Quaternion initialRotation;
@@ -247,7 +246,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
     public void DrawCardToPlayer(Player player, int numberOfCard, float timeToWait) {
         if(numberOfCard == 1) {
             Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
-            player.handDisplayer.AddCard(player.hand.cards[(CardType)index.x][index.y]);
+            player.handManager.AddCard(player.hand.cards[(CardType)index.x][index.y]);
         }
         else {
             StartCoroutine(DrawMultipleCard(player, numberOfCard, timeToWait));
@@ -258,7 +257,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
     IEnumerator DrawMultipleCard(Player player, int numberOfCard, float timeToWait) {
         for(int i = 0; i < numberOfCard; i++) {
             Vector2Int index = player.hand.AddCard(drawPileManager.DrawCard());
-            player.handDisplayer.AddCard(player.hand.cards[(CardType)index.x][index.y]);
+            player.handManager.AddCard(player.hand.cards[(CardType)index.x][index.y]);
             yield return new WaitForSeconds(timeToWait);
         }
     }
@@ -315,7 +314,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
 
         player.PlayCard(cardPlayed);
 
-        frameCountCurrent = 0;
+        moveFrameCountCurrent = 0;
         cardPlayed.customTransform.parent = cardShowcasePosition.transform;
         initialRotation = cardPlayed.customTransform.localRotation;
         initialPos = cardPlayed.customTransform.localPosition;
@@ -333,7 +332,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
             case ProgressCardPlayed.SELECT_CARD_TO_PLAY:
                 if(player != null && cardPlayed != null) {
                     if(player.id == gameManager.GetOwnerId()) {
-                        frameCountCurrent = 0;
+                        moveFrameCountCurrent = 0;
                         cardPlayed.customTransform.parent = cardShowcasePosition.transform;
                         initialRotation = cardPlayed.customTransform.localRotation;
                         initialPos = cardPlayed.customTransform.localPosition;
@@ -472,10 +471,10 @@ public class CardManager : MonoBehaviourPunCallbacks {
 
             case ProgressCardPlayed.CARD_SHOWCASE:
                 player.canPlay = false;
-                frameCountCurrent++;
-                cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)frameCountCurrent / frameMovementTotal);
-                cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)frameCountCurrent / frameMovementTotal);
-                if(frameCountCurrent >= frameGobaleTotal) {
+                moveFrameCountCurrent++;
+                cardPlayed.customTransform.localPosition = Vector3.Lerp(initialPos, Vector3.zero, (float)moveFrameCountCurrent / moveFrameCountTotal);
+                cardPlayed.customTransform.localRotation = Quaternion.Lerp(initialRotation, Quaternion.identity, (float)moveFrameCountCurrent / moveFrameCountTotal);
+                if(moveFrameCountCurrent >= moveFrameCountTotal) {
                     if(effectNullified) {
                         progressCardPlayed = ProgressCardPlayed.CARD_TO_FINAL_LOCATION;
                         break;
@@ -505,7 +504,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
                 else {
                     player.hand.RemoveCard(cardPlayed);
                     player.field.AddCard(cardPlayed);
-                    player.fieldDisplayer.AddCardToField(cardPlayed);
+                    player.fieldManager.AddCardToField(cardPlayed);
                     player.canPlay = true;
                     gameManager.NextPlayer();
                     progressCardPlayed = ProgressCardPlayed.END_OF_TURN;
@@ -559,12 +558,15 @@ public class CardManager : MonoBehaviourPunCallbacks {
     }
 
     // Register the targeted or type on field
-    public bool SelectTargetFieldCard(Vector2 cardInfo) {
-        if(targetFieldCards.Contains(cardInfo)) {
-            targetFieldCards.Add(cardInfo);
-            return true;
+    public bool SelectTargetFieldCard(List<Vector2> _cardsInfos) {
+        for(int i = 0; i < _cardsInfos.Count; i++) {
+            if(!targetFieldCards.Contains(_cardsInfos[i])) {
+                return false;
+            }
+            targetFieldCards.Add(_cardsInfos[i]);
+
         }
-        return false;
+        return true;
     }
 
     public bool GetDoSelectHand() {

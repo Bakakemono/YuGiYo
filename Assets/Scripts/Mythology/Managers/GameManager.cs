@@ -2,16 +2,19 @@ using Photon.Pun;
 using UnityEngine;
 
 public class GameManager : MonoBehaviourPunCallbacks {
-    public enum TurnStep {
+    public enum PlayerTurnStep {
         PAUSE,
         START_OF_TURN,
         PLAYER_TURN,
         NEXT_PLAYER
     }
 
-    public TurnStep turnStep = TurnStep.START_OF_TURN;
+    public PlayerTurnStep playerTurnStep = PlayerTurnStep.START_OF_TURN;
 
+    // ID of the player wich should currently play
     public int playerTurn = 0;
+
+    // Number of player excpected for the party to be launched
     public const int EXPECTED_PLAYER_NUMBER = 4;
 
     [SerializeField] Player[] players = new Player[EXPECTED_PLAYER_NUMBER];
@@ -131,24 +134,24 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     void TurnProgress() {
-        switch (turnStep) {
-            case TurnStep.PAUSE:
+        switch (playerTurnStep) {
+            case PlayerTurnStep.PAUSE:
                 break;
 
-            case TurnStep.START_OF_TURN:
+            case PlayerTurnStep.START_OF_TURN:
                 cardManager.DrawCardToPlayer(players[playerTurn], 1, 0.0f);
-                turnStep = TurnStep.PLAYER_TURN;
+                playerTurnStep = PlayerTurnStep.PLAYER_TURN;
                 players[playerTurn].IsPlayerTurn(true);
                 break;
 
-            case TurnStep.PLAYER_TURN:
+            case PlayerTurnStep.PLAYER_TURN:
                 break;
 
-            case TurnStep.NEXT_PLAYER:
+            case PlayerTurnStep.NEXT_PLAYER:
                 players[playerTurn].IsPlayerTurn(false);
                 playerTurn++; 
                 playerTurn = playerTurn % players.Length;
-                turnStep = TurnStep.START_OF_TURN;
+                playerTurnStep = PlayerTurnStep.START_OF_TURN;
 
                 // Debug indicator
                 if(playerTurn == 0) {
@@ -163,7 +166,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     public void NextPlayer() {
-        turnStep = TurnStep.NEXT_PLAYER;
+        playerTurnStep = PlayerTurnStep.NEXT_PLAYER;
     }
 
 
@@ -222,5 +225,16 @@ public class GameManager : MonoBehaviourPunCallbacks {
         else {
             cameraManager.LookAtField(ConvertPlayerIndex(playerId));
         }
+    }
+
+    void ResetGame() {
+        if(PhotonNetwork.IsMasterClient) {
+            view.RPC("RPC_ResetGame", RpcTarget.AllViaServer);
+        }
+    }
+
+    [PunRPC]
+    void RPC_ResetGame() {
+        
     }
 }

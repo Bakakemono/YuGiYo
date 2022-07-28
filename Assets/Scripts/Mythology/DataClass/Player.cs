@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -15,8 +16,8 @@ public class Player : MonoBehaviourPunCallbacks {
     public Hand hand = new Hand();
     public Field field = new Field();
 
-    [SerializeField] public HandManager handDisplayer;
-    [SerializeField] public FieldManager fieldDisplayer;
+    [SerializeField] public HandManager handManager;
+    [SerializeField] public FieldManager fieldManager;
 
     // Is true if it is the player turn.
     public bool canPlay = false;
@@ -57,13 +58,13 @@ public class Player : MonoBehaviourPunCallbacks {
         transform.position = slotTransform.position;
         transform.rotation = slotTransform.rotation;
 
-        handDisplayer = slotDistributor.GetHandSlots(localId);
-        handDisplayer.transform.parent = transform;
-        handDisplayer.SetPlayer(this);
+        handManager = slotDistributor.GetHandSlots(localId);
+        handManager.transform.parent = transform;
+        handManager.SetPlayer(this);
 
-        fieldDisplayer = slotDistributor.GetfieldSlots(localId);
-        fieldDisplayer.transform.parent = transform;
-        fieldDisplayer.SetPlayer(this);
+        fieldManager = slotDistributor.GetfieldSlots(localId);
+        fieldManager.transform.parent = transform;
+        fieldManager.SetPlayer(this);
 
         isSetup = true;
     }
@@ -77,7 +78,7 @@ public class Player : MonoBehaviourPunCallbacks {
             cardManager.PlayCard(this, _card);
         }
         else {
-            handDisplayer.UpdateCardPlayed(_card);
+            handManager.UpdateCardPlayed(_card);
         }
     }
 
@@ -85,8 +86,8 @@ public class Player : MonoBehaviourPunCallbacks {
         return cardManager.SelectTargetHandCard(_cardInfo);
     }
 
-    public bool TargetFieldCard(Vector2 _cardInfo) {
-        return cardManager.SelectTargetFieldCard(_cardInfo);
+    public bool TargetFieldCard(List<Vector2> _cardsInfos) {
+        return cardManager.SelectTargetFieldCard(_cardsInfos);
     }
 
     [PunRPC]
@@ -94,7 +95,7 @@ public class Player : MonoBehaviourPunCallbacks {
         Card cardPlayed = hand.cards[(CardManager.CardType)_cardType][0];
         for(int i = 0; i < hand.cards[(CardManager.CardType)_cardType].Count; i++) {
             if(hand.cards[(CardManager.CardType)_cardType][i].id == _id) {
-                handDisplayer.UpdateCardPlayed(hand.cards[(CardManager.CardType)_cardType][i]);
+                handManager.UpdateCardPlayed(hand.cards[(CardManager.CardType)_cardType][i]);
             }
         }
     }
@@ -103,5 +104,22 @@ public class Player : MonoBehaviourPunCallbacks {
         if(view.IsMine) {
             canPlay = _canPlay;
         }
+    }
+
+    public bool DoTargetHand() {
+        return doTargetHand;
+    }
+
+    public bool DoTargetField() {
+        return doTargetField;
+    }
+
+    // Reset player card including Hand Manager and Field Manager.
+    public void ResetPlayer() {
+        handManager.ResetHandManager();
+        hand.ResetHand();
+
+        fieldManager.ResetFieldManager();
+        field.ResetField();
     }
 }
