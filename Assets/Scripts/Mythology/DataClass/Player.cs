@@ -10,11 +10,11 @@ public class Player : MonoBehaviourPunCallbacks {
 
     PhotonView view;
 
-    CardManager cardManager;
-    GameManager gameManager;
+    private CardManager cardManager;
+    private GameManager gameManager;
 
-    public Hand hand = new Hand();
-    public Field field = new Field();
+    private Hand hand = new Hand();
+    private Field field = new Field();
 
     [SerializeField] public HandManager handManager;
     [SerializeField] public FieldManager fieldManager;
@@ -94,7 +94,7 @@ public class Player : MonoBehaviourPunCallbacks {
     public void RPC_PlayCard(int _cardType, int _id) {
         Card cardPlayed = hand.cards[(CardManager.CardType)_cardType][0];
         for(int i = 0; i < hand.cards[(CardManager.CardType)_cardType].Count; i++) {
-            if(hand.cards[(CardManager.CardType)_cardType][i].id == _id) {
+            if(hand.cards[(CardManager.CardType)_cardType][i].GetId() == _id) {
                 handManager.UpdateCardPlayed(hand.cards[(CardManager.CardType)_cardType][i]);
             }
         }
@@ -112,6 +112,34 @@ public class Player : MonoBehaviourPunCallbacks {
 
     public bool DoTargetField() {
         return doTargetField;
+    }
+
+    public Hand GetHand() {
+        return hand;
+    }
+
+    public Field GetField() {
+        return field;
+    }
+
+    public void AddCardtoHand(Card _card) {
+        hand.AddCard(_card);
+        handManager.AddCard(_card);
+    }
+
+    public void RemoveCardFromHand(Card _card) {
+        handManager.RemoveCard(_card);
+        hand.RemoveCard(_card);
+    }
+
+    public void AddCardtoField(Card _card) {
+        field.AddCard(_card);
+        fieldManager.AddCard(_card);
+    }
+
+    public void RemoveCardFromField(Card _card) {
+        fieldManager.RemoveCard(_card);
+        field.RemoveCard(_card);
     }
 
     // Reset player card including Hand Manager and Field Manager.

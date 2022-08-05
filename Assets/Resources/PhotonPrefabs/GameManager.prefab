@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d43111606679147b3affb429e2db8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnStep: 1
+  playerTurnStep: 1
   playerTurn: 0
   players: []
 --- !u!114 &2891892305252328005

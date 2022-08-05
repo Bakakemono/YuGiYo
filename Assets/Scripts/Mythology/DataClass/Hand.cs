@@ -7,34 +7,34 @@ public class Hand
     public Dictionary<CardManager.CardType, List<Card>> cards = new Dictionary<CardManager.CardType, List<Card>>();
     public List<Card> unorderedCards = new List<Card>();
 
-    public Vector2Int AddCard(Card card) {
-        unorderedCards.Add(card);
-        if (cards.ContainsKey(card.cardType)) {
-            cards[card.cardType].Add(card);
-            return new Vector2Int((int)card.cardType, cards[card.cardType].Count - 1);
+    public Vector2Int AddCard(Card _card) {
+        unorderedCards.Add(_card);
+        if (cards.ContainsKey(_card.GetCardType())) {
+            cards[_card.GetCardType()].Add(_card);
+            return new Vector2Int((int)_card.GetCardType(), cards[_card.GetCardType()].Count - 1);
         }
         else {
             List<Card> newCardType = new List<Card>();
-            newCardType.Add(card);
-            cards.Add(card.cardType, newCardType);
-            return new Vector2Int((int)card.cardType, cards[card.cardType].Count - 1);
+            newCardType.Add(_card);
+            cards.Add(_card.GetCardType(), newCardType);
+            return new Vector2Int((int)_card.GetCardType(), cards[_card.GetCardType()].Count - 1);
         }
     }
 
-    public void RemoveCard(Card card) {
-        if (!cards.ContainsKey(card.cardType)) {
+    public void RemoveCard(Card _card) {
+        if (!cards.ContainsKey(_card.GetCardType())) {
             return;
         }
-        cards[card.cardType].Remove(card);
-        if (cards[card.cardType].Count == 0) {
-            cards.Remove(card.cardType);
+        cards[_card.GetCardType()].Remove(_card);
+        if (cards[_card.GetCardType()].Count == 0) {
+            cards.Remove(_card.GetCardType());
         }
-        unorderedCards.Remove(card);
+        unorderedCards.Remove(_card);
     }
 
-    public bool IsCardInHand(Card card) {
-        if (cards.ContainsKey(card.cardType)) {
-            return cards[card.cardType].Contains(card);
+    public bool IsCardInHand(Card _card) {
+        if (cards.ContainsKey(_card.GetCardType())) {
+            return cards[_card.GetCardType()].Contains(_card);
         }
 
         return false;

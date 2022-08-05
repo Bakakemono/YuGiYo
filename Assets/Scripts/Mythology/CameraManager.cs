@@ -39,7 +39,6 @@ public class CameraManager : MonoBehaviour
         if (!needUpdate)
             return;
 
-
         currentStep++;
         customTransform.position = Vector3.Lerp(oldPosition, newPosition, currentStep / totalStepNumber);
         customTransform.rotation = Quaternion.Lerp(oldRotation, newRotation, currentStep / totalStepNumber);
@@ -80,5 +79,9 @@ public class CameraManager : MonoBehaviour
         newRotation = mainPlayerTransform.rotation;
 
         needUpdate = true;
+    }
+
+    public bool IsCameraIdling() {
+        return !needUpdate;
     }
 }

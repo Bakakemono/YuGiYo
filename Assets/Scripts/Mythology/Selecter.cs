@@ -16,7 +16,7 @@ public class Selecter : MonoBehaviour
 
         if(!updated && cardManager.GetDoSelectHand()) {
             for(int i = 1; i < cardManager.players.Length; i++) {
-                if(!cardManager.players[i].hand.IsEmpty()) {
+                if(!cardManager.players[i].GetHand().IsEmpty()) {
                     playerSelectionButtons[i - 1].SetActive(true);
                 }
             }
@@ -24,7 +24,7 @@ public class Selecter : MonoBehaviour
         }
         else if(!updated && cardManager.GetDoSelectField()) {
             for(int i = 1; i < cardManager.players.Length; i++) {
-                if(!cardManager.players[i].field.IsEmpty()) {
+                if(!cardManager.players[i].GetField().IsEmpty()) {
                     playerSelectionButtons[i - 1].SetActive(true);
                 }
             }

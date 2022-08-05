@@ -8,10 +8,10 @@ public class DryadeEffect : CardEffect {
         for (int i = 0; i < _targetCards.Length; i++) {
             Card targetCard = _cardManager.GetCard(_targetCards[i]);
 
-            _target.fieldManager.RemoveCardFormDisplay(targetCard);
-            _target.field.RemoveCard(targetCard);
-            _dealer.fieldManager.AddCardToField(targetCard);
-            _dealer.field.AddCard(targetCard);
+            _target.fieldManager.RemoveCard(targetCard);
+            _target.GetField().RemoveCard(targetCard);
+            _dealer.fieldManager.AddCard(targetCard);
+            _dealer.GetField().AddCard(targetCard);
         }
     }
 }

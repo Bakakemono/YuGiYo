@@ -16,7 +16,7 @@ public class DiscardPileManager : MonoBehaviour
 
     public void DiscardCard(Card card) {
         cards.Add(card);
-        card.customTransform.parent = transform;
+        card.GetTransform().parent = transform;
         lastCardIndex = cards.Count - 1;
         lastCardPosition = new Vector3(0, 0, -cardThickness / 2.0f + lastCardIndex * -cardThickness);
         updateLastCard = true;
@@ -26,23 +26,23 @@ public class DiscardPileManager : MonoBehaviour
         if (!updateLastCard)
             return;
 
-        cards[lastCardIndex].customTransform.localPosition = 
+        cards[lastCardIndex].GetTransform().localPosition = 
             Vector3.Lerp(
-                cards[lastCardIndex].customTransform.localPosition,
+                cards[lastCardIndex].GetTransform().localPosition,
                 lastCardPosition,
                 cardLerpSpeed
                 );
 
-        cards[lastCardIndex].customTransform.localRotation =
+        cards[lastCardIndex].GetTransform().localRotation =
             Quaternion.Lerp(
-                cards[lastCardIndex].customTransform.localRotation,
+                cards[lastCardIndex].GetTransform().localRotation,
                 Quaternion.identity,
                 cardLerpSpeed
                 );
 
-        if ((cards[lastCardIndex].customTransform.localPosition - lastCardPosition).sqrMagnitude < acceptableSpace * acceptableSpace) {
-            cards[lastCardIndex].customTransform.localPosition = lastCardPosition;
-            cards[lastCardIndex].customTransform.localRotation = Quaternion.identity;
+        if ((cards[lastCardIndex].GetTransform().localPosition - lastCardPosition).sqrMagnitude < acceptableSpace * acceptableSpace) {
+            cards[lastCardIndex].GetTransform().localPosition = lastCardPosition;
+            cards[lastCardIndex].GetTransform().localRotation = Quaternion.identity;
             updateLastCard = false;
         }
     }

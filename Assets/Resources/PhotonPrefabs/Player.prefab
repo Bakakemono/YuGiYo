@@ -45,15 +45,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc5fea2a40f370a4baafed6b1076a9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handDisplayer: {fileID: 0}
-  fieldDisplayer: {fileID: 0}
+  id: 0
+  handManager: {fileID: 0}
+  fieldManager: {fileID: 0}
   canPlay: 0
   cardIsPlayed: 0
   cardPlayed: {fileID: 0}
-  id: 0
-  targetType: 0
   doTargetHand: 0
   doTargetField: 0
+  doTargetType: 0
 --- !u!114 &4466204291594344580
 MonoBehaviour:
   m_ObjectHideFlags: 0

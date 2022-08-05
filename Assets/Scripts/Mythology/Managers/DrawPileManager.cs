@@ -45,16 +45,16 @@ public class DrawPileManager : MonoBehaviour
 
     void OrganiseDeck() {
         for (int i = 0; i < cards.Count; i++) {
-            cards[i].customTransform.localPosition = 
+            cards[i].GetTransform().localPosition = 
                 Vector3.Lerp(
-                    cards[i].customTransform.localPosition,
+                    cards[i].GetTransform().localPosition,
                     new Vector3(0, 0, cardThickness / 2.0f + (cards.Count - i) * (cardThickness)),
                     lerpSpeed * cardSpeed
                     );
 
-            cards[i].customTransform.localRotation = 
+            cards[i].GetTransform().localRotation = 
                 Quaternion.Lerp(
-                    cards[i].customTransform.localRotation,
+                    cards[i].GetTransform().localRotation,
                     Quaternion.identity,
                     lerpSpeed * cardSpeed
                     );
@@ -78,9 +78,9 @@ public class DrawPileManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
 
         for (int i = 0; i < cards.Count; i++) {
-            cards[i].customTransform.localPosition = new Vector3(0, 0, cardThickness / 2.0f + (cards.Count - i) * (cardThickness));
+            cards[i].GetTransform().localPosition = new Vector3(0, 0, cardThickness / 2.0f + (cards.Count - i) * (cardThickness));
 
-            cards[i].customTransform.localRotation = Quaternion.identity;
+            cards[i].GetTransform().localRotation = Quaternion.identity;
         }
 
         organising = false;

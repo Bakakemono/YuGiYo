@@ -89,8 +89,8 @@ public class FieldManagerTest : MonoBehaviour {
         for(int i = 0; i < cards.Length; i++) {
             field.AddCard(cards[i]);
             
-            if(!cardTypesPossessed.Contains(cards[i].cardType - Card.raceNmb) && !cardTypesPossessed.Contains(cards[i].cardType)) {
-                CardManager.CardType raceType = (cards[i].cardType - Card.raceNmb < 0 ? cards[i].cardType : cards[i].cardType - Card.raceNmb);
+            if(!cardTypesPossessed.Contains(cards[i].GetCardType() - CardManager.totalRaceCount) && !cardTypesPossessed.Contains(cards[i].GetCardType())) {
+                CardManager.CardType raceType = (cards[i].GetCardType() - CardManager.totalRaceCount < 0 ? cards[i].GetCardType() : cards[i].GetCardType() - CardManager.totalRaceCount);
 
                 if(raceTypePossessed.Count == 0) {
                     raceTypePossessed.Add(raceType);
@@ -113,23 +113,23 @@ public class FieldManagerTest : MonoBehaviour {
                 }
             }
 
-            cards[i].customTransform.parent = transform;
+            cards[i].GetTransform().parent = transform;
 
-            if(cardTypesPossessed.Contains(cards[i].cardType)) {
-                int index = cardTypesPossessed.FindIndex(x => x == cards[i].cardType);
+            if(cardTypesPossessed.Contains(cards[i].GetCardType())) {
+                int index = cardTypesPossessed.FindIndex(x => x == cards[i].GetCardType());
                 cardPositions[index].Add(new Vector3());
             }
             else {
                 if(cardTypesPossessed.Count == 0) {
-                    cardTypesPossessed.Add(cards[i].cardType);
+                    cardTypesPossessed.Add(cards[i].GetCardType());
                     cardPositions.Add(new List<Vector3>());
                     cardPositions[0].Add(new Vector3());
                 }
                 else {
                     for(int j = 0; j < cardTypesPossessed.Count; j++) {
-                        if(cardTypesPossessed[j] < cards[i].cardType) {
+                        if(cardTypesPossessed[j] < cards[i].GetCardType()) {
                             if(i == cardTypesPossessed.Count - 1) {
-                                cardTypesPossessed.Add(cards[i].cardType);
+                                cardTypesPossessed.Add(cards[i].GetCardType());
                                 cardPositions.Add(new List<Vector3>());
                                 cardPositions[cardPositions.Count - 1].Add(new Vector3());
                                 break;
@@ -137,7 +137,7 @@ public class FieldManagerTest : MonoBehaviour {
                             continue;
                         }
 
-                        cardTypesPossessed.Insert(j, cards[i].cardType);
+                        cardTypesPossessed.Insert(j, cards[i].GetCardType());
                         cardPositions.Insert(j, new List<Vector3>());
                         cardPositions[j].Add(new Vector3());
                         break;
@@ -146,10 +146,10 @@ public class FieldManagerTest : MonoBehaviour {
             }
 
             for(int j = 0; j < cardPositions.Count; j++) {
-                if(cardTypesPossessed[j] > (CardManager.CardType)Card.raceNmb)
+                if(cardTypesPossessed[j] > (CardManager.CardType)CardManager.totalRaceCount)
                     break;
 
-                int index = raceTypePossessed.FindIndex(x => x == (CardManager.CardType)(cardTypesPossessed[j] - Card.raceNmb < 0 ? cardTypesPossessed[j] : cardTypesPossessed[j] - 10));
+                int index = raceTypePossessed.FindIndex(x => x == (CardManager.CardType)(cardTypesPossessed[j] - CardManager.totalRaceCount < 0 ? cardTypesPossessed[j] : cardTypesPossessed[j] - 10));
                 for(int k = 0; k < cardPositions[j].Count; k++) {
                     cardPositions[j][k] =
                         new Vector3(
@@ -161,10 +161,10 @@ public class FieldManagerTest : MonoBehaviour {
             }
 
             for(CardManager.CardType j = CardManager.CardType.HUMAN_SECRET; j < CardManager.CardType.Length; j++) {
-                if(!cardTypesPossessed.Contains((CardManager.CardType)j))
+                if(!cardTypesPossessed.Contains(j))
                     continue;
 
-                int index = raceTypePossessed.FindIndex(x => x == j - Card.raceNmb);
+                int index = raceTypePossessed.FindIndex(x => x == j - CardManager.totalRaceCount);
                 cardPositions[cardTypesPossessed.FindIndex(x => x == j)][0] =
                     new Vector3(
                         (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
@@ -186,8 +186,8 @@ public class FieldManagerTest : MonoBehaviour {
 
 
             for(int j = 0; j < cardPositions[i].Count; j++) {
-                field.cards[currentType][j].customTransform.localPosition = cardPositions[i][j];
-                field.cards[currentType][j].customTransform.localRotation = Quaternion.Euler(89.0f, 0.0f, 0.0f);
+                field.cards[currentType][j].GetTransform().localPosition = cardPositions[i][j];
+                field.cards[currentType][j].GetTransform().localRotation = Quaternion.Euler(89.0f, 0.0f, 0.0f);
             }
             currentType++;
         }

@@ -77,8 +77,9 @@ public class HandManager : MonoBehaviour
 
                 if(selectedCardType != CardManager.CardType.NONE &&
                     selectedCardIndex != INVALID_INDEX &&
-                    (player.hand.cards[selectedCardType][0].customTransform.localPosition - (fanPosition + selectedCardSpotPosition)).sqrMagnitude <
-                        acceptableSpaceLerp * acceptableSpaceLerp) {
+                    (player.GetHand().cards[selectedCardType][0].GetTransform().localPosition -
+                        (fanPosition + selectedCardSpotPosition)).sqrMagnitude <
+                            acceptableSpaceLerp * acceptableSpaceLerp) {
 
                     PlayCard();
                 }
@@ -148,13 +149,13 @@ public class HandManager : MonoBehaviour
                 for(int i = 0; i < positionsType.Count; i++) {
                     float angle = -((anglePerCard * i) - anglePerCard * (positions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg;
                     for(int j = 0; j < positions[i].Count; j++) {
-                        player.hand.cards[positionsType[i]][j].customTransform.localPosition =
-                            Vector3.Lerp(player.hand.cards[positionsType[i]][j].customTransform.localPosition,
+                        player.GetHand().cards[positionsType[i]][j].GetTransform().localPosition =
+                            Vector3.Lerp(player.GetHand().cards[positionsType[i]][j].GetTransform().localPosition,
                             positions[i][j],
                             lerpValue);
-                        player.hand.cards[positionsType[i]][j].customTransform.localRotation =
+                        player.GetHand().cards[positionsType[i]][j].GetTransform().localRotation =
                             Quaternion.Lerp(
-                                player.hand.cards[positionsType[i]][j].customTransform.localRotation,
+                                player.GetHand().cards[positionsType[i]][j].GetTransform().localRotation,
                                 (selectedCardIndex == i && j == 0) ? Quaternion.identity : Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
                                 lerpValue
                                 );
@@ -180,13 +181,13 @@ public class HandManager : MonoBehaviour
 
                 for(int i = 0; i < unordererPositions.Count; i++) {
                     float angle = -((anglePerCard * i) - anglePerCard * (unordererPositions.Count - 1.0f) / 2.0f) * Mathf.Rad2Deg;
-                    player.hand.unorderedCards[i].customTransform.localPosition =
-                        Vector3.Lerp(player.hand.unorderedCards[i].customTransform.localPosition,
+                    player.GetHand().unorderedCards[i].GetTransform().localPosition =
+                        Vector3.Lerp(player.GetHand().unorderedCards[i].GetTransform().localPosition,
                         unordererPositions[i],
                         lerpValue);
-                    player.hand.unorderedCards[i].customTransform.localRotation =
+                    player.GetHand().unorderedCards[i].GetTransform().localRotation =
                         Quaternion.Lerp(
-                            player.hand.unorderedCards[i].customTransform.localRotation,
+                            player.GetHand().unorderedCards[i].GetTransform().localRotation,
                             Quaternion.Euler(new Vector3(0.0f, -10.0f, angle)),
                             lerpValue
                             );
@@ -203,8 +204,8 @@ public class HandManager : MonoBehaviour
         // Put a card currently under the mouse on overviewed mode if she is in hand.
         if (Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
-            if (cardSelected != null && player.hand.IsCardInHand(cardSelected)) {
-                overviewedCardType = cardSelected.cardType;
+            if (cardSelected != null && player.GetHand().IsCardInHand(cardSelected)) {
+                overviewedCardType = cardSelected.GetCardType();
             }
             else {
                 overviewedCardType = CardManager.CardType.NONE;
@@ -234,14 +235,14 @@ public class HandManager : MonoBehaviour
         if (Physics.Raycast(rayBis, out hitBis)) {
             Card cardSelected = hitBis.transform.GetComponent<Card>();
             // If there is no card overviewed or if there is the card is not in hand.
-            if (!(cardSelected != null && player.hand.IsCardInHand(cardSelected))) {
+            if (!(cardSelected != null && player.GetHand().IsCardInHand(cardSelected))) {
                 return;
             }
 
             // If the card currently overviewed is the card selected and the mouse is clicked play the card.
-            if (cardSelected == player.hand.cards[selectedCardType][0] && Input.GetMouseButtonUp(0)) {
+            if (cardSelected == player.GetHand().cards[selectedCardType][0] && Input.GetMouseButtonUp(0)) {
                 RemoveCard(cardSelected);
-                player.hand.RemoveCard(cardSelected);
+                player.GetHand().RemoveCard(cardSelected);
                 selectedCardType = CardManager.CardType.NONE;
                 player.PlayCard(cardSelected);
             }
@@ -250,30 +251,30 @@ public class HandManager : MonoBehaviour
 
     public void UpdateCardPlayed(Card _cardToUpdate) {
         RemoveCard(_cardToUpdate);
-        player.hand.RemoveCard(_cardToUpdate);
+        player.GetHand().RemoveCard(_cardToUpdate);
         selectedCardType = CardManager.CardType.NONE;
     }
 
     public void AddCard(Card card) {
-        card.customTransform.parent = transform;
+        card.GetTransform().parent = transform;
         switch(isOwnerProperty) {
             case true:
-                if(positionsType.Contains(card.cardType)) {
-                    int index = FindIndex(card.cardType);
+                if(positionsType.Contains(card.GetCardType())) {
+                    int index = FindIndex(card.GetCardType());
                     positions[index].Add(new Vector3());
                 }
                 else {
                     if(positionsType.Count == 0) {
-                        positionsType.Add(card.cardType);
+                        positionsType.Add(card.GetCardType());
                         positions.Add(new List<Vector3>());
                         positions[0].Add(new Vector3());
                         return;
                     }
 
                     for(int i = 0; i < positionsType.Count; i++) {
-                        if(positionsType[i] < card.cardType) {
+                        if(positionsType[i] < card.GetCardType()) {
                             if(i == positionsType.Count - 1) {
-                                positionsType.Add(card.cardType);
+                                positionsType.Add(card.GetCardType());
                                 positions.Add(new List<Vector3>());
                                 positions[positions.Count - 1].Add(new Vector3());
                                 return;
@@ -281,7 +282,7 @@ public class HandManager : MonoBehaviour
                             continue;
                         }
 
-                        positionsType.Insert(i, card.cardType);
+                        positionsType.Insert(i, card.GetCardType());
                         positions.Insert(i, new List<Vector3>());
                         positions[i].Add(new Vector3());
                         return;
@@ -299,7 +300,7 @@ public class HandManager : MonoBehaviour
     public void RemoveCard(Card card) {
         switch(isOwnerProperty) {
             case true:
-                int index = FindIndex(card.cardType);
+                int index = FindIndex(card.GetCardType());
                 positions[index].RemoveAt(0);
                 if(positions[index].Count == 0) {
                     positions.RemoveAt(index);
@@ -307,7 +308,7 @@ public class HandManager : MonoBehaviour
                 }
                 break;
             case false:
-                unordererPositions.RemoveAt(player.hand.unorderedCards.FindIndex(x => x == card));
+                unordererPositions.RemoveAt(player.GetHand().unorderedCards.FindIndex(x => x == card));
                 break;
         }
     }
