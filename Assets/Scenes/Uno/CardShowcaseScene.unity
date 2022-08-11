@@ -141,7 +141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &90120093
 AudioListener:
   m_ObjectHideFlags: 0
@@ -337,7 +337,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &582128709
 Transform:
   m_ObjectHideFlags: 0
@@ -391,7 +391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1185673846
 Light:
   m_ObjectHideFlags: 0
@@ -1255,8 +1255,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571714426744}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964600414991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1272,8 +1270,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571615155945}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964610475284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1289,8 +1285,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571580059890}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964667252092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1306,8 +1300,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571548477594}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964741582246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,8 +1315,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571440437312}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964749824900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1340,8 +1330,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571432347234}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964879410591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1357,8 +1345,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571311124601}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917964899634628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1374,8 +1360,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571316095010}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965032205862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1391,8 +1375,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571191749568}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965079292497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1408,8 +1390,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571102850999}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965170987420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1425,8 +1405,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354571044615290}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965224873579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1442,8 +1420,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354570965527437}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965252817622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1459,8 +1435,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354570929231664}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965283287131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1476,8 +1450,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354570907272637}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965437360176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1493,8 +1465,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572925730262}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965449928714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1510,8 +1480,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572887950828}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965532449165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1527,8 +1495,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572830764139}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917965643960000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1544,8 +1510,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572727642918}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917966160958445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561,8 +1525,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572168541707}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917966285193704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1578,8 +1540,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572044461070}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!114 &3131917966307495885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1595,8 +1555,6 @@ MonoBehaviour:
   cardType: 0
   id: -1
   faceRenderer: {fileID: 6603354572063943211}
-  customTransform: {fileID: 0}
-  cardEffect: {fileID: 0}
 --- !u!1001 &3190746286874948207
 PrefabInstance:
   m_ObjectHideFlags: 0
