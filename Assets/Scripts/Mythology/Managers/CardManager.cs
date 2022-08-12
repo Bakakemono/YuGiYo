@@ -340,23 +340,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
                         initialRotation = cardPlayed.GetTransform().localRotation;
                         initialPos = cardPlayed.GetTransform().localPosition;
 
-                        if((cardPlayed.GetCardEffect().DoTargetHand() ? 
-                            players[1].GetHand().IsEmpty() &&
-                            players[2].GetHand().IsEmpty() &&
-                            players[3].GetHand().IsEmpty() :
-                            false) ||
-                            (cardPlayed.GetCardEffect().DoTargetField() ?
-                            players[1].GetHand().IsEmpty() &&
-                            players[2].GetHand().IsEmpty() &&
-                            players[3].GetHand().IsEmpty() :
-                            false) ||
-                            (cardPlayed.GetCardEffect().DoSelectCard() ?
-                            players[0].GetHand().IsEmpty() :
-                            false) ||
-                            (cardPlayed.GetCardEffect().DoSelectField() ?
-                            players[0].GetHand().IsEmpty() :
-                            false)
-                            ) {
+                        if(IsEffectNotPlayable(cardPlayed.GetCardEffect())) {
                             effectNullified = true;
                             progressCardPlayed = ProgressCardPlayed.UPDATE_ALL_PLAYER;
                         }
@@ -530,11 +514,12 @@ public class CardManager : MonoBehaviourPunCallbacks {
         return cards[cardType][id];
     }
 
+    #region Transfert Cards
     void TransferCardsOwnership(Player _source, Player _receiver, bool _isHandSource, bool _isHandReceiver, Vector2[] _cards) {
-        StartCoroutine(TransferCards(_source, _receiver, _isHandSource, _isHandReceiver, _cards));
+        StartCoroutine(TransferCardsOwnerShipRoutine(_source, _receiver, _isHandSource, _isHandReceiver, _cards));
     }
 
-    IEnumerator TransferCards (Player _source, Player _receiver, bool _isHandSource, bool _isHandReceiver, Vector2[] _cards) {
+    IEnumerator TransferCardsOwnerShipRoutine(Player _source, Player _receiver, bool _isHandSource, bool _isHandReceiver, Vector2[] _cards) {
         for(int i = 0; i < _cards.Length; i++) {
             Card targetedCard = cards[(CardType)_cards[i].x][((int)_cards[i].y)];
             if(_isHandSource) {
@@ -545,15 +530,36 @@ public class CardManager : MonoBehaviourPunCallbacks {
             }
 
             if(_isHandReceiver) {
-                _receiver.RemoveCardFromHand(targetedCard);
+                _receiver.AddCardtoHand(targetedCard);
             }
             else {
-                _receiver.RemoveCardFromField(targetedCard);
+                _receiver.AddCardtoField(targetedCard);
             }
-
             yield return new WaitForEndOfFrame();
         }
     }
+    #endregion
+
+    #region Discard Cards
+    void SendCardToDiscard(Player _source, bool _isHandSource, Vector2[] _cards) {
+        StartCoroutine(SendCardToDiscardRoutine(_source, _isHandSource, _cards));
+    }
+
+    IEnumerator SendCardToDiscardRoutine(Player _source, bool _isHandSource, Vector2[] _cards) {
+        for(int i = 0; i < _cards.Length; i++) {
+            Card targetedCard = cards[(CardType)_cards[i].x][((int)_cards[i].y)];
+            if(_isHandSource) {
+                _source.RemoveCardFromHand(targetedCard);
+            }
+            else {
+                _source.RemoveCardFromField(targetedCard);
+            }
+
+            discardPileManager.DiscardCard(targetedCard);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
 
     // Copy the player array into the card manager
     public void RegisterPlayers(Player[] gmPlayers) {
@@ -603,5 +609,24 @@ public class CardManager : MonoBehaviourPunCallbacks {
 
     public bool GetDoSelectField() {
         return doSelectField;
+    }
+
+    private bool IsEffectNotPlayable(CardEffect cardEffect) {
+        return (cardPlayed.GetCardEffect().DoTargetHand() ?
+                            players[1].GetHand().IsEmpty() &&
+                            players[2].GetHand().IsEmpty() &&
+                            players[3].GetHand().IsEmpty() :
+                            false) ||
+                (cardPlayed.GetCardEffect().DoTargetField() ?
+                            players[1].GetHand().IsEmpty() &&
+                            players[2].GetHand().IsEmpty() &&
+                            players[3].GetHand().IsEmpty() :
+                            false) ||
+                (cardPlayed.GetCardEffect().DoSelectCard() ?
+                            players[0].GetHand().IsEmpty() :
+                            false) ||
+                (cardPlayed.GetCardEffect().DoSelectField() ?
+                            players[0].GetHand().IsEmpty() :
+                            false);
     }
 }
