@@ -289,9 +289,9 @@ public class CardManager : MonoBehaviourPunCallbacks {
     }
 
     // Register the played card
-    public void PlayCard(Player pl, Card cd) {
-        player = pl;
-        cardPlayed = cd;
+    public void PlayCard(Player _player, Card _cardPlayed) {
+        player = _player;
+        cardPlayed = _cardPlayed;
     }
 
     [PunRPC]
@@ -374,7 +374,7 @@ public class CardManager : MonoBehaviourPunCallbacks {
                     doSelectField = false;
                     targetSelected = false;
                     if(cardPlayed.GetCardEffect().DoTargetHand()) {
-                        gameManager.SetCameraToPlayer(target.id, true);
+                        //gameManager.SetCameraToPlayer(target.id, true);
                         progressCardPlayed = ProgressCardPlayed.SELECT_TARGET_HAND_CARD;
                         break;
                     }
@@ -387,9 +387,9 @@ public class CardManager : MonoBehaviourPunCallbacks {
                 break;
 
             case ProgressCardPlayed.SELECT_TARGET_HAND_CARD:
-                target.doTargetHand = true;
+                target.SetTargetHand(true);
                 if(targetHandCardSelected) {
-                    target.doTargetHand = false;
+                    target.SetTargetHand(false);
                     targetHandCardSelected = false;
 
                     gameManager.SetCameraToPlayer(player.id);
@@ -410,9 +410,9 @@ public class CardManager : MonoBehaviourPunCallbacks {
                 break;
 
             case ProgressCardPlayed.SELECT_TARGET_FIELD_CARD:
-                target.doTargetField = true;
+                target.SetTargetField(true);
                 if(targetFieldCardSelected) {
-                    target.doTargetField = false;
+                    target.SetTargetField(false);
                     targetFieldCardSelected = false;
 
                     gameManager.SetCameraToPlayer(player.id);

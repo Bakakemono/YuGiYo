@@ -6156,7 +6156,6 @@ MonoBehaviour:
   fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 3.93
-  circlePosition: {x: 0, y: -3.93, z: 0}
   selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &421032707
 Transform:
@@ -6993,6 +6992,11 @@ MonoBehaviour:
   spaceBetweenColumn: 0.05
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
+  numberCardsToSelect: 0
+  selectedCardTypes: 
+  selectedCardTypesNumbers: 
+  selectedCardheight: 0.3
+  selectedcards: []
 --- !u!4 &485879192
 Transform:
   m_ObjectHideFlags: 0
@@ -7001,7 +7005,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485879190}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.022, z: -6}
+  m_LocalPosition: {x: 0, y: 0.022, z: -5.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22197,7 +22201,6 @@ MonoBehaviour:
   fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 3.93
-  circlePosition: {x: 0, y: -3.93, z: 0}
   selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &1599004254
 Transform:
@@ -26212,7 +26215,6 @@ MonoBehaviour:
   fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 3.93
-  circlePosition: {x: 0, y: -3.93, z: 0}
   selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &1861518170
 Transform:
@@ -27572,6 +27574,11 @@ MonoBehaviour:
   spaceBetweenColumn: 0.05
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
+  numberCardsToSelect: 0
+  selectedCardTypes: 
+  selectedCardTypesNumbers: 
+  selectedCardheight: 0.3
+  selectedcards: []
 --- !u!4 &1985095134
 Transform:
   m_ObjectHideFlags: 0
@@ -27580,7 +27587,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1985095132}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.02, y: 0.022, z: 6.02}
+  m_LocalPosition: {x: -0.02, y: 0.022, z: 5.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -28659,6 +28666,11 @@ MonoBehaviour:
   spaceBetweenColumn: 0.05
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
+  numberCardsToSelect: 0
+  selectedCardTypes: 
+  selectedCardTypesNumbers: 
+  selectedCardheight: 0.3
+  selectedcards: []
 --- !u!4 &2056013386
 Transform:
   m_ObjectHideFlags: 0
@@ -28667,7 +28679,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2056013384}
   m_LocalRotation: {x: -0, y: -0.8964864, z: -0, w: 0.44307122}
-  m_LocalPosition: {x: 7.05, y: 0.022, z: 3.06}
+  m_LocalPosition: {x: 6.92, y: 0.022, z: 2.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29268,7 +29280,6 @@ MonoBehaviour:
   fanningMaxAngle: 45
   fanPosition: {x: 0, y: 0, z: 0}
   circleRadius: 3.93
-  circlePosition: {x: 0, y: -3.93, z: 0}
   selectedCardSpotPosition: {x: -1.4, y: 1, z: 0}
 --- !u!4 &2092484311
 Transform:
@@ -29510,6 +29521,11 @@ MonoBehaviour:
   spaceBetweenColumn: 0.05
   decalBetweenCard: 0.2
   secretCardAdvance: 0.5
+  numberCardsToSelect: 0
+  selectedCardTypes: 
+  selectedCardTypesNumbers: 
+  selectedCardheight: 0.3
+  selectedcards: []
 --- !u!4 &2114176474
 Transform:
   m_ObjectHideFlags: 0
@@ -29518,7 +29534,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114176472}
   m_LocalRotation: {x: -0, y: 0.8964864, z: 1.2021092e-17, w: 0.44307122}
-  m_LocalPosition: {x: -7.05, y: 0.022, z: 3.06}
+  m_LocalPosition: {x: -6.87, y: 0.022, z: 2.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
