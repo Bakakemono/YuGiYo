@@ -30,11 +30,13 @@ public class Player : MonoBehaviourPunCallbacks {
 
     bool isSetup = false;
 
-    public bool doTargetHand = false;
-    public bool doTargetField = false;
+    private bool doTargetHand = false;
+    private bool doTargetField = false;
 
-    public bool doTargetType = false;
+    private bool doTargetType = false;
 
+    private int nmbCardToTarget = 0;
+    
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
         cardManager = FindObjectOfType<CardManager>();
@@ -106,12 +108,28 @@ public class Player : MonoBehaviourPunCallbacks {
         }
     }
 
-    public bool DoTargetHand() {
+    public bool IsHandTargeted() {
         return doTargetHand;
     }
 
-    public bool DoTargetField() {
+    public void SetTargetHand(bool _doTargetHand) {
+        doTargetHand = _doTargetHand;
+    }
+
+    public bool IsFieldTargeted() {
         return doTargetField;
+    }
+
+    public void SetTargetField(bool _doTargetField) {
+        doTargetField = _doTargetField;
+    }
+
+    public bool IsTypeTargeted() {
+        return doTargetType;
+    }
+
+    public void SetTargetType(bool _doTargetType) {
+        doTargetType = _doTargetType;
     }
 
     public Hand GetHand() {
@@ -140,6 +158,11 @@ public class Player : MonoBehaviourPunCallbacks {
     public void RemoveCardFromField(Card _card) {
         fieldManager.RemoveCard(_card);
         field.RemoveCard(_card);
+    }
+
+    List<Vector2> GetRandomCardsFromHand(int _nmbCards) {
+        List<Vector2> cards = new List<Vector2>();
+        return cards;
     }
 
     // Reset player card including Hand Manager and Field Manager.

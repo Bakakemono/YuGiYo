@@ -28,7 +28,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
 
     [SerializeField]
     [Range(0.0f, 1.0f)]
-    float secretCardAdvance = 0.75f;
+    float secretCardAdvance = 1.2f;
 
     readonly float lerpSpeed = 0.2f;
 
@@ -59,7 +59,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
         cardInitialPos = Card.cardLength / 2 + Card.cardLength * decalBetweenCard * cardMaxNumberPerColumn;
     }
     private void Update() {
-        if(player != null && player.doTargetField) {
+        if(player != null && player.IsFieldTargeted()) {
             SelectCard();
         }
         else {
@@ -201,7 +201,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                     new Vector3(
                         (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
                         0.02f,
-                        cardInitialPos - Card.cardLength * j * decalBetweenCard
+                        Card.cardLength * 0.5f + Card.cardLength * (cardPositions[i].Count - j - 1) * decalBetweenCard
                         );
             }
         }
@@ -210,12 +210,13 @@ public class FieldManager : MonoBehaviourPunCallbacks {
             if (!cardTypesPossessed.Contains(i))
                 continue;
 
-            int index = raceTypePossessed.FindIndex(x => x == i - CardManager.totalRaceCount);
+            int index = raceTypePossessed.FindIndex(x => x == i - (int)CardManager.CardType.TOTAL_RACE_NUMBER);
             cardPositions[cardTypesPossessed.FindIndex(x => x == i)][0] =
                 new Vector3(
                     (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
                     0.0f,
-                    cardInitialPos + Card.cardLength * secretCardAdvance
+                    secretCardAdvance * Card.cardLength +
+                        (cardTypesPossessed.Contains(i - (int)CardManager.CardType.TOTAL_RACE_NUMBER) ? cardPositions[index][0].z : 0)
                     );
         }
     }
@@ -260,7 +261,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
         // Select the card that you click on if there is one currently overviewed.
         if(overviewedCardType != CardManager.CardType.NONE && Input.GetMouseButtonUp(0)) {
             int typeIndex = raceTypePossessed.FindIndex(x => x == overviewedCardType);
-            if(!player.doTargetType && cardPositions[typeIndex].Count > selectedCardTypesNumbers[typeIndex]) {
+            if(!player.IsTypeTargeted() && cardPositions[typeIndex].Count > selectedCardTypesNumbers[typeIndex]) {
                 selectedCardTypes.Add(overviewedCardType);
                 selectedCardTypesNumbers[typeIndex]++;
                 selectedcards.Add(
@@ -271,7 +272,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                         )
                     );
             }
-            else if(player.doTargetType && !selectedCardTypes.Contains(overviewedCardType)) {
+            else if(player.IsTypeTargeted() && !selectedCardTypes.Contains(overviewedCardType)) {
                 selectedCardTypes.Add(overviewedCardType);
                 selectedCardTypesNumbers[typeIndex] = player.GetField().cards[overviewedCardType].Count;
                 for(int i = 0; i < selectedCardTypesNumbers[typeIndex]; i++) {
@@ -324,7 +325,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
 
         float left = -(raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f - Card.cardWidth / 2.0f;
         float right = (Card.cardWidth + spaceBetweenColumn) * (raceNumber - 1) - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f + Card.cardWidth / 2.0f;
-        float top = cardInitialPos + Card.cardLength / 2.0f;
+        float top = Card.cardLength + Card.cardLength * (raceNumber - 1) * decalBetweenCard;
         float bottom = 0;
 
         Gizmos.color = Color.red;
@@ -340,12 +341,19 @@ public class FieldManager : MonoBehaviourPunCallbacks {
             Gizmos.DrawLine(transform.TransformPoint(new Vector3(xPos, 0, bottom)), transform.TransformPoint(new Vector3(xPos, 0, top)));
         }
 
+        for(int i = 0; i < cardMaxNumberPerColumn; i++) {
+            Gizmos.DrawLine(
+                transform.TransformPoint(new Vector3(right, 0, Card.cardLength + Card.cardLength * (cardMaxNumberPerColumn - i - 1) * decalBetweenCard)),
+                transform.TransformPoint(new Vector3(left, 0, Card.cardLength + Card.cardLength * (cardMaxNumberPerColumn - i - 1) * decalBetweenCard))
+                );
+        }
+
         for(int i = 0; i < raceNumber; i++) {
             for(int j = 0; j < cardMaxNumberPerColumn; j++) {
                 Gizmos.DrawSphere(transform.TransformPoint(new Vector3(
                         (Card.cardWidth + spaceBetweenColumn) * i - (raceNumber - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
                         0.1f,
-                        cardInitialPos - Card.cardLength * j * decalBetweenCard
+                        Card.cardLength * 0.5f + Card.cardLength * (cardMaxNumberPerColumn - j - 1) * decalBetweenCard
                         )),
                         0.02f
                         );
