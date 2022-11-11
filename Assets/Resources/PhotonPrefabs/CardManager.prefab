@@ -45,12 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a174160ffc4283f4da80b1f51187883a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardsNumber: 10000000080000000800000020000000080000000800000008000000080000000800000008000000010000000100000001000000010000000100000001000000010000000100000001000000010000000c000000
+  cardNumberInDeck: 
+  deckToUseName: DryadeDeck
   cardEffects:
   - {fileID: 11400000, guid: 863ca3caeb3546243aff59c0f0d1d9f1, type: 2}
   - {fileID: 11400000, guid: f80c5c56186bf5049b31977f6f45ed43, type: 2}
   - {fileID: 11400000, guid: 96a898db91757a34f8101ae1bce5770b, type: 2}
-  - {fileID: 11400000, guid: b401060b1733a324eac33ba212b3278e, type: 2}
+  - {fileID: 11400000, guid: 8eb36bf663ac6f44ea504dafb1eac8bf, type: 2}
   - {fileID: 11400000, guid: bb078c36637c7714e96766730d2abe00, type: 2}
   - {fileID: 11400000, guid: 3404bfea324fda04f8f2c5f7260ca4a4, type: 2}
   - {fileID: 11400000, guid: 566cb0ce7de3b1d4a9a3dd5005831e67, type: 2}
@@ -68,7 +69,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8b510bb8326190246857a7232572ef69, type: 2}
   - {fileID: 11400000, guid: 8b510bb8326190246857a7232572ef69, type: 2}
   - {fileID: 11400000, guid: b9334fdef3b67f54eaa63980403d457d, type: 2}
-  card: {fileID: 6413384990352483551, guid: 01cab5b3a53e2d94296ed188afc5ce0c, type: 3}
+  cardPrefab: {fileID: 0}
   cardMaterials:
   - {fileID: 2100000, guid: 36fa2a05d788a674eae4022948c462db, type: 2}
   - {fileID: 2100000, guid: 1d850fd5c1b017f4894921741bb10808, type: 2}

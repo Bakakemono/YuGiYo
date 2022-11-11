@@ -90,6 +90,7 @@ public class HandManager : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        return;
         circlePosition = fanPosition - new Vector3(0.0f, circleRadius, 0.0f);
 
         // Change card order between ordered and Unordered

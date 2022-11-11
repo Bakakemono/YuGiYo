@@ -35,7 +35,7 @@ public class Player : MonoBehaviourPunCallbacks {
 
     private bool doTargetType = false;
 
-    private int nmbCardToTarget = 0;
+    private int cardNumberToTarget = 0;
     
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
@@ -130,6 +130,14 @@ public class Player : MonoBehaviourPunCallbacks {
 
     public void SetTargetType(bool _doTargetType) {
         doTargetType = _doTargetType;
+    }
+
+    public int GetCardNumberToTarget() {
+        return cardNumberToTarget;
+    }
+
+    public void SetCardNumberToTarget(int _cardNumberToTarget) {
+        cardNumberToTarget = _cardNumberToTarget;
     }
 
     public Hand GetHand() {

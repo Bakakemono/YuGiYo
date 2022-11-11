@@ -210,13 +210,13 @@ public class FieldManager : MonoBehaviourPunCallbacks {
             if (!cardTypesPossessed.Contains(i))
                 continue;
 
-            int index = raceTypePossessed.FindIndex(x => x == i - (int)CardManager.CardType.TOTAL_RACE_NUMBER);
+            int index = raceTypePossessed.FindIndex(x => x == i - (int)CardManager.CardType.TOTAL_PEOPLE_NUMBER);
             cardPositions[cardTypesPossessed.FindIndex(x => x == i)][0] =
                 new Vector3(
                     (Card.cardWidth + spaceBetweenColumn) * index - (raceTypePossessed.Count - 1) * (Card.cardWidth + spaceBetweenColumn) / 2.0f,
                     0.0f,
                     secretCardAdvance * Card.cardLength +
-                        (cardTypesPossessed.Contains(i - (int)CardManager.CardType.TOTAL_RACE_NUMBER) ? cardPositions[index][0].z : 0)
+                        (cardTypesPossessed.Contains(i - (int)CardManager.CardType.TOTAL_PEOPLE_NUMBER) ? cardPositions[index][0].z : 0)
                     );
         }
     }
@@ -247,7 +247,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
 
             if(cardSelected != null && 
                 player.GetField().IsCardOnField(cardSelected) &&
-                cardSelected.GetCardType() < CardManager.CardType.TOTAL_RACE_NUMBER) {
+                cardSelected.GetCardType() < CardManager.CardType.TOTAL_PEOPLE_NUMBER) {
                 overviewedCardType = cardSelected.GetCardType();
             }
             else {
@@ -284,7 +284,7 @@ public class FieldManager : MonoBehaviourPunCallbacks {
                         );
                 }
             }
-            if(numberCardsToSelect == selectedCardTypes.Count) {
+            if(player.GetCardNumberToTarget() >= selectedCardTypes.Count || selectedCardTypes.Count >= player.GetField().GetTotalCardNumber()) {
                 player.TargetFieldCard(new List<Vector2>(selectedcards));
                 selectedCardTypes.Clear();
                 for(int i = 0; i < selectedCardTypesNumbers.Count; i++) {
